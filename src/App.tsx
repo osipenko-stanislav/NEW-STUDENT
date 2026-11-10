@@ -1,14 +1,18 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import Orb, { type OrbLayer } from '@/components/Orb'
 import ThemeSwitcher, { useTheme } from '@/components/ThemeSwitcher'
 import WeatherWidget from '@/components/WeatherWidget'
 import StudyWidget from '@/components/StudyWidget'
 import PreferencesDialog from '@/components/PreferencesDialog'
+import ConversationHistory from '@/components/ConversationHistory'
+import ConversationMessages from '@/components/ConversationMessages'
+import GlobalSearch from '@/components/GlobalSearch'
+import { useConversations } from '@/hooks/use-conversations'
 import { homeworkDeadlines, upcomingClassSlots } from '@/data/study-widgets'
+import { navigation, secondaryNavigation } from '@/data/navigation'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import {
@@ -23,21 +27,6 @@ const navigatorOrbs: readonly OrbLayer[] = [
   { offset: [-0.06, 0.02], scale: 1, opacity: 0.66, phase: 0 },
   { offset: [0.07, 0.03], scale: 0.78, opacity: 0.64, phase: 2.1 },
   { offset: [0.015, -0.04], scale: 0.9, opacity: 0.74, phase: 4.2 },
-]
-type NavigationItem = { title: string; icon: string; children?: readonly string[] }
-const navigation: readonly NavigationItem[] = [
-  { title: 'Навигатор', icon: 'compass03-lined.svg' },
-  { title: 'Мои цели', icon: 'target04-lined.svg' },
-  { title: 'Обучение', icon: 'book-open01-lined.svg', children: [
-    'Курсы', 'Ведомости', 'Зачетка', 'Домашки', 'Запись на пары', 'Посещаемость', 'Выбор курсов',
-  ] },
-  { title: 'Расписание', icon: 'calendar-lined.svg' },
-  { title: 'Хэндбук', icon: 'file06-lined.svg' },
-  { title: 'События', icon: 'announcement01-lined.svg' },
-  { title: 'Сервисы', icon: 'presentation-chart02-lined.svg', children: ['Time', 'Онлайн-запись', 'It-сервисы'] },
-]
-const secondaryNavigation = [
-  { title: 'Настройки', icon: 'settings01-lined.svg' },
 ]
 const suggestions = ['Расписание сегодня', 'Моя неделя', 'Домашки', 'Материалы']
 const nextClassTime = upcomingClassSlots[0].startsAt
@@ -71,22 +60,25 @@ function StudentInterface() {
   const [theme, setTheme] = useTheme()
   const [section, setSection] = useState('Навигатор')
   const [panel, setPanel] = useState<Panel | null>(null)
-  const [query, setQuery] = useState('')
   const [prompt, setPrompt] = useState('')
   const [promptCommand, setPromptCommand] = useState<string | null>(null)
   const [isTyping, setIsTyping] = useState(false)
   const [attachment, setAttachment] = useState<File | null>(null)
-  const [submitError, setSubmitError] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
   const [hiddenWidgets, setHiddenWidgets] = useState<string[]>([])
   const [hiddenSuggestions, setHiddenSuggestions] = useState<string[]>([])
   const [openWidget, setOpenWidget] = useState<WidgetId | null>(null)
-  const searchRef = useRef<HTMLInputElement>(null)
   const promptRef = useRef<HTMLTextAreaElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { toggleSidebar, setOpen, setOpenMobile, state, isMobile, openMobile } = useSidebar()
   const menuOpen = isMobile ? openMobile : state === 'expanded'
+  const {
+    conversations, activeConversation, storageError, sendMessage,
+    openConversation, deleteConversation, startNewConversation, renameConversation, toggleConversationPin,
+  } = useConversations()
+  const isConversation = section === 'Навигатор' && activeConversation !== null
 
   useEffect(() => () => {
     if (typingTimerRef.current !== null) clearTimeout(typingTimerRef.current)
@@ -111,28 +103,44 @@ function StudentInterface() {
     return () => observer.disconnect()
   }, [prompt, section])
 
-  useEffect(() => {
-    function handleShortcut(event: KeyboardEvent) {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault()
-        searchRef.current?.focus()
-      }
-      if (event.key === 'Escape') {
-        searchRef.current?.blur()
-      }
-    }
-    window.addEventListener('keydown', handleShortcut)
-    return () => window.removeEventListener('keydown', handleShortcut)
-  }, [])
-
   function selectSection(title: string) {
     setOpenWidget(null)
     stopTyping()
     setSection(title)
+    if (title === 'Навигатор') {
+      startNewConversation()
+      clearComposer()
+    }
     const parent = navigation.find(item => item.children?.includes(title))
     if (parent) setExpandedGroups(groups => ({ ...groups, [parent.title]: true }))
     setOpenMobile(false)
-    setQuery('')
+  }
+
+  function askNavigator(query: string) {
+    selectSection('Навигатор')
+    setPrompt(query)
+    requestAnimationFrame(() => promptRef.current?.focus())
+  }
+
+  function clearComposer() {
+    setPrompt('')
+    setPromptCommand(null)
+    setAttachment(null)
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  function selectConversation(id: string) {
+    selectSection('Навигатор')
+    openConversation(id)
+  }
+
+  function removeConversation(id: string) {
+    if (id === activeConversation?.id) {
+      stopTyping()
+      clearComposer()
+      setSection('Навигатор')
+    }
+    deleteConversation(id)
   }
 
   function changeWidgetOpen(id: WidgetId, open: boolean) {
@@ -150,13 +158,11 @@ function StudentInterface() {
 
   function useSuggestion(value: string) {
     setPromptCommand(value)
-    setSubmitError(false)
     promptRef.current?.focus()
   }
 
   function removePromptCommand() {
     setPromptCommand(null)
-    setSubmitError(false)
     promptRef.current?.focus()
   }
 
@@ -168,7 +174,6 @@ function StudentInterface() {
 
   function updatePrompt(value: string) {
     setPrompt(value)
-    setSubmitError(false)
     if (typingTimerRef.current !== null) clearTimeout(typingTimerRef.current)
     typingTimerRef.current = null
     const hasText = value.trim().length > 0
@@ -184,12 +189,13 @@ function StudentInterface() {
   function submitPrompt(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     stopTyping()
-    if (!promptCommand && !prompt.trim() && !attachment) {
+    if (!promptCommand && !prompt.trim()) {
       promptRef.current?.focus()
       return
     }
-    // Keep the request intact until the assistant service is connected.
-    setSubmitError(true)
+    sendMessage({ text: prompt, command: promptCommand })
+    clearComposer()
+    promptRef.current?.focus()
   }
 
   return <>
@@ -213,8 +219,10 @@ function StudentInterface() {
             <nav aria-label="Разделы">
               <SidebarMenu>
                 {navigation.map(({ title, icon, children }, index) => <SidebarMenuItem key={title}>
-                  <SidebarMenuButton aria-label={title} aria-current={section === title ? 'page' : undefined}
-                    isActive={section === title || (!menuOpen && !!children?.includes(section))}
+                  <SidebarMenuButton aria-label={title}
+                    aria-current={section === title && (title !== 'Навигатор' || !isConversation || !menuOpen) ? 'page' : undefined}
+                    isActive={(section === title && (title !== 'Навигатор' || !isConversation || !menuOpen))
+                      || (!menuOpen && !!children?.includes(section))}
                     aria-expanded={children ? menuOpen && !!expandedGroups[title] : undefined}
                     aria-controls={children ? `navigation-group-${index}` : undefined}
                     onClick={() => children ? toggleGroup(title) : selectSection(title)}>
@@ -223,6 +231,11 @@ function StudentInterface() {
                     {children ? <Icon name="lucide-chevron-right.svg"
                       className={`navigation-chevron group-data-[collapsible=icon]:hidden ${expandedGroups[title] ? 'is-expanded' : ''}`} /> : null}
                   </SidebarMenuButton>
+                  {title === 'Навигатор' ? <ConversationHistory visible={menuOpen} open={historyOpen}
+                    onOpenChange={setHistoryOpen} conversations={conversations}
+                    activeId={isConversation ? activeConversation.id : null}
+                    onSelect={selectConversation} onDelete={removeConversation}
+                    onRename={renameConversation} onTogglePin={toggleConversationPin} /> : null}
                   {children ? <SidebarMenuSub id={`navigation-group-${index}`} className="navigation-submenu"
                     hidden={!menuOpen || !expandedGroups[title]} aria-label={title}>
                     {children.map(child => <SidebarMenuSubItem key={child}>
@@ -267,13 +280,7 @@ function StudentInterface() {
         </div>
         <div className="header-search">
           <div className="search-container">
-            <label className="search-field">
-              <Icon name="search-md-lined.svg" />
-              <Input ref={searchRef} type="search" aria-label="Поиск по разделам" placeholder="Поиск"
-                value={query} onChange={event => setQuery(event.target.value)}
-                className="search-input border-0 p-0 shadow-none focus-visible:ring-0" />
-              <kbd aria-hidden="true">⌘ + K</kbd>
-            </label>
+            <GlobalSearch onNavigate={selectSection} onAskNavigator={askNavigator} />
           </div>
           <div className="bookmark-action">
             <GhostButton label="Закладки" onClick={() => setPanel('bookmarks')}><Icon name="bookmark-lined.svg" /></GhostButton>
@@ -292,8 +299,10 @@ function StudentInterface() {
           </GhostButton>
         </div>
       </header>
-      <div className="workspace" aria-label={section}>
-        {section === 'Навигатор' ? <section className="navigator" aria-labelledby="navigator-title">
+      <div className={`workspace ${isConversation ? 'workspace-chat' : ''}`} aria-label={section}>
+        {section === 'Навигатор' ? <section className={`navigator ${isConversation ? 'navigator-chat' : ''}`}
+          aria-labelledby={isConversation ? 'conversation-title' : 'navigator-title'}>
+          {activeConversation ? <ConversationMessages conversation={activeConversation} /> : <>
           <div className="navigator-widgets" role="group" aria-label="Виджеты">
             {widgets.filter(widget => !hiddenWidgets.includes(widget.id)).map(widget => {
               return widget.id === 'weather'
@@ -335,6 +344,7 @@ function StudentInterface() {
             </div>
             <h1 id="navigator-title">Привет, Иван! С чего начнем?</h1>
           </div>
+          </>}
           <div className="assistant-input">
             <form className="composer" onSubmit={submitPrompt}>
               <div className="composer-editor">
@@ -370,14 +380,16 @@ function StudentInterface() {
                 <Button type="button" variant="ghost" size="icon" className="size-5 shrink-0" aria-label="Удалить вложение"
                   onClick={() => { setAttachment(null); if (fileRef.current) fileRef.current.value = '' }}>×</Button>
               </div> : null}
+              {attachment ? <p className="attachment-notice">Вложения пока не отправляются и не сохраняются.</p> : null}
               <div className="composer-toolbar">
                 <div className="flex gap-1">
                   <GhostButton label="Прикрепить файл" onClick={() => fileRef.current?.click()}><Icon name="plus-lined.svg" /></GhostButton>
                 </div>
-                <Button type="submit" size="icon" aria-label="Отправить запрос" className="send-button"><Icon name="arrow-up-lined.svg" /></Button>
+                <Button type="submit" size="icon" aria-label="Отправить запрос" className="send-button"
+                  disabled={!promptCommand && !prompt.trim()}><Icon name="arrow-up-lined.svg" /></Button>
               </div>
               <input ref={fileRef} type="file" className="sr-only" tabIndex={-1} aria-label="Прикрепить файл к запросу"
-                onChange={event => { setAttachment(event.target.files?.[0] ?? null); setSubmitError(false) }} />
+                onChange={event => setAttachment(event.target.files?.[0] ?? null)} />
             </form>
             <div className="suggestions" aria-label="Примеры запросов">
               {suggestions.filter(suggestion => !hiddenSuggestions.includes(suggestion)).map(suggestion => <Button key={suggestion} variant="outline" onClick={() => useSuggestion(suggestion)}
@@ -388,8 +400,8 @@ function StudentInterface() {
                 onVisibilityChange={(title, visible) => setHiddenSuggestions(hidden => visible
                   ? hidden.filter(value => value !== title) : [...hidden, title])} />
             </div>
-            {submitError ? <p role="status" className="mt-3 text-center text-sm text-muted-foreground">
-              Помощник пока недоступен. Ваш запрос остался в поле ввода.
+            {storageError ? <p role="status" className="mt-3 text-center text-sm text-muted-foreground">
+              {storageError}
             </p> : null}
           </div>
         </section> : null}
