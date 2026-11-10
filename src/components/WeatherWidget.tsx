@@ -1,6 +1,6 @@
 import WidgetPopover from '@/components/WidgetPopover'
 
-const asset = (name: string) => `/assets/figma/${name}`
+const asset = (name: string) => `${import.meta.env.BASE_URL}assets/figma/${name}`
 const forecast = [
   { temperature: 6, icon: 'weather-cloud-snow.svg', condition: 'Снег' },
   { temperature: 2, icon: 'weather-cloud-sun.svg', condition: 'Переменная облачность' },

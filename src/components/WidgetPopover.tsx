@@ -76,7 +76,7 @@ export default function WidgetPopover({
             else requestAnimationFrame(focusContent)
           }
         }}>
-        <img src={`/assets/figma/${triggerIcon}`} alt="" aria-hidden="true" className="design-icon" />
+        <img src={`${import.meta.env.BASE_URL}assets/figma/${triggerIcon}`} alt="" aria-hidden="true" className="design-icon" />
         <span>{triggerLabel}</span>
       </Button>
     </PopoverTrigger>

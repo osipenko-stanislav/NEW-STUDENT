@@ -18,7 +18,7 @@ import {
   SidebarProvider, useSidebar,
 } from '@/components/ui/sidebar'
 
-const asset = (name: string) => `/assets/figma/${name}`
+const asset = (name: string) => `${import.meta.env.BASE_URL}assets/figma/${name}`
 const navigatorOrbs: readonly OrbLayer[] = [
   { offset: [-0.06, 0.02], scale: 1, opacity: 0.66, phase: 0 },
   { offset: [0.07, 0.03], scale: 0.78, opacity: 0.64, phase: 2.1 },

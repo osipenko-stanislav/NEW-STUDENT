@@ -25,7 +25,7 @@ export default function PreferencesDialog({
     <DialogTrigger asChild>
       <Button type="button" variant="ghost" size="icon" aria-label={triggerLabel}
         className={`ghost-icon ${triggerClassName}`}>
-        <img src={`/assets/figma/${triggerIcon}`} alt="" aria-hidden="true" className="design-icon" />
+        <img src={`${import.meta.env.BASE_URL}assets/figma/${triggerIcon}`} alt="" aria-hidden="true" className="design-icon" />
       </Button>
     </DialogTrigger>
     <DialogContent className="navigator-settings-dialog">

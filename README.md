@@ -1,5 +1,8 @@
 # LMS студента
 
+Опубликованный интерфейс: https://osipenko-stanislav.github.io/NEW-STUDENT/
+Изменения в ветке `main` автоматически публикуются через GitHub Actions.
+
 Локальный прототип на React, TypeScript, Vite, Tailwind CSS и shadcn/ui.
 Экран «Навигатор» реализован по [макету NEW STUDENT в Figma](https://www.figma.com/design/kYv6AFlnXChycKIusOsvJC/NEW-STUDENT?node-id=46-7748).
 
