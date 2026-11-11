@@ -134,7 +134,7 @@ export default function ConversationHistory({
           <DialogHeader className="pr-6 text-left">
             <DialogTitle>Удалить разговор?</DialogTitle>
             <DialogDescription className="[overflow-wrap:anywhere]">
-              Разговор «{dialogConversation?.title}» и его сообщения будут удалены. Это действие нельзя отменить.
+              Разговор «{dialogConversation?.title}» и его сообщения будут удалены. Файлы останутся в библиотеке. Это действие нельзя отменить.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:space-x-0">

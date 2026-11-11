@@ -1,5 +1,6 @@
 import { navigation, secondaryNavigation } from '@/data/navigation'
 import { homeworkDeadlines, upcomingClassSlots } from '@/data/study-widgets'
+import { demoMaterials } from './study-demo.ts'
 import type { SearchItem } from '@/types/search'
 
 export const sectionSearchItems: SearchItem[] = [...navigation, ...secondaryNavigation].flatMap(item =>
@@ -12,20 +13,13 @@ export const sectionSearchItems: SearchItem[] = [...navigation, ...secondaryNavi
       icon: item.icon, section: item.title }],
 )
 
-const materialExamples = [
-  { id: 'matrices-lecture', title: 'Лекция 3. Матрицы и определители', course: 'Линейная алгебра' },
-  { id: 'python-functions-notes', title: 'Конспект: функции в Python', course: 'Программирование на Python' },
-  { id: 'limits-seminar', title: 'Семинар: пределы последовательностей', course: 'Математический анализ' },
-  { id: 'probability-lecture', title: 'Лекция: условная вероятность', course: 'Теория вероятностей' },
-]
-
 export const searchItems: SearchItem[] = [
   ...sectionSearchItems,
   ...upcomingClassSlots.map(slot => ({
     id: `course-${slot.id}`, title: slot.course, path: 'LMS / Обучение / Курсы', category: 'courses' as const,
     icon: 'book-open01-lined.svg', section: 'Курсы', demo: true,
   })),
-  ...materialExamples.map(material => ({
+  ...demoMaterials.map(material => ({
     id: `material-${material.id}`, title: material.title,
     path: `LMS / Обучение / Курсы / ${material.course} / Материалы`, category: 'materials' as const,
     icon: 'file06-lined.svg', section: 'Курсы', demo: true,

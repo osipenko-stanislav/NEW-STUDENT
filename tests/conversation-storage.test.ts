@@ -126,3 +126,24 @@ test('quota errors keep the new messages in memory and preserve the last saved h
   assert.ok(result.storageError)
   assert.equal(values.get(storageKey), previous)
 })
+
+
+test('restores message attachments and unavailable-file tombstones without deleting messages', () => {
+  const chat = conversation('attachments', 100)
+  chat.messages[0].attachments = [{ materialId: 'shared-file', name: 'Заметки.txt' }, { materialId: null, name: 'Удаленный файл.txt' }]
+  assert.equal(saveConversations([chat]).storageError, null)
+  const restored = loadConversations()
+  assert.equal(restored.storageError, null)
+  assert.deepEqual(restored.conversations[0].messages, chat.messages)
+})
+
+test('round-trips all Generative UI block types while preserving legacy text messages', async () => {
+  const { createMockResponse } = await import('../src/lib/mock-assistant.ts')
+  const chats = ['Расписание сегодня', 'Моя неделя', 'Домашки', 'Материалы'].map((command, index) => {
+    const chat = conversation(`generated-${index}`, 100 + index)
+    Object.assign(chat.messages[1], createMockResponse({ command, text: '' }))
+    return chat
+  })
+  assert.equal(saveConversations(chats).storageError, null)
+  assert.deepEqual(loadConversations().conversations, sortConversations(chats))
+})

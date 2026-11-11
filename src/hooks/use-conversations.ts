@@ -1,16 +1,21 @@
 import { useState } from 'react'
 import { loadConversations, saveConversations, sortConversations } from '@/lib/conversation-storage'
+import { createMockResponse } from '@/lib/mock-assistant'
+import { useMockGeneration } from '@/hooks/use-mock-generation'
 import { createConversationTitle } from '@/lib/conversation-title'
 import type { ChatMessage, Conversation, ConversationDraft } from '@/types/conversation'
 
 export function useConversations() {
   const [snapshot, setSnapshot] = useState(loadConversations)
+  const generation = useMockGeneration()
   const [activeId, setActiveId] = useState<string | null>(null)
   const activeConversation = snapshot.conversations.find(conversation => conversation.id === activeId) ?? null
 
   function sendMessage(draft: ConversationDraft) {
     const text = draft.text.trim()
-    if (!text && !draft.command) return
+    if ((!text && !draft.command) || (activeConversation && generation.isGenerating(activeConversation.id))) return
+    const response = createMockResponse(draft, activeConversation?.messages)
+    const assistantId = crypto.randomUUID()
     // Keep activity strictly ordered even if two sends occur in the same millisecond.
     const now = snapshot.conversations.reduce((latest, conversation) => Math.max(latest, conversation.updatedAt + 1), Date.now())
     const messages: ChatMessage[] = [
@@ -18,10 +23,10 @@ export function useConversations() {
         id: crypto.randomUUID(), role: 'user', createdAt: now,
         content: text ? [{ type: 'text', text }] : [],
         ...(draft.command ? { command: `/${draft.command}` } : {}),
+        ...(draft.attachments?.length ? { attachments: draft.attachments } : {}),
       },
       {
-        id: crypto.randomUUID(), role: 'assistant', createdAt: now,
-        content: [{ type: 'text', text: 'Это демонстрационный ответ. Вы можете продолжить разговор: новые сообщения появятся здесь.' }],
+        id: assistantId, role: 'assistant', createdAt: now, ...response,
       },
     ]
     const conversation: Conversation = activeConversation
@@ -31,8 +36,11 @@ export function useConversations() {
     const conversations = sortConversations([
       ...snapshot.conversations.filter(item => item.id !== conversation.id), conversation,
     ])
-    setSnapshot(saveConversations(conversations))
+    const saved = saveConversations(conversations)
+    setSnapshot(saved)
     setActiveId(conversation.id)
+    generation.start(conversation.id, assistantId, response.content.filter(part => part.type === 'text').map(part => part.text).join('').length)
+    return { conversationId: conversation.id, persisted: !saved.storageError }
   }
 
   function openConversation(id: string) {
@@ -40,8 +48,18 @@ export function useConversations() {
   }
 
   function deleteConversation(id: string) {
-    setSnapshot(saveConversations(snapshot.conversations.filter(conversation => conversation.id !== id)))
-    if (activeId === id) setActiveId(null)
+    generation.cancel(id)
+    setSnapshot(current => saveConversations(current.conversations.filter(conversation => conversation.id !== id)))
+    setActiveId(current => current === id ? null : current)
+  }
+
+  function detachMaterial(materialId: string) {
+    setSnapshot(current => saveConversations(current.conversations.map(conversation => ({
+      ...conversation,
+      messages: conversation.messages.map(message => message.attachments?.some(item => item.materialId === materialId)
+        ? { ...message, attachments: message.attachments.map(item => item.materialId === materialId ? { ...item, materialId: null } : item) }
+        : message),
+    }))))
   }
 
   function renameConversation(id: string, title: string) {
@@ -61,10 +79,12 @@ export function useConversations() {
   return {
     conversations: snapshot.conversations,
     activeConversation,
+    activeGeneration: activeId ? generation.generations[activeId] : undefined,
     storageError: snapshot.storageError,
     sendMessage,
     openConversation,
     deleteConversation,
+    detachMaterial,
     renameConversation,
     toggleConversationPin,
     startNewConversation: () => setActiveId(null),

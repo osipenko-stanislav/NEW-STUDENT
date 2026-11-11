@@ -15,9 +15,9 @@ const categories: { value: SearchCategory; label: string }[] = [
   { value: 'sections', label: 'Разделы' },
 ]
 
-type GlobalSearchProps = { onNavigate: (section: string) => void; onAskNavigator: (query: string) => void }
+type GlobalSearchProps = { disabled?: boolean; onNavigate: (section: string) => void; onAskNavigator: (query: string) => void }
 
-export default function GlobalSearch({ onNavigate, onAskNavigator }: GlobalSearchProps) {
+export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = false }: GlobalSearchProps) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<SearchCategory>('all')
@@ -61,7 +61,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator }: GlobalSearc
 
   useEffect(() => {
     function shortcut(event: globalThis.KeyboardEvent) {
-      if (!(event.metaKey || event.ctrlKey) || event.altKey || event.key.toLowerCase() !== 'k'
+      if (disabled || !(event.metaKey || event.ctrlKey) || event.altKey || event.key.toLowerCase() !== 'k'
         || event.isComposing || event.repeat) return
       event.preventDefault()
       const currentDialog = document.querySelector('[role="dialog"][data-state="open"]:not([data-side])')
@@ -71,7 +71,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator }: GlobalSearc
     }
     window.addEventListener('keydown', shortcut)
     return () => window.removeEventListener('keydown', shortcut)
-  }, [open, changeOpen])
+  }, [open, changeOpen, disabled])
 
   const matches = filterSearchItems(searchItems, query, category)
   const recent = recentIds.map(recentId => sectionSearchItems.find(item => item.id === recentId))
@@ -132,7 +132,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator }: GlobalSearc
 
   return <Dialog open={open} onOpenChange={changeOpen}>
     <DialogTrigger asChild>
-      <Button ref={triggerRef} type="button" variant="ghost" className="search-field search-trigger" aria-label="Поиск по LMS">
+      <Button ref={triggerRef} disabled={disabled} type="button" variant="ghost" className="search-field search-trigger" aria-label="Поиск по LMS">
         <Search aria-hidden="true" className="size-4 shrink-0" />
         <span className="flex-1 text-left text-sm text-muted-foreground">Поиск</span>
         <kbd aria-hidden="true">⌘ + K</kbd>

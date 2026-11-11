@@ -2,6 +2,11 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
+import { File, FolderOpen } from 'lucide-react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import MaterialsPanel from '@/components/MaterialsPanel'
+import { useConversationMaterials } from '@/hooks/use-conversation-materials'
+import type { MaterialLibrary } from '@/lib/material-library'
 import Orb, { type OrbLayer } from '@/components/Orb'
 import ThemeSwitcher, { useTheme } from '@/components/ThemeSwitcher'
 import WeatherWidget from '@/components/WeatherWidget'
@@ -56,14 +61,19 @@ function GhostButton({ label, children, className = '', ...props }: ButtonProps 
   </Button>
 }
 
-function StudentInterface() {
+function StudentInterface({ onResetSession, isResetting }: {
+  onResetSession: (library: MaterialLibrary) => Promise<boolean>
+  isResetting: boolean
+}) {
   const [theme, setTheme] = useTheme()
   const [section, setSection] = useState('Навигатор')
   const [panel, setPanel] = useState<Panel | null>(null)
   const [prompt, setPrompt] = useState('')
   const [promptCommand, setPromptCommand] = useState<string | null>(null)
   const [isTyping, setIsTyping] = useState(false)
-  const [attachment, setAttachment] = useState<File | null>(null)
+  const [materialsOpen, setMaterialsOpen] = useState(false)
+  const [materialPicker, setMaterialPicker] = useState(false)
+  const [materialInfoId, setMaterialInfoId] = useState<string | null>(null)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
   const [hiddenWidgets, setHiddenWidgets] = useState<string[]>([])
@@ -71,13 +81,17 @@ function StudentInterface() {
   const [openWidget, setOpenWidget] = useState<WidgetId | null>(null)
   const promptRef = useRef<HTMLTextAreaElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const openingMaterialPickerRef = useRef(false)
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { toggleSidebar, setOpen, setOpenMobile, state, isMobile, openMobile } = useSidebar()
   const menuOpen = isMobile ? openMobile : state === 'expanded'
   const {
-    conversations, activeConversation, storageError, sendMessage,
-    openConversation, deleteConversation, startNewConversation, renameConversation, toggleConversationPin,
+    conversations, activeConversation, activeGeneration, storageError, sendMessage,
+    openConversation, deleteConversation, detachMaterial, startNewConversation, renameConversation, toggleConversationPin,
   } = useConversations()
+  const { library, scopeId, materials, selectedMaterials, error: materialsError, isBusy: materialsBusy } = useConversationMaterials(activeConversation?.id ?? null)
+  const currentConversationId = useRef<string | null>(null)
+  currentConversationId.current = activeConversation?.id ?? null
   const isConversation = section === 'Навигатор' && activeConversation !== null
 
   useEffect(() => () => {
@@ -108,12 +122,20 @@ function StudentInterface() {
     stopTyping()
     setSection(title)
     if (title === 'Навигатор') {
+      void library.startNewDraft()
       startNewConversation()
       clearComposer()
     }
     const parent = navigation.find(item => item.children?.includes(title))
     if (parent) setExpandedGroups(groups => ({ ...groups, [parent.title]: true }))
     setOpenMobile(false)
+  }
+
+  async function resetSession() {
+    stopTyping()
+    setOpenMobile(false)
+    setOpenWidget(null)
+    if (!await onResetSession(library)) setMaterialsOpen(true)
   }
 
   function askNavigator(query: string) {
@@ -125,7 +147,6 @@ function StudentInterface() {
   function clearComposer() {
     setPrompt('')
     setPromptCommand(null)
-    setAttachment(null)
     if (fileRef.current) fileRef.current.value = ''
   }
 
@@ -134,8 +155,9 @@ function StudentInterface() {
     openConversation(id)
   }
 
-  function removeConversation(id: string) {
-    if (id === activeConversation?.id) {
+  async function removeConversation(id: string) {
+    if (!library.removeConversation(id)) { setMaterialsOpen(true); return }
+    if (id === currentConversationId.current) {
       stopTyping()
       clearComposer()
       setSection('Навигатор')
@@ -193,7 +215,10 @@ function StudentInterface() {
       promptRef.current?.focus()
       return
     }
-    sendMessage({ text: prompt, command: promptCommand })
+    if (library.getSnapshot().pending > 0 || activeGeneration) return
+    const attachments = selectedMaterials.map(material => ({ materialId: material.id, name: material.name }))
+    const sent = sendMessage({ text: prompt, command: promptCommand, attachments })
+    if (sent) library.completeSend(scopeId, sent.conversationId)
     clearComposer()
     promptRef.current?.focus()
   }
@@ -203,8 +228,8 @@ function StudentInterface() {
       <SidebarHeader className="h-16 shrink-0">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" onClick={() => selectSection('Навигатор')}
-              aria-label="Центральный университет — на главную"
+            <SidebarMenuButton size="lg" onClick={() => void resetSession()}
+              aria-label="Центральный университет — сбросить сессию"
               className="logo-button gap-3 p-1.5 hover:bg-transparent">
               <img src={asset('cu-logo-rus-short.svg')} alt="Центральный университет" width="43" height="28"
                 className="h-7 w-[43px] max-w-none shrink-0 group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:w-8" />
@@ -280,7 +305,7 @@ function StudentInterface() {
         </div>
         <div className="header-search">
           <div className="search-container">
-            <GlobalSearch onNavigate={selectSection} onAskNavigator={askNavigator} />
+            <GlobalSearch disabled={isResetting} onNavigate={selectSection} onAskNavigator={askNavigator} />
           </div>
           <div className="bookmark-action">
             <GhostButton label="Закладки" onClick={() => setPanel('bookmarks')}><Icon name="bookmark-lined.svg" /></GhostButton>
@@ -293,16 +318,21 @@ function StudentInterface() {
           </GhostButton>
           <GhostButton label="Уведомления" onClick={() => setPanel('notifications')}><Icon name="bell03-lined.svg" /></GhostButton>
           <GhostButton label="Расписание" onClick={() => selectSection('Расписание')}><Icon name="calendar-lined1.svg" /></GhostButton>
+          <GhostButton label="Библиотека" id="materials-trigger" aria-controls="materials-sidebar" aria-expanded={materialsOpen}
+            onClick={() => { setMaterialPicker(false); setMaterialInfoId(null); setMaterialsOpen(open => !open) }}><Icon name="archive-lined.svg" /></GhostButton>
           <GhostButton label="Профиль Ивана" className="profile-action" onClick={() => setPanel('profile')}>
             <img src={asset('avatar-image.png')} alt="" className="size-7 rounded-full object-cover" />
             <img src={asset('type-status-size-default.svg')} alt="" className="profile-status" />
           </GhostButton>
         </div>
       </header>
+      <div className={`workspace-layout ${materialsOpen ? 'has-materials' : ''}`}>
       <div className={`workspace ${isConversation ? 'workspace-chat' : ''}`} aria-label={section}>
         {section === 'Навигатор' ? <section className={`navigator ${isConversation ? 'navigator-chat' : ''}`}
           aria-labelledby={isConversation ? 'conversation-title' : 'navigator-title'}>
-          {activeConversation ? <ConversationMessages conversation={activeConversation} /> : <>
+          {activeConversation ? <ConversationMessages conversation={activeConversation} materials={materials} generation={activeGeneration}
+            onNavigate={selectSection} onFollowUp={value => { setPromptCommand(null); setPrompt(value); requestAnimationFrame(() => promptRef.current?.focus()) }}
+            onOpenMaterial={id => { setMaterialPicker(false); setMaterialInfoId(id); setMaterialsOpen(true) }} /> : <>
           <div className="navigator-widgets" role="group" aria-label="Виджеты">
             {widgets.filter(widget => !hiddenWidgets.includes(widget.id)).map(widget => {
               return widget.id === 'weather'
@@ -375,21 +405,39 @@ function StudentInterface() {
               {promptCommand ? <span id="prompt-command-description" className="sr-only" role="status">
                 Выбрана команда /{promptCommand}. Можно дописать запрос. Backspace в начале поля уберет команду.
               </span> : null}
-              {attachment ? <div className="attachment">
-                <span className="truncate">{attachment.name}</span>
-                <Button type="button" variant="ghost" size="icon" className="size-5 shrink-0" aria-label="Удалить вложение"
-                  onClick={() => { setAttachment(null); if (fileRef.current) fileRef.current.value = '' }}>×</Button>
-              </div> : null}
-              {attachment ? <p className="attachment-notice">Вложения пока не отправляются и не сохраняются.</p> : null}
+              {selectedMaterials.map(material => <div key={material.id} className="attachment">
+                <File className="size-3.5 shrink-0" aria-hidden="true" />
+                <span className="truncate">{material.name}</span>
+                <Button type="button" variant="ghost" size="icon" className="size-6 shrink-0" disabled={materialsBusy}
+                  aria-label={`Убрать вложение: ${material.name}`} onClick={() => library.detach(material.id, scopeId)}>×</Button>
+              </div>)}
+              {materialsBusy ? <p className="attachment-notice" role="status">Сохраняем изменения…</p> : null}
               <div className="composer-toolbar">
                 <div className="flex gap-1">
-                  <GhostButton label="Прикрепить файл" onClick={() => fileRef.current?.click()}><Icon name="plus-lined.svg" /></GhostButton>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild><GhostButton label="Прикрепить файл" disabled={materialsBusy}><Icon name="plus-lined.svg" /></GhostButton></DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" side="top" collisionPadding={8} onCloseAutoFocus={event => {
+                      if (!openingMaterialPickerRef.current) return
+                      event.preventDefault()
+                      openingMaterialPickerRef.current = false
+                      requestAnimationFrame(() => document.getElementById('materials-title')?.focus())
+                    }}>
+                      <DropdownMenuItem onSelect={() => fileRef.current?.click()}><File aria-hidden="true" />Загрузить с устройства</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => { openingMaterialPickerRef.current = true; setMaterialPicker(true); setMaterialInfoId(null); setMaterialsOpen(true) }}>
+                        <FolderOpen aria-hidden="true" />Выбрать из библиотеки
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <Button type="submit" size="icon" aria-label="Отправить запрос" className="send-button"
-                  disabled={!promptCommand && !prompt.trim()}><Icon name="arrow-up-lined.svg" /></Button>
+                  disabled={materialsBusy || !!activeGeneration || (!promptCommand && !prompt.trim())}><Icon name="arrow-up-lined.svg" /></Button>
               </div>
-              <input ref={fileRef} type="file" className="sr-only" tabIndex={-1} aria-label="Прикрепить файл к запросу"
-                onChange={event => setAttachment(event.target.files?.[0] ?? null)} />
+              <input ref={fileRef} type="file" multiple className="sr-only" tabIndex={-1} aria-label="Прикрепить файл к запросу"
+                onChange={event => {
+                  const files = Array.from(event.target.files ?? [])
+                  event.target.value = ''
+                  if (files.length) void library.add(files, scopeId)
+                }} />
             </form>
             <div className="suggestions" aria-label="Примеры запросов">
               {suggestions.filter(suggestion => !hiddenSuggestions.includes(suggestion)).map(suggestion => <Button key={suggestion} variant="outline" onClick={() => useSuggestion(suggestion)}
@@ -400,11 +448,21 @@ function StudentInterface() {
                 onVisibilityChange={(title, visible) => setHiddenSuggestions(hidden => visible
                   ? hidden.filter(value => value !== title) : [...hidden, title])} />
             </div>
+            {materialsError && !materialsOpen ? <p role="alert" className="mt-3 text-center text-sm text-destructive">
+              {materialsError}
+            </p> : null}
             {storageError ? <p role="status" className="mt-3 text-center text-sm text-muted-foreground">
               {storageError}
             </p> : null}
           </div>
         </section> : null}
+      </div>
+    <MaterialsPanel open={materialsOpen} onOpenChange={open => { setMaterialsOpen(open); if (!open) setMaterialInfoId(null) }}
+      materials={materials} library={library} error={materialsError} busy={materialsBusy}
+      picker={materialPicker} selectedIds={selectedMaterials.map(material => material.id)} conversations={conversations}
+      infoId={materialInfoId} onInfoChange={setMaterialInfoId}
+      onAttach={id => library.attach(id, scopeId)}
+      onRemove={async id => { if (await library.remove(id)) detachMaterial(id) }} />
       </div>
     </SidebarInset>
     <Sheet open={panel !== null} onOpenChange={open => { if (!open) setPanel(null) }}>
@@ -419,7 +477,26 @@ function StudentInterface() {
 }
 
 export default function App() {
-  return <SidebarProvider className="student-app" style={{ '--sidebar-width': '288px', '--sidebar-width-icon': '64px' } as CSSProperties}>
-    <StudentInterface />
+  const [sessionVersion, setSessionVersion] = useState(0)
+  const [isResetting, setIsResetting] = useState(false)
+  const resetInProgress = useRef(false)
+
+  async function resetSession(library: MaterialLibrary) {
+    if (resetInProgress.current) return false
+    resetInProgress.current = true
+    setIsResetting(true)
+    const success = await library.resetSession()
+    if (success) setSessionVersion(version => version + 1)
+    resetInProgress.current = false
+    setIsResetting(false)
+    return success
+  }
+
+  return <><SidebarProvider key={sessionVersion} inert={isResetting} aria-busy={isResetting} className="student-app" style={{ '--sidebar-width': '288px', '--sidebar-width-icon': '64px' } as CSSProperties}>
+    <StudentInterface onResetSession={resetSession} isResetting={isResetting} />
   </SidebarProvider>
+    {isResetting ? <div role="status" className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 text-sm">
+      Сбрасываем сессию…
+    </div> : null}
+  </>
 }

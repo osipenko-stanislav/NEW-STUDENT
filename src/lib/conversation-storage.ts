@@ -1,3 +1,4 @@
+import { isGenerativePart, isMockContext } from './assistant-validation.ts'
 import type { ChatMessage, Conversation } from '@/types/conversation'
 
 const storageKey = 'student-conversations:v1'
@@ -14,9 +15,14 @@ function isTimestamp(value: unknown): value is number {
 function isMessage(value: unknown): value is ChatMessage {
   return isRecord(value) && typeof value.id === 'string' && value.id.length > 0
     && (value.role === 'user' || value.role === 'assistant') && isTimestamp(value.createdAt)
+    && (value.mockContext === undefined || isMockContext(value.mockContext))
+    && (value.suggestions === undefined || (Array.isArray(value.suggestions) && value.suggestions.every(item => typeof item === 'string')))
     && (value.command === undefined || typeof value.command === 'string')
+    && (value.attachments === undefined || (Array.isArray(value.attachments) && value.attachments.every(item => isRecord(item)
+      && (item.materialId === null || (typeof item.materialId === 'string' && item.materialId.length > 0))
+      && typeof item.name === 'string' && item.name.length > 0)))
     && Array.isArray(value.content)
-    && value.content.every(part => isRecord(part) && part.type === 'text' && typeof part.text === 'string')
+    && value.content.every(part => (isRecord(part) && part.type === 'text' && typeof part.text === 'string') || isGenerativePart(part))
     && (value.content.length > 0 || (typeof value.command === 'string' && value.command.length > 0))
 }
 
