@@ -25,6 +25,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Compact card and block labels stay in the UI face; Universita is for page and reading hierarchy. */
+.student-app :is(.course-section-heading, .course-widget-card, .course-block-unpublished, .course-assignment-card) :is(h1, h2, h3) {
+  font-family: 'PT Root UI', ui-sans-serif, system-ui, sans-serif !important;
+  font-weight: 500 !important;
+  font-synthesis: initial;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
 .workspace h1[tabindex="-1"]:focus { outline: none; }
 
 /* Separate outline buttons, with the same selected state as course categories. */
