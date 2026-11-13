@@ -240,6 +240,35 @@ details[open] > :not(summary) {
   to { opacity: 1; transform: translateY(0); }
 }
 
+[data-content-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(10px);
+}
+[data-content-reveal="visible"] {
+  animation: learning-block-enter var(--motion-slow) var(--ease-enter) both;
+  animation-delay: calc(var(--content-reveal-order, 0) * 35ms);
+}
+@keyframes learning-block-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.handbook-page-enter { animation: content-reveal var(--motion-base) var(--ease-enter) both; }
+
+.course-section .course-lesson-materials > li {
+  animation: learning-block-enter var(--motion-base) var(--ease-enter) both;
+}
+.course-section .course-lesson-materials > li:nth-child(2) { animation-delay: 45ms; }
+.course-section .course-lesson-materials > li:nth-child(3) { animation-delay: 90ms; }
+.course-section .course-lesson-materials > li:nth-child(4) { animation-delay: 135ms; }
+
+html[data-motion-level="minimal"] [data-content-reveal],
+html[data-motion-reduced="true"] [data-content-reveal] {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
 .motion-route-enter { animation: route-enter var(--motion-base) var(--ease-enter) both; }
 @keyframes route-enter {
   from { opacity: .55; transform: translateY(8px); }

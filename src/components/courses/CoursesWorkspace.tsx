@@ -29,7 +29,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   const [dialog, setDialog] = useState<CourseDialog>(null)
   const [recording, setRecording] = useState<CourseRecording | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const routeKey = `${courseId || ''}/${lessonId || ''}/${tab}/${taskId || ''}`
+  const routeKey = `${courseId || ''}/${lessonId || ''}/${taskId || ''}`
   const [activeSection, onAnchor] = useActiveLessonSection(scrollRef, routeKey)
   const course = courses.find(item => item.id === courseId)
   const lessons = useMemo(() => courseId ? lessonsForCourse(courseId) : [], [courseId])

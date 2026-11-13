@@ -6,8 +6,7 @@ import { navigate, useNavigation } from '@/hooks/use-navigation'
 import { handbookAncestors, handbookById, handbookChildren, handbookHeadings, handbookHref, handbookLinkTarget, handbookRootId, type HandbookNode } from '@/data/handbook'
 import HandbookArticle from './HandbookArticle'
 import '@/handbook.css'
-import { m } from 'motion/react'
-import { useAppMotion } from '@/components/MotionProvider'
+import { useContentReveal } from '@/hooks/use-content-reveal'
 
 const documents = new Map<string, Promise<HandbookNode>>()
 function loadDocument(id: string) {
@@ -47,7 +46,6 @@ function Tree({ selectedId, expanded, onToggle, onOpen }: {
   </nav>
 }
 export default function HandbookWorkspace() {
-  const { spatialMotion, transition } = useAppMotion()
   const state = useNavigation()
   const pageId = state.handbookPageId ?? handbookRootId
   const page = handbookById.get(pageId)
@@ -61,8 +59,10 @@ export default function HandbookWorkspace() {
   const [activeHeading, setActiveHeading] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
+  const proseRef = useRef<HTMLDivElement>(null)
   const node = document?.id === pageId ? document.node : null
   const headings = useMemo(() => node ? handbookHeadings(node) : [], [node])
+  useContentReveal(proseRef, node)
   const childPages = useMemo(() => {
     const linked = new Set<string>()
     function visit(n: HandbookNode) {
@@ -125,18 +125,15 @@ export default function HandbookWorkspace() {
     <div ref={scrollRef} className="handbook-reading-area">
       {!page ? <div className="handbook-empty"><h1>Страница не найдена</h1><p>Открой нужный раздел в содержании хэндбука.</p><Button variant="outline" onClick={() => openPage(handbookRootId)}>На главную хэндбука</Button></div> : <div className="page-container handbook-document-layout">
         <div className="handbook-toolbar"><Button type="button" variant="outline" className="handbook-mobile-tree" onClick={() => setMobileOpen(true)}><ListTree aria-hidden="true" />Содержание</Button></div>
-        <m.article key={pageId} className="handbook-page"
-          initial={spatialMotion ? { opacity: 0, y: 6 } : { opacity: 0.94 }} animate={{ opacity: 1, y: 0 }} transition={transition}>
+        <article key={pageId} className="handbook-page handbook-page-enter">
           <header className="handbook-page-header"><h1 ref={titleRef} tabIndex={-1}>{page.title}</h1><Button type="button" variant="ghost" size="icon" aria-label={copied ? 'Ссылка скопирована' : 'Скопировать ссылку на страницу'} onClick={() => void copyLink()}>{copied ? <Check aria-hidden="true" /> : <Link aria-hidden="true" />}</Button></header>
           {copied || copyError ? <div className="handbook-copy-status" role="status">{copyError ? 'Не удалось скопировать ссылку. Скопируй адрес из строки браузера.' : copied ? 'Ссылка скопирована' : ''}</div> : null}
           {headings.length ? <details className="handbook-inline-outline"><summary>На этой странице</summary><nav aria-label="Оглавление статьи">{headings.map(h => <a key={h.id} href={handbookHref(pageId, h.id)} onClick={event => { if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); openAnchor(h.id) }}>{h.title}</a>)}</nav></details> : null}
-          <m.div key={node ? `content-${pageId}` : error ? 'error' : 'loading'}
-            initial={node ? spatialMotion ? { opacity: 0, y: 4 } : { opacity: 0.94 } : false}
-            animate={{ opacity: 1, y: 0 }} transition={transition}>
-            {error ? <div className="handbook-empty" role="alert"><h2>Не удалось открыть страницу</h2><p>Попробуй загрузить ее еще раз.</p><Button variant="outline" onClick={() => setRetry(v => v + 1)}>Повторить</Button></div> : !node ? <div className="handbook-loading" role="status">Загружаем страницу…</div> : <div className="handbook-prose"><HandbookArticle node={node} onOpen={openPage} /></div>}
-          </m.div>
+          <div key={node ? `content-${pageId}` : error ? 'error' : 'loading'}>
+            {error ? <div className="handbook-empty" role="alert"><h2>Не удалось открыть страницу</h2><p>Попробуй загрузить ее еще раз.</p><Button variant="outline" onClick={() => setRetry(v => v + 1)}>Повторить</Button></div> : !node ? <div className="handbook-loading" role="status">Загружаем страницу…</div> : <div ref={proseRef} className="handbook-prose"><HandbookArticle node={node} onOpen={openPage} /></div>}
+          </div>
           {node && childPages.length ? <section className="handbook-child-pages" aria-labelledby="handbook-child-title"><h2 id="handbook-child-title">{pageId === handbookRootId ? 'Все разделы' : 'Страницы раздела'}</h2><ul>{childPages.map(child => <li key={child.id}><a href={handbookHref(child.id)} onClick={event => { if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); openPage(child.id) }} onMouseEnter={() => void loadDocument(child.id).catch(() => {})} onFocus={() => void loadDocument(child.id).catch(() => {})}><FileText aria-hidden="true" /><span>{child.title}</span><ChevronRight aria-hidden="true" /></a></li>)}</ul></section> : null}
-        </m.article>
+        </article>
         {headings.length ? <aside className="handbook-outline"><nav aria-label="На этой странице"><p>На этой странице</p>{headings.map(h => <a key={h.id} href={handbookHref(pageId, h.id)} aria-current={activeHeading === h.id ? 'location' : undefined} style={{ paddingInlineStart: Math.max(0, h.level - 2) * 8 + 12 }} onClick={event => { if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); openAnchor(h.id) }}>{h.title}</a>)}</nav></aside> : null}
       </div>}
     </div>
