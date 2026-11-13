@@ -7,4 +7,5 @@ import './courses.css'
 import './grades.css'
 import './study-pages.css'
 import './page-layout.css'
+import './cupertino.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>)

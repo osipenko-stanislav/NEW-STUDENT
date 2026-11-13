@@ -1,0 +1,179 @@
+/* Cupertino geometry and elevation, adapted to the existing NEW STUDENT palette.
+   Typography, semantic colors, motion timing and product layouts stay in their
+   owning stylesheets. Reference and license: docs/cupertino.md. */
+:root {
+  --cupertino-radius-control: 8px;
+  --cupertino-radius-surface: 16px;
+  --cupertino-radius-dialog: 24px;
+  --cupertino-shadow-edge: inset 0 0 0 .5px hsl(var(--foreground) / .1), inset 0 1px .5px hsl(var(--background) / .8);
+  --cupertino-shadow-control: var(--cupertino-shadow-edge), 0 2px 5px hsl(var(--foreground) / .04);
+  --cupertino-shadow-surface: var(--cupertino-shadow-edge), 0 4px 24px hsl(var(--foreground) / .05);
+  --cupertino-shadow-popover: var(--cupertino-shadow-edge), 0 8px 48px hsl(var(--foreground) / .18);
+  --cupertino-shadow-dialog: var(--cupertino-shadow-edge), 0 18px 54px hsl(var(--foreground) / .22);
+}
+
+.dark {
+  --cupertino-shadow-edge: inset 0 0 0 .5px hsl(var(--foreground) / .12), inset 0 1px .5px hsl(var(--foreground) / .06);
+  --cupertino-shadow-control: var(--cupertino-shadow-edge), 0 2px 5px hsl(var(--background) / .2);
+  --cupertino-shadow-surface: var(--cupertino-shadow-edge), 0 8px 16px hsl(var(--background) / .25);
+  --cupertino-shadow-popover: var(--cupertino-shadow-edge), 0 8px 48px hsl(var(--background) / .65);
+  --cupertino-shadow-dialog: var(--cupertino-shadow-edge), 0 18px 54px hsl(var(--background) / .8);
+}
+
+/* Smooth corners progressively enhance ordinary rounded rectangles. */
+@supports (corner-shape: superellipse(1.1)) {
+  :is([data-slot="card"], [data-slot="dialog-content"], [data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="select-content"], .composer, .settings-group-card) {
+    corner-shape: superellipse(1.1);
+  }
+}
+
+/* Controls keep their original variants and semantic emphasis. */
+[data-slot="button"] { border-radius: var(--cupertino-radius-control); }
+[data-slot="button"]:is([data-size="icon"], .ghost-icon, .widget-settings),
+[data-slot="dialog-content"] > button:last-child { border-radius: 999px; }
+[data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"]) {
+  box-shadow: var(--cupertino-shadow-control);
+}
+[data-slot="button"][data-variant="default"] { box-shadow: 0 2px 5px hsl(var(--foreground) / .1); }
+[data-slot="button"][data-variant="ghost"] { box-shadow: none; }
+[data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"] {
+  border-radius: var(--cupertino-radius-control);
+}
+[data-slot="input"], [data-slot="select-trigger"] {
+  box-shadow: inset 0 1px 2px hsl(var(--foreground) / .025);
+}
+[data-slot="input"]:focus-visible, [data-slot="select-trigger"]:focus-visible {
+  outline: 2px solid hsl(var(--ring) / .45);
+  outline-offset: 2px;
+}
+.global-search-input[data-slot="input"],
+.global-search-input[data-slot="input"]:focus-visible { outline: none; box-shadow: none; }
+
+/* Raised surfaces have a fine edge; the reading canvas stays flat. */
+[data-slot="card"] { border-radius: var(--cupertino-radius-surface); }
+[data-slot="dialog-content"] {
+  border-radius: var(--cupertino-radius-dialog);
+  box-shadow: var(--cupertino-shadow-dialog);
+}
+:is([data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="select-content"]) {
+  border-radius: var(--cupertino-radius-surface);
+  box-shadow: var(--cupertino-shadow-popover);
+}
+:is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) {
+  padding: 6px;
+}
+[data-slot="select-content"] > [data-radix-select-viewport] { padding: 0; }
+:is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) :is([role="menuitem"], [role="option"]) {
+  border-radius: var(--cupertino-radius-control);
+  min-height: 36px;
+}
+[data-slot="sheet-content"] { box-shadow: var(--cupertino-shadow-dialog); }
+
+/* A quiet, continuous shell with circular toolbar actions. */
+.student-app .student-header { height: 64px; padding-inline: 20px; }
+.student-app .student-sidebar [data-sidebar="menu-button"],
+.student-app .student-sidebar [data-sidebar="menu-sub-button"] {
+  border-radius: 10px;
+}
+.student-app .student-sidebar [data-sidebar="menu"] { gap: 6px; }
+.student-app .student-sidebar [data-sidebar="menu-sub"] { border-left: 0; }
+.student-app .search-field { border-radius: 999px; padding-inline: 14px; box-shadow: var(--cupertino-shadow-control); }
+.student-app .search-field kbd { border-radius: 6px; }
+.student-app .theme-switcher { border-radius: 999px; padding: 3px; }
+.student-app .theme-option { border-radius: 999px; }
+.student-app .theme-option[aria-pressed="true"] { box-shadow: var(--cupertino-shadow-control); }
+.student-app .header-actions .ghost-icon { border-radius: 999px; }
+
+/* Tabs form one compact control, with existing active and inactive colors. */
+[data-slot="tabs-list"].tabs-list-buttons {
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 14px;
+}
+[data-slot="tabs-list"].tabs-list-buttons > [role="tab"] {
+  border-color: transparent;
+  border-radius: 10px;
+  box-shadow: none;
+}
+[data-slot="tabs-list"].tabs-list-buttons > [role="tab"][data-state="active"] {
+  box-shadow: 0 2px 5px hsl(var(--foreground) / .1);
+}
+[data-slot="tabs-list"].tabs-list-buttons > [role="tab"]::after { display: none; }
+[data-slot="tabs-list"][data-variant="segmented"] { border-radius: 12px; }
+
+/* The composer is the chat's single raised working surface. */
+.student-app .composer { border-radius: 24px; box-shadow: var(--cupertino-shadow-surface); }
+.student-app .composer:focus-within { box-shadow: var(--cupertino-shadow-surface), 0 0 0 2px hsl(var(--ring) / .12); }
+.student-app .composer [data-slot="textarea"] { border-radius: 0; box-shadow: none; }
+.student-app .composer-editor { padding: 16px 20px 0; }
+.student-app .composer-toolbar { padding: 8px 12px 12px; }
+.student-app .composer-toolbar [data-slot="button"] { border-radius: 999px; }
+.student-app .suggestions [data-slot="button"] { border-radius: 999px; }
+.student-app .navigator-widgets [data-slot="button"] { border-radius: 999px; }
+.student-app .chat-message-user .message-body { border-radius: 20px 20px 6px 20px; }
+.student-app .gen-followups [data-slot="button"] { border-radius: 999px; }
+[data-slot="popover-content"].widget-popover { border-radius: 20px; box-shadow: var(--cupertino-shadow-popover); }
+.student-app .weather-banner { border-radius: var(--cupertino-radius-surface); }
+
+/* Settings use one grouped surface per related set of preferences. */
+.student-app .settings-categories { padding: 24px 12px; }
+.student-app .settings-category { border-radius: 12px; padding: 12px; }
+.student-app .settings-categories nav { gap: 6px; }
+.student-app .settings-group-card {
+  border-radius: var(--cupertino-radius-surface);
+  background: hsl(var(--muted) / .35);
+  box-shadow: none;
+}
+.student-app .settings-group-card > .settings-row { padding: 16px 20px; }
+.student-app .settings-group-card > [data-orientation="horizontal"] { margin-inline: 20px; width: auto; }
+.student-app .settings-theme-options { border-radius: 12px; }
+.student-app .settings-theme-options .settings-theme-choice { border-radius: 8px; }
+.student-app .settings-key { border-radius: 8px; }
+.student-app .settings-row-control [role="switch"] > span { width: 24px; height: 16px; }
+.student-app .settings-row-control [role="switch"][data-state="checked"] > span { transform: translateX(12px); }
+
+/* Existing independent entities keep their distinct compositions. */
+.student-app .course-grid { gap: 16px; }
+.student-app .course-tile { border-radius: var(--cupertino-radius-surface); box-shadow: var(--cupertino-shadow-control); }
+.student-app .course-tile-open { padding-inline: 24px; padding-bottom: 24px; }
+.student-app .course-tile-area { left: 24px; }
+.student-app .course-area-icon { border-radius: 8px; }
+.student-app .course-filter-list [data-slot="button"] { border-radius: 999px; }
+.student-app .course-block summary,
+.student-app .course-entity-list button { border-radius: 10px; }
+.student-app .course-program-panel { border-top-left-radius: var(--cupertino-radius-surface); }
+.student-app .schedule-class-event { border-radius: 10px; }
+.student-app .schedule-grid-day strong { border-radius: 999px; }
+.student-app .schedule-agenda-event { border-radius: 10px; }
+.student-app .grades-table-shell { border-radius: 12px; }
+.student-app .handbook-tree-row { border-radius: 8px; margin-block: 2px; }
+.student-app .handbook-tree-home { border-radius: 8px; }
+.student-app :is(.handbook-callout, .handbook-table-scroll, .handbook-file) { border-radius: var(--cupertino-radius-surface); }
+.student-app .handbook-child-pages a { border-radius: 12px; }
+.student-app .materials-sidebar { border-top-left-radius: var(--cupertino-radius-surface); }
+
+@media (hover: hover) and (pointer: fine) {
+  .student-app .header-actions .ghost-icon:hover { box-shadow: var(--cupertino-shadow-control); }
+  .student-app .course-tile:hover { box-shadow: var(--cupertino-shadow-surface); }
+}
+
+/* Touch controls grow without shrinking the available content width. */
+@media (max-width: 767px) {
+  .student-app .student-header { height: 64px; padding-inline: 12px; }
+  [data-slot="tabs-list"].tabs-list-buttons { border-radius: var(--cupertino-radius-surface); }
+  [data-slot="tabs-list"].tabs-list-buttons > [role="tab"] { border-radius: 12px; }
+  .student-app .composer { border-radius: 20px; }
+  .student-app .settings-group-card > .settings-row { padding: 16px; }
+  .student-app .settings-group-card > [data-orientation="horizontal"] { margin-inline: 16px; }
+  .student-app .course-tile-open { padding-inline: 20px; }
+  .student-app .course-tile-area { left: 20px; }
+}
+
+@media (pointer: coarse) {
+  [data-slot="button"]:not([data-size="icon"], .ghost-icon), [data-slot="select-trigger"] { min-height: 44px; }
+  :is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) :is([role="menuitem"], [role="option"]) { min-height: 44px; }
+}
+
+/* Existing motion intensity and system accessibility preferences take priority. */
+html[data-motion-level="minimal"] .student-app .course-tile:hover { box-shadow: var(--cupertino-shadow-control); }
