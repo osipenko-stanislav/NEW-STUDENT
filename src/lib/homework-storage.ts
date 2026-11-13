@@ -1,7 +1,7 @@
 import type { AcademicTask } from '../data/academic-data.ts'
 export type HomeworkFile = { id: string; name: string; size: number; type: string }
-export type HomeworkEvent = { id: string; at: number; text: string }
-export type HomeworkComment = { id: string; at: number; text: string }
+type HomeworkEvent = { id: string; at: number; text: string }
+type HomeworkComment = { id: string; at: number; text: string }
 export type HomeworkRecord = {
   link: string; files: HomeworkFile[]; savedAt?: number; startedAt?: number; submittedAt?: number
   events: HomeworkEvent[]; comments: HomeworkComment[]

@@ -1,8 +1,8 @@
 import { isGenerativePart, isMockContext } from './assistant-validation.ts'
-import type { ChatMessage, Conversation } from '@/types/conversation'
+import type { ChatMessage, Conversation } from '@/types/conversation';
 
 const storageKey = 'student-conversations:v1'
-export type ConversationSnapshot = { conversations: Conversation[]; storageError: string | null }
+type ConversationSnapshot = { conversations: Conversation[]; storageError: string | null }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null

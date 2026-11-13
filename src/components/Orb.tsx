@@ -1,5 +1,5 @@
 // React Bits Orb, adapted from the component source supplied with the design.
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import './Orb.css';
 
 type RGB = [number, number, number];
@@ -16,7 +16,7 @@ const DEFAULT_LAYERS: readonly OrbLayer[] = [
   { offset: [0, 0], scale: 1, opacity: 1, phase: 0 }
 ];
 
-export interface OrbProps {
+interface OrbProps {
   active?: boolean;
   layers?: readonly OrbLayer[];
   maxFps?: number;

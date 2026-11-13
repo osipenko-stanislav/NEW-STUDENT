@@ -1,5 +1,5 @@
 import type { AnchorHTMLAttributes } from 'react'
-import { navigate } from '@/hooks/use-navigation'
+import { navigate } from '@/hooks/use-navigation';
 
 /** Ordinary activation opens the stored copy inside the LMS. The URL remains
  * a fallback for the browser's explicit open-in-new-tab gesture. */

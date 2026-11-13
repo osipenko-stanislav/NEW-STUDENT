@@ -1,3 +1,4 @@
+import { AsyncButton } from '@/components/ui/feedback-button'
 import { ArrowDownToLine, MessageSquarePlus } from 'lucide-react'
 import { academicMaterials } from '@/data/academic-data'
 import FilePreview from '@/components/FilePreview'
@@ -21,7 +22,7 @@ export default function AcademicMaterialDialog({ id, onClose }: { id: string | n
     <DialogHeader><DialogTitle>{material.title}</DialogTitle><DialogDescription>{material.course} · {material.fileType} · {local ? 'Доступен на устройстве' : 'Еще не сохранен'}</DialogDescription></DialogHeader>
     <div className="material-file-tab-panel"><FilePreview key={`${local?.id}:${local?.academicRevision}`} material={{ id: local?.id ?? material.id, name, type: local?.type ?? '' }} library={library} /></div>
     {actions?.error ? <p role="alert" className="text-sm text-destructive">{actions.error}</p> : null}
-    <DialogFooter className="flex-wrap gap-2 sm:space-x-0"><Button variant="outline" onClick={() => void exportMaterial(material.id)}><ArrowDownToLine aria-hidden="true" />Экспортировать</Button>
+    <DialogFooter className="flex-wrap gap-2 sm:space-x-0"><AsyncButton variant="outline"  label="Экспортировать" loadingLabel="Экспортируем…" successLabel="Готово" errorLabel="Повторить" icon={<ArrowDownToLine aria-hidden="true" />} action={() => exportMaterial(material.id)} />
       {actions ? <Button variant="outline" disabled={actions.pendingId !== null} onClick={() => void actions.addToChat(material.id)}><MessageSquarePlus aria-hidden="true" />{actions.pendingId === material.id ? 'Добавляем…' : 'В чат'}</Button> : null}
     </DialogFooter>
   </DialogContent></Dialog>

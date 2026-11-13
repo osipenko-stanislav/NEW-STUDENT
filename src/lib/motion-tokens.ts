@@ -1,8 +1,9 @@
+import { recipeCSSProperties } from './motion-recipes.ts'
 import type { Transition } from 'motion/react'
 import type { MotionIntensity } from './settings-storage'
 
-export const motionScale = 1.5
-export const motionEasing = {
+const motionScale = 1.5
+const motionEasing = {
   enter: [0.25, 0.1, 0.25, 1],
   exit: [0.4, 0, 0.75, 0.9],
   move: [0.4, 0, 0.2, 1],
@@ -17,7 +18,12 @@ const profiles = {
 export function motionCSSProperties(intensity: MotionIntensity): Record<string, string> {
   const profile = profiles[intensity]
   return {
+    ...recipeCSSProperties(intensity),
     '--motion-scale': String(motionScale),
+    '--motion-micro': `${microDuration(intensity)}ms`,
+    '--micro-distance': `${microOffset(intensity)}px`,
+    '--micro-turn': intensity === 'minimal' ? '0deg' : intensity === 'expressive' ? '14deg' : '8deg',
+    '--micro-press-scale': intensity === 'minimal' ? '1' : intensity === 'expressive' ? '.94' : '.96',
     '--motion-fast': `${profile.fast * motionScale}ms`,
     '--motion-base': `${profile.base * motionScale}ms`,
     '--motion-slow': `${profile.slow * motionScale}ms`,
@@ -36,3 +42,14 @@ export function motionTransition(intensity: MotionIntensity): Transition {
     opacity: { type: 'tween', duration: profiles[intensity].base * motionScale / 1000, ease: motionEasing.enter },
   }
 }
+
+export const feedbackHold = 900
+function microDuration(intensity: MotionIntensity) { return intensity === 'minimal' ? 0 : intensity === 'expressive' ? 180 : 150 }
+export function microTransition(intensity: MotionIntensity): Transition {
+  return { duration: microDuration(intensity) / 1000, ease: motionEasing.enter }
+}
+export function microSpring(intensity: MotionIntensity): Transition {
+  return intensity === 'minimal' ? { duration: 0 } : { type: 'spring', stiffness: intensity === 'expressive' ? 650 : 700, damping: intensity === 'expressive' ? 29 : 38, mass: .5 }
+}
+
+export function microOffset(intensity: MotionIntensity) { return intensity === 'minimal' ? 0 : intensity === 'expressive' ? 3 : 2 }

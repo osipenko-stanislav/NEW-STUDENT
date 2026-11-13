@@ -1,10 +1,12 @@
-import { forwardRef, type HTMLAttributes } from 'react'
+import { forwardRef, useImperativeHandle, useRef, type HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
-
-/** A shared surface for independent single-choice buttons; selection remains
- * owned by each scenario through aria-pressed (or Radix data-state). */
+import { SelectionIndicator, useSelectionIndicator } from '@/hooks/use-selection-indicator'
 export const SegmentedControl = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div ref={ref} role="group" data-slot="segmented-control"
-    className={cn('segmented-control', className)} {...props} />,
+  ({ className, children, ...props }, ref) => {
+    const host = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => host.current!)
+    const position = useSelectionIndicator(host)
+    return <div ref={host} role="group" data-slot="segmented-control" data-has-indicator={!!position} className={cn('segmented-control', className)} {...props}><SelectionIndicator position={position} />{children}</div>
+  },
 )
 SegmentedControl.displayName = 'SegmentedControl'

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
+import { useMicroFeedback } from '@/hooks/use-micro-feedback'
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
@@ -30,14 +31,16 @@ const badgeVariants = cva(
   }
 )
 
-export interface BadgeProps
+interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  useMicroFeedback(ref)
   return (
-    <div data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div ref={ref} data-variant={variant} data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
   )
 }
 
-export { Badge, badgeVariants }
+export { Badge }

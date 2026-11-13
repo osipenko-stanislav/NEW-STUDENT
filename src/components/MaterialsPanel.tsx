@@ -1,6 +1,12 @@
+import { StateIcon } from '@/components/ui/state-icon'
+import { recipe, recipeTransition } from '@/lib/motion-recipes'
+import { AsyncButton, useActionFeedback } from '@/components/ui/feedback-button'
+import { AnimatePresence, m } from 'motion/react'
+import { useAppMotion } from '@/components/MotionProvider'
+import { microSpring } from '@/lib/motion-tokens'
 import { useDisplayFormats } from '@/components/SettingsProvider'
 import { useEffect, useRef, useState, Fragment } from 'react'
-import { Download, ExternalLink, FolderOpen, Info, MoreHorizontal, MessageSquarePlus, Trash2, X } from 'lucide-react'
+import { Check, LoaderCircle, TriangleAlert, Download, ExternalLink, FolderOpen, Info, MoreHorizontal, MessageSquarePlus, Trash2, X } from 'lucide-react'
 import FileIcon from '@/components/FileIcon'
 import FilePreview from '@/components/FilePreview'
 import { Button } from '@/components/ui/button'
@@ -32,8 +38,11 @@ type Props = {
 }
 
 export default function MaterialsPanel({ open, onOpenChange, materials, picker, selectedIds, conversations, infoId, onInfoChange, onAttach, onRemove, library, error, busy }: Props) {
+  const { effectiveIntensity, spatialMotion } = useAppMotion()
   const { formatDate, formatDateTime } = useDisplayFormats()
   const [reading, setReading] = useState(false)
+  const [exportId, setExportId] = useState<string | null>(null)
+  const exportFeedback = useActionFeedback()
   const ordered = [...materials.filter(item => item.sourceAcademicId), ...materials.filter(item => !item.sourceAcademicId)]
   const selected = materials.find(material => material.id === infoId) ?? null
   const infoTrigger = useRef<HTMLButtonElement | null>(null)
@@ -51,7 +60,7 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
     setReading(true)
     try {
       const blob = await library.read(material.id)
-      if (!blob) return
+      if (!blob) return false
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
@@ -60,8 +69,10 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
       link.click()
       link.remove()
       setTimeout(() => URL.revokeObjectURL(url), 60_000)
+      return true
     } catch {
       library.reportError('Не удалось скачать файл. Попробуй еще раз.')
+      return false
     } finally { setReading(false) }
   }
 
@@ -110,7 +121,7 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
           <p className="max-w-64 text-sm">В библиотеке пока нет файлов</p>
           <p className="max-w-64 text-xs leading-5 text-muted-foreground">Прикрепи файл кнопкой «+» в поле ввода.</p>
         </div> : <ul aria-label="Файлы библиотеки" className="material-library-list">
-          {ordered.map((material, index) => <Fragment key={material.id}>{(index === 0 || !!ordered[index - 1].sourceAcademicId !== !!material.sourceAcademicId) ? <li className="material-library-group"><h3>{material.sourceAcademicId ? 'Учебные материалы' : 'Личные файлы'}</h3></li> : null}<li className="material-library-item">
+          <AnimatePresence initial={false}>{ordered.map((material, index) => <Fragment key={material.id}>{(index === 0 || !!ordered[index - 1].sourceAcademicId !== !!material.sourceAcademicId) ? <li className="material-library-group"><h3>{material.sourceAcademicId ? 'Учебные материалы' : 'Личные файлы'}</h3></li> : null}<m.li layout={spatialMotion ? 'position' : false} initial={{ opacity: 0, y: recipe('file', effectiveIntensity).distance }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -recipe('file', effectiveIntensity).distance, transition: recipeTransition('file', effectiveIntensity, true) }} transition={{ ...recipeTransition('file', effectiveIntensity), layout: microSpring(effectiveIntensity) }} className="material-library-item">
             <button type="button" className="material-library-info outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={`Информация о файле: ${material.name}`}
               onClick={event => { infoTrigger.current = event.currentTarget; onInfoChange(material.id) }}>
@@ -128,14 +139,14 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
                 aria-label={`${selectedIds.includes(material.id) ? 'Прикреплен' : picker ? 'Прикрепить' : 'В Навигатор'}: ${material.name}`}>
                 {selectedIds.includes(material.id) ? 'Прикреплен' : picker ? 'Прикрепить' : 'В Навигатор'}
               </Button>
-              <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-8" aria-label={`Действия с файлом: ${material.name}`}><MoreHorizontal className="size-4" aria-hidden="true" /></Button></DropdownMenuTrigger>
+              <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-8" aria-label={`Действия с файлом: ${material.name}`}><StateIcon state={exportId === material.id ? exportFeedback.state : "idle"}>{exportId === material.id && exportFeedback.state === "loading" ? <LoaderCircle className="action-spinner" /> : exportId === material.id && exportFeedback.state === "success" ? <Check /> : exportId === material.id && exportFeedback.state === "error" ? <TriangleAlert /> : <MoreHorizontal />}</StateIcon></Button></DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem disabled={reading} onSelect={() => void download(material)}><Download className="size-4" aria-hidden="true" />Экспортировать</DropdownMenuItem>
+                  <DropdownMenuItem disabled={reading} onSelect={() => { setExportId(material.id); void exportFeedback.run(() => download(material)) }}><Download className="size-4" aria-hidden="true" />Экспортировать</DropdownMenuItem>
                   {!material.sourceAcademicId ? <DropdownMenuItem disabled={busy} onSelect={() => void onRemove(material.id)}><Trash2 className="size-4" aria-hidden="true" />Удалить</DropdownMenuItem> : null}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          </li></Fragment>)}
+          </m.li></Fragment>)}</AnimatePresence>
         </ul>}
       </SidebarContent>
       {picker ? <div className="border-t p-4"><Button type="button" variant="outline" className="w-full" onClick={closePanel}>Готово</Button></div> : null}
@@ -174,8 +185,7 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
           <DialogFooter className="shrink-0 gap-2 sm:space-x-0"><Button type="button" variant="outline" disabled={selectedIds.includes(selected.id)} onClick={() => { onInfoChange(null); onAttach(selected.id) }}><MessageSquarePlus aria-hidden="true" />В Навигатор</Button>
             {resolveMaterialPreview(selected) ? <Button type="button" variant="outline" disabled={reading}
               onClick={() => void openFile(selected)}><ExternalLink className="mr-2 size-4" aria-hidden="true" />Открыть в новой вкладке</Button> : null}
-            <Button type="button" variant="outline" disabled={reading} onClick={() => void download(selected)}>
-              <Download className="mr-2 size-4" aria-hidden="true" />Экспортировать</Button>
+            <AsyncButton variant="outline" disabled={reading} action={() => download(selected)} label="Экспортировать" successLabel="Экспортировано" errorLabel="Повторить экспорт" icon={<Download aria-hidden="true" />} />
           </DialogFooter>
         </DialogContent> : null}
       </Dialog>

@@ -1,5 +1,8 @@
+import { AnimatedDisclosure } from '@/components/ui/animated-disclosure'
+import { feedbackHold } from '@/lib/motion-tokens'
+import { StateIcon } from '@/components/ui/state-icon'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { BookOpen, Check, ChevronDown, ChevronRight, FileText, Link, ListTree } from 'lucide-react'
+import { BookOpen, Check, ChevronRight, FileText, Link, ListTree, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { navigate, useNavigation } from '@/hooks/use-navigation'
@@ -28,13 +31,13 @@ function Tree({ selectedId, expanded, onToggle, onOpen }: {
     const open = expanded.has(page.id)
     return <li key={page.id}>
       <div className="handbook-tree-row" data-active={selectedId === page.id} style={{ paddingInlineStart: depth * 14 + 4 }}>
-        {hasChildren ? <Button variant="ghost" size="icon" className="handbook-tree-toggle" aria-label={`${open ? 'Свернуть' : 'Развернуть'} раздел «${page.title}»`} aria-expanded={open} onClick={() => onToggle(page.id)}>{open ? <ChevronDown /> : <ChevronRight />}</Button> : <FileText className="handbook-tree-file" aria-hidden="true" />}
+        {hasChildren ? <Button variant="ghost" size="icon" className="handbook-tree-toggle" aria-label={`${open ? 'Свернуть' : 'Развернуть'} раздел «${page.title}»`} aria-expanded={open} onClick={() => onToggle(page.id)}><ChevronRight className="handbook-tree-chevron" aria-hidden="true" /></Button> : <FileText className="handbook-tree-file" aria-hidden="true" />}
         <a href={handbookHref(page.id)} aria-current={selectedId === page.id ? 'page' : undefined} onClick={event => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
           event.preventDefault(); onOpen(page.id)
         }}>{page.title}</a>
       </div>
-      {hasChildren && open ? render(page.id, depth + 1) : null}
+      {hasChildren ? <AnimatedDisclosure open={open}>{render(page.id, depth + 1)}</AnimatedDisclosure> : null}
     </li>
   })}</ul>
   return <nav aria-label="Страницы хэндбука" className="handbook-tree">
@@ -55,7 +58,9 @@ export default function HandbookWorkspace() {
   const [error, setError] = useState(false)
   const [retry, setRetry] = useState(0)
   const [copied, setCopied] = useState(false)
+  const [copyRevision, setCopyRevision] = useState(0)
   const [copyError, setCopyError] = useState(false)
+  useEffect(() => { if (copied) { const timer = setTimeout(() => setCopied(false), feedbackHold); return () => clearTimeout(timer) } }, [copied, copyRevision])
   const [activeHeading, setActiveHeading] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
@@ -117,8 +122,8 @@ export default function HandbookWorkspace() {
   }, [node, headings])
   const tree = <Tree selectedId={pageId} expanded={expanded} onToggle={toggle} onOpen={openPage} />
   async function copyLink() {
-    try { await navigator.clipboard.writeText(new URL(handbookHref(pageId, state.handbookAnchor ?? undefined), window.location.origin).href); setCopied(true); setCopyError(false) }
-    catch { setCopyError(true) }
+    try { await navigator.clipboard.writeText(new URL(handbookHref(pageId, state.handbookAnchor ?? undefined), window.location.origin).href); setCopied(true); setCopyRevision(value => value + 1); setCopyError(false) }
+    catch { setCopied(false); setCopyError(true) }
   }
   return <section className="handbook-workspace" aria-label="Хэндбук студента">
     <aside className="handbook-sidebar">{tree}</aside>
@@ -126,7 +131,7 @@ export default function HandbookWorkspace() {
       {!page ? <div className="handbook-empty"><h1>Страница не найдена</h1><p>Открой нужный раздел в содержании хэндбука.</p><Button variant="outline" onClick={() => openPage(handbookRootId)}>На главную хэндбука</Button></div> : <div className="page-container handbook-document-layout" data-layout="reading" data-with-rail>
         <div className="handbook-toolbar"><Button type="button" variant="outline" className="handbook-mobile-tree" onClick={() => setMobileOpen(true)}><ListTree aria-hidden="true" />Содержание</Button></div>
         <article key={pageId} className="handbook-page handbook-page-enter">
-          <header className="handbook-page-header"><h1 data-typography="accent-title" ref={titleRef} tabIndex={-1}>{page.title}</h1><Button type="button" variant="ghost" size="icon" aria-label={copied ? 'Ссылка скопирована' : 'Скопировать ссылку на страницу'} onClick={() => void copyLink()}>{copied ? <Check aria-hidden="true" /> : <Link aria-hidden="true" />}</Button></header>
+          <header className="handbook-page-header"><h1 data-typography="accent-title" ref={titleRef} tabIndex={-1}>{page.title}</h1><Button type="button" variant="ghost" size="icon" aria-label={copied ? 'Ссылка скопирована' : 'Скопировать ссылку на страницу'} onClick={() => void copyLink()}><StateIcon revision={copyRevision} state={copyError ? 'error' : copied ? 'success' : 'copy'}>{copyError ? <TriangleAlert aria-hidden="true" /> : copied ? <Check aria-hidden="true" /> : <Link aria-hidden="true" />}</StateIcon></Button></header>
           {copied || copyError ? <div className="handbook-copy-status" role="status">{copyError ? 'Не удалось скопировать ссылку. Скопируй адрес из строки браузера.' : copied ? 'Ссылка скопирована' : ''}</div> : null}
           {headings.length ? <details className="handbook-inline-outline"><summary>На этой странице</summary><nav aria-label="Оглавление статьи">{headings.map(h => <a key={h.id} href={handbookHref(pageId, h.id)} onClick={event => { if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); openAnchor(h.id) }}>{h.title}</a>)}</nav></details> : null}
           <div key={node ? `content-${pageId}` : error ? 'error' : 'loading'}>

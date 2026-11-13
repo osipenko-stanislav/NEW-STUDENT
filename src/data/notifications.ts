@@ -1,8 +1,8 @@
-import { academicClasses, academicMaterials, academicTasks } from './academic-data.ts'
+import { academicClasses, academicMaterials, academicTasks } from './academic-data.ts';
 
-export type NotificationCategory = 'learning' | 'events' | 'goals'
+type NotificationCategory = 'learning' | 'events' | 'goals'
 export type NotificationFilter = 'all' | NotificationCategory | 'important'
-export type NotificationTarget = { kind: 'task'; id: string } | { kind: 'material'; id: string } | { kind: 'class'; id: string } | { kind: 'course'; id: string }
+type NotificationTarget = { kind: 'task'; id: string } | { kind: 'material'; id: string } | { kind: 'class'; id: string } | { kind: 'course'; id: string }
 export type StudentNotification = {
   id: string
   type: 'reviewed' | 'deadline' | 'material' | 'class' | 'course'

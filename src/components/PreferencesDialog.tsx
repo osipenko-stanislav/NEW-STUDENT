@@ -3,7 +3,7 @@ import { Switch } from '@/components/ui/switch'
 import {
   Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/components/ui/dialog';
 
 type PreferenceOption = { value: string; label: string }
 

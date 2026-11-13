@@ -1,8 +1,7 @@
-"use client"
-
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
+import { SelectionIndicator, useSelectionIndicator } from '@/hooks/use-selection-indicator'
 import { cn } from "@/lib/utils"
 
 const Tabs = TabsPrimitive.Root
@@ -10,18 +9,24 @@ const Tabs = TabsPrimitive.Root
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & { variant?: "buttons" | "segmented" }
->(({ className, variant = "segmented", ...props }, ref) => (
+>(({ className, variant = "segmented", children, ...props }, ref) => {
+  const host = React.useRef<HTMLDivElement>(null)
+  React.useImperativeHandle(ref, () => host.current!)
+  const position = useSelectionIndicator(host)
+  return (
   <TabsPrimitive.List
  data-slot="tabs-list"
  data-variant={variant}
-    ref={ref}
+    ref={host}
+    data-has-indicator={!!position}
     className={cn(
       "segmented-control max-w-full",
       className
     )}
     {...props}
-  />
-))
+  ><SelectionIndicator position={position} />{children}</TabsPrimitive.List>
+  )
+})
 TabsList.displayName = TabsPrimitive.List.displayName
 
 const TabsTrigger = React.forwardRef<

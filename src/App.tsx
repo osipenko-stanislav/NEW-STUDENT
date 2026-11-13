@@ -1,3 +1,4 @@
+import { recipe, recipeTransition } from '@/lib/motion-recipes'
 import { LateDaysProvider, useLateDays } from '@/components/LateDaysProvider'
 import LateDaysEntry from '@/components/late-days/LateDaysEntry'
 import { createMockResponse } from '@/lib/mock-assistant'
@@ -61,6 +62,7 @@ const GradesWorkspace = lazy(() => import('@/components/grades/GradesWorkspace')
 const CoursesWorkspace = lazy(() => import('@/components/courses/CoursesWorkspace'))
 const NotificationsWorkspace = lazy(() => import('@/components/notifications/NotificationsWorkspace'))
 const LateDaysWorkspace = lazy(() => import('@/components/late-days/LateDaysWorkspace'))
+const MotionLab = import.meta.env.DEV ? lazy(() => import('@/components/MotionLab')) : null
 const SettingsScreen = lazy(() => import('@/components/SettingsScreen'))
 const navigatorOrbs: readonly OrbLayer[] = [
   { offset: [-0.06, 0.02], scale: 1, opacity: 0.66, phase: 0 },
@@ -105,7 +107,9 @@ function StudentInterface({ onResetSession, isResetting }: {
   useHomeworkTimers()
   const lateDays = useLateDays()
   const homeworkRecords = useHomeworkRecords()
-  const { section, studyTarget } = useNavigation()
+  const navigationState = useNavigation()
+  const { studyTarget } = navigationState
+  const section = import.meta.env.DEV && new URLSearchParams(location.search).has('motion-lab') ? 'Motion Lab' : navigationState.section
   const setSection = (section: string) => navigate({ section })
   const [panel, setPanel] = useState<Panel | null>(null)
   const [prompt, setPrompt] = useState('')
@@ -452,6 +456,7 @@ function StudentInterface({ onResetSession, isResetting }: {
       </header>
       <div className={`workspace-layout ${materialsOpen ? 'has-materials' : ''}`}>
       <div className={`workspace ${isConversation ? 'workspace-chat' : ''} ${section === 'Настройки' ? 'workspace-settings' : ''} ${section === 'Курсы' ? 'workspace-courses' : ''} ${section === 'Ведомости' ? 'workspace-grades' : ''} ${section === 'Хэндбук' ? 'workspace-handbook' : ''}`} aria-label={section}><MotionPage motionKey={section}><Suspense fallback={<div className="route-loading" role="status">Загружаем раздел…</div>}>
+        {section === 'Motion Lab' && MotionLab ? <MotionLab theme={theme} onThemeChange={setTheme} /> : null}
         {section === 'Late Days' ? <LateDaysWorkspace /> : null}
         {section === 'Уведомления' ? <NotificationsWorkspace onOpen={openNotification} /> : null}
         {section === 'Хэндбук' ? <HandbookWorkspace /> : null}
@@ -544,13 +549,13 @@ function StudentInterface({ onResetSession, isResetting }: {
               {promptCommand ? <span id="prompt-command-description" className="sr-only" role="status">
                 Выбрана команда /{promptCommand}. Можно дописать запрос. Backspace в начале поля уберет команду.
               </span> : null}
-              {selectedMaterials.map(material => <div key={material.id} className="attachment">
+              <AnimatePresence initial={false}>{selectedMaterials.map(material => <m.div layout={spatialMotion ? 'position' : false} initial={{ opacity: 0, y: recipe('file', effectiveIntensity).distance }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, transition: recipeTransition('file', effectiveIntensity, true) }} transition={recipeTransition('file', effectiveIntensity)} key={material.id} className="attachment">
                 <FileIcon name={material.name} type={material.type} size="compact" />
                 <span className="truncate" title={material.name}>{material.name}</span>
                 <Badge variant="warning" className="attachment-status">Не отправлено</Badge>
                 <Button type="button" variant="ghost" size="icon" className="size-6 shrink-0" disabled={materialsBusy}
                   aria-label={`Убрать вложение: ${material.name}`} onClick={() => library.detach(material.id, scopeId)}>×</Button>
-              </div>)}
+              </m.div>)}</AnimatePresence>
               {materialsBusy ? <p className="attachment-notice" role="status">Сохраняем изменения…</p> : null}
               <div className="composer-toolbar">
                 <div className="flex gap-1">

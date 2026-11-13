@@ -1,3 +1,5 @@
+import { AnimatedStatus } from '@/components/ui/animated-status'
+import { GradeValue } from '@/components/ui/grade-value'
 import { useLateDays } from '@/components/LateDaysProvider'
 import TaskDeadline from '@/components/late-days/TaskDeadline'
 import RescueButton from '@/components/late-days/RescueButton'
@@ -47,8 +49,8 @@ export default function HomeworkWorkspace({ onNavigate }: { onNavigate: (destina
           <div className="homework-all-copy"><Button variant="link" className="homework-task-link" onClick={() => onNavigate(`Курсы/${task.courseId}/${task.id}`)}>{task.title}</Button>
             <Button variant="link" className="homework-course-link" onClick={() => onNavigate(`Курсы/${task.courseId}`)}>{courseNames.get(task.courseId)}</Button><HomeworkModeBadge minutes={task.timeLimitMinutes} /></div>
           <div className="homework-all-deadline"><TaskDeadline task={task} /></div>
-          <Badge className="homework-all-status" variant={taskStatusVariants[task.status]}>{taskStatusLabels[task.status]}</Badge>
-          <span className="homework-all-grade" aria-label={`Балл: ${formatGrade(task.grade)}`}>{formatGrade(task.grade)}{task.grade !== null ? <small> / 10</small> : null}</span>
+          <Badge className="homework-all-status" variant={taskStatusVariants[task.status]}><AnimatedStatus state={task.status} label={taskStatusLabels[task.status]} choices={Object.values(taskStatusLabels)} /></Badge>
+          <span className="homework-all-grade" aria-label={`Балл: ${formatGrade(task.grade)}`}><GradeValue value={task.grade} />{task.grade !== null ? <small> / 10</small> : null}</span>
         </li>)}</ul></> : <EmptyState className="study-empty" icon={BookOpenCheck} title="Домашки не найдены" description="Выбери другой курс или статус." action={<Button variant="outline" onClick={reset}>Показать все домашки</Button>} />}
     </section>
   </section>

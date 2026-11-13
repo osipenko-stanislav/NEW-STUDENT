@@ -1,7 +1,7 @@
-import type { DemoClass } from '../types/assistant.ts'
+import type { DemoClass } from '../types/assistant.ts';
 
 export type ScheduleView = 'week' | 'day' | 'two-days' | 'list'
-export type CalendarEntry = { id: string; startsAt: string; endsAt: string }
+type CalendarEntry = { id: string; startsAt: string; endsAt: string }
 export function addDays(date: string, amount: number) {
   const value = new Date(`${date}T12:00:00Z`)
   value.setUTCDate(value.getUTCDate() + amount)

@@ -1,7 +1,7 @@
 import { Clock3, TriangleAlert } from 'lucide-react'
 import { useDisplayFormats } from '@/components/SettingsProvider'
 import { isAssignmentOverdue } from '@/lib/assignment-presentation'
-import type { AssignmentStatus } from '@/types/assistant'
+import type { AssignmentStatus } from '@/types/assistant';
 
 export default function DeadlineLabel({ dueAt, status, prefix = '', timeOnly = false, includeZone = false }: { dueAt: string; status: AssignmentStatus; prefix?: string; timeOnly?: boolean; includeZone?: boolean }) {
   const { formatTime, formatDateTime } = useDisplayFormats()

@@ -1,9 +1,9 @@
 import { taskDeadline } from './late-days.ts'
 import { homeworkStatus, type HomeworkRecord } from './homework-storage.ts'
 import { academicTasks } from '../data/academic-data.ts'
-import type { LateDaysState } from '../data/late-days.ts'
+import { type LateDaysState, seedLateDays } from '../data/late-days.ts'
 import { createLateDaysResponse } from './late-days-assistant.ts'
-import { seedLateDays } from '../data/late-days.ts'
+
 import { demoAssignments, demoClasses, demoDays, demoMaterials, demoToday, demoTomorrow } from '../data/study-demo.ts'
 import { courses } from '../data/course-catalog.ts'
 import type { AssignmentsPart, CourseFilter, DemoAssignment, MockContext, SchedulePart } from '../types/assistant.ts'
@@ -11,7 +11,7 @@ import type { ChatMessage, ConversationDraft, MessageAttachment, MessagePart } f
 
 export type MockResponse = { content: MessagePart[]; attachments?: MessageAttachment[]; mockContext?: MockContext; suggestions: string[] }
 type Intent = 'today' | 'tomorrow' | 'week' | 'assignments' | 'materials' | 'deadlines' | 'nearest' | 'active' | 'submitted' | 'math' | 'python' | 'mathMaterials' | 'pythonMaterials' | 'pdf'
-export function normalizeMockQuery(value: string): string {
+function normalizeMockQuery(value: string): string {
   return value.toLocaleLowerCase('ru').replaceAll('ё', 'е').replace(/[.,!?…/]+/g, '').replace(/\s+/g, ' ').trim()
 }
 // An explicit phrase table, not an attempt to interpret arbitrary language.

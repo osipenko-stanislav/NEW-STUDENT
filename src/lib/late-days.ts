@@ -4,7 +4,7 @@ import { homeworkStatus, type HomeworkRecord } from './homework-storage.ts'
 import { isHomework } from './academic-presentation.ts'
 export const lateDaysStorageKey = 'student-late-days:v1'
 export type LateDaysPlanItem = { taskId: string; days: number; expectedDeadline: string }
-export const operationCost = (operation: LateDaysOperation) => operation.type === 'refund' ? -operation.days : operation.days
+const operationCost = (operation: LateDaysOperation) => operation.type === 'refund' ? -operation.days : operation.days
 export function semesterForTask(task: AcademicTask) {
   const enrollment = enrollments.find(item => item.id === task.enrollmentId)
   return enrollment?.semester == null ? undefined : lateDaysSemesters.find(item => item.id === (enrollment.archived ? 'spring-2026' : currentLateDaysSemester.id))

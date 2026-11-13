@@ -2,7 +2,7 @@ import type { HTMLAttributes } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export type SemanticTone = 'violet' | 'green' | 'blue' | 'amber' | 'red' | 'pink' | 'slate'
+type SemanticTone = 'violet' | 'green' | 'blue' | 'amber' | 'red' | 'pink' | 'slate'
 
 export function SemanticIcon({ icon: Icon, tone = 'slate', size = 'default', className, ...props }: {
   icon: LucideIcon

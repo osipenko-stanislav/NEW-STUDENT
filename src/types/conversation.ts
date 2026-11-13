@@ -1,4 +1,4 @@
-import type { GenerativePart, MockContext } from './assistant.ts'
+import type { GenerativePart, MockContext } from './assistant.ts';
 
 // Typed blocks are restored by the message renderer.
 // Persist serializable data here, never React elements.

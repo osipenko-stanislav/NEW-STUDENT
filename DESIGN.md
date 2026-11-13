@@ -13,7 +13,7 @@ The current visual language is the project's Cupertino adaptation, using the exi
 | Fonts, browser defaults, selection, caret, scrollbars | `src/styles/base.css` |
 | Shared control and surface appearance | `src/styles/components.css` |
 | Explicit content typography | `src/styles/typography.css` |
-| Motion values shared by CSS and React | `src/lib/motion-tokens.ts` |
+| Motion values shared by CSS and React | `src/lib/motion-tokens.ts` (shell), `src/lib/motion-recipes.ts` (component contracts) |
 | Shared transitions, entrances, reduced-motion rules | `src/styles/motion.css` |
 | Stable header and workspace geometry | `src/styles/shell.css` |
 | Desktop, collapsed and mobile navigation | `src/styles/navigation.css` |
@@ -22,6 +22,7 @@ The current visual language is the project's Cupertino adaptation, using the exi
 | Page gutters, widths and hierarchical navigation | `src/page-layout.css` |
 | Feature-specific composition | `src/settings.css`, `src/courses.css`, `src/grades.css`, `src/study-pages.css`, `src/global-search.css` |
 | Handbook reading composition, loaded with its route | `src/handbook.css` |
+| Developer-only motion catalog, loaded only in DEV | `src/styles/motion-lab.css` |
 
 The former `cupertino.css` override layer has been removed. Its component rules now live in the shared system and its feature-specific rules live alongside the layouts they modify. Do not recreate a final stylesheet that patches all preceding files.
 
@@ -83,3 +84,26 @@ The architecture guard is not a replacement for browser accessibility, layout or
 ## Late Days
 
 `src/data/late-days.ts` задаёт семестры и упрощённую политику. `src/lib/late-days.ts` владеет расчётами и проверкой плана, `LateDaysProvider` — общей локальной историей. `src/late-days.css` владеет композицией интерфейсов. В header и рядом со сроками сохраняется календарь с плюсом. Страница — Workspace до 960 px, Popover — общий размер 384 px. `LateDaysChart` един для страницы и быстрого просмотра; `RescuePlanner` един для массового диалога и Generative UI. Цвета — существующая пара violet/violet-soft, motion — общие профили. Детали воспроизводимого сценария и ограничений описаны в `docs/late-days-demo.md`.
+
+## Мелкие взаимодействия
+
+`motion-tokens.ts` владеет отдельными micro-профилями: minimal без пространственной анимации, balanced 150 ms, expressive 180 ms с большей амплитудой и менее жёстким spring. Макропрофили не меняются. Семантическое движение описано в `styles/motion.css`, геометрия общих контролов — в `styles/components.css`.
+
+`AnimatedNumber` сохраняет места под цифры и заменяет только изменившиеся разряды, без анимации при первом показе. `StateIcon` сохраняет размер при Copy → Check и Refresh → Syncing → Success. Короткое подтверждение синхронизации появляется только после фактического перехода состояния, без искусственного ожидания. Badge получает feedback при изменении текста/статуса, а не на каждом ререндере.
+
+Tabs и SegmentedControl используют общий измеряемый индикатор выбранного элемента, сохраняя Radix/нативную клавиатуру и прокрутку. Switch сохраняет Radix-семантику с общим micro-spring; Checkbox остаётся нативным input с анимируемой галочкой и поддержкой indeterminate; Radio сохраняет Radix. Stepper меняет значение немедленно и не анимирует редактируемый текст; анимируются кнопки, пересчитанные цифры и предпросмотр даты.
+
+Файловые строки и вложения используют ограниченный layout/presence feedback только при добавлении/удалении. Повторное открытие библиотеки не проигрывает анимацию всей ленты. Начертания звёзд уровней и другие декоративные иконки остаются статичными. Действия, которых ещё нет в продукте (например сохранение глобальных закладок), не имитируются ради motion.
+
+
+## Crafted motion recipes
+
+Независимые контракты маленьких объектов живут в `src/lib/motion-recipes.ts`, без множителя 1.5. Существующие макропрофили оболочки сохранены в `motion-tokens.ts`. CSS получает значения от того же AppMotionProvider, который управляет Motion for React. Приоритет системного reduced motion сохранён.
+
+Инвентаризация всех применимых типов и проверка: `docs/motion-component-inventory.md`. Полные состояния, параметры, повторный запуск и reduced: `docs/motion-recipes.md`. Компоненты с разными назначениями используют разные easing/длительности; универсальный micro-профиль остаётся только для базового press и существующих пружин.
+
+`NotificationIndicator` использует настоящий unreadCount, независимые ring900/slide260/pop500/fade400/close180/digits500 рецепты Transitions.dev. Восстановленный unread не звонит. Звук выключен по умолчанию; production не создаёт AudioContext. Optional API проверяется в developer-only Motion Lab после явного нажатия.
+
+`FeedbackButton`, `AsyncButton` и `useActionFeedback` связывают результат с фактической операцией. `AnimatedStatus` резервирует подписи, `GradeValue` использует digit-level counter, `SyncIcon` имеет разгон, seamless busy loop и торможение. `CalendarDatePicker` один для Late Days и расписания; в существующем Popover расписания используется inline-вариант без дополнительного уровня. `AnimatedDisclosure` сохраняет DOM для закрытия с inert; для native details есть natural height и доступный fallback.
+
+Motion Lab открывается по `?motion-lab=1` только в Vite DEV; production lazy import удаляется сборщиком. Он использует общие компоненты и настройки приложения, без второго приложения и без пункта студенческой навигации.

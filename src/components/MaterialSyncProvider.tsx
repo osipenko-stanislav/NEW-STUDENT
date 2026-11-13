@@ -4,7 +4,7 @@ import { useSettings } from '@/components/SettingsProvider'
 import { academicFileName, exportBlob, loadSyncRecord, localMaterialRevision, materialSyncStatus, preparedAcademicFiles, publishedMaterialRevision, syncStorageKey, type SyncRecord, type SyncStatus } from '@/lib/material-sync-demo'
 
 type Value = { status: SyncStatus; progress: number; lastSync: number | null; error: string | null; revision: number;
-  synchronize: () => Promise<void>; exportMaterial: (id: string) => Promise<void> }
+  synchronize: () => Promise<void>; exportMaterial: (id: string) => Promise<boolean> }
 const Context = createContext<Value | null>(null)
 export function MaterialSyncProvider({ children }: { children: ReactNode }) {
   const library = useMaterialLibrary()
@@ -76,9 +76,11 @@ export function MaterialSyncProvider({ children }: { children: ReactNode }) {
   }, [ready, library, settings.downloadAutoSync, settings.downloadInterval, synchronize])
   async function exportMaterial(id: string) {
     const material = library.getSnapshot().materials.find(item => item.sourceAcademicId === id)
-    if (!material) { library.reportError('Материал еще не сохранен. Обнови учебную базу.'); return }
+    if (!material) { library.reportError('Материал еще не сохранен. Обнови учебную базу.'); return false }
     const blob = await library.read(material.id)
-    if (blob) exportBlob(blob, academicFileName(id))
+    if (!blob) return false
+    exportBlob(blob, academicFileName(id))
+    return true
   }
   return <Context.Provider value={{ status: syncing ? 'syncing' : materialSyncStatus(revision, record.error), progress,
     lastSync: record.lastSync, error: record.error, revision, synchronize, exportMaterial }}>{children}</Context.Provider>

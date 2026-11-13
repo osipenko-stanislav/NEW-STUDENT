@@ -1,5 +1,4 @@
 export * from './course-catalog.ts'
-import { syllabusUrl, handbookUrl } from './course-catalog.ts'
 
 export type CourseEntity = { id: string; kind: 'lesson' | 'seminar' | 'assignment' | 'material'; title: string; status: 'completed' | 'active' | 'idle'; lessonId?: string; materialId?: string }
 export type CourseBlock = { id: string; title: string; entities: CourseEntity[] }
@@ -51,7 +50,7 @@ export const courseInfo = {
 }
 // Recordings are deliberately local demo data, with coherent dates and times.
 export type CourseRecording = { id: string; title: string; duration: string }
-export type CourseClass = { id: string; title: string; date: string; startsAt: string; endsAt: string; type: 'lecture' | 'seminar' | 'colloquium'; teachers: string[]; recordings: CourseRecording[] }
+type CourseClass = { id: string; title: string; date: string; startsAt: string; endsAt: string; type: 'lecture' | 'seminar' | 'colloquium'; teachers: string[]; recordings: CourseRecording[] }
 export const courseTeachers = [
   { id: 'vasilyev', name: 'Роман Васильев', email: '' },
   { id: 'kalmykova', name: 'Надежда Калмыкова', email: '' },
@@ -63,4 +62,3 @@ export const courseClasses: CourseClass[] = [
   { id: 'lecture-2', title: 'Лекция 2', date: '2026-11-16', startsAt: '11:20', endsAt: '12:50', type: 'lecture', teachers: ['vasilyev'], recordings: [{ id: 'lecture-2-a', title: 'Контроль качества и выбор модели', duration: '54:00' }] },
   { id: 'seminar-2', title: 'Семинар 2', date: '2026-11-16', startsAt: '15:50', endsAt: '17:20', type: 'seminar', teachers: ['kalmykova'], recordings: [] },
 ]
-export const courseSources = { program: syllabusUrl, catalog: handbookUrl, design: { course: '2918:23365', expanded: '2551:25198', topic: '3129:37441', recordings: '3129:15467', lesson: '1953:25496', longread: '1819:20030', catalog: '3450:3988' } }

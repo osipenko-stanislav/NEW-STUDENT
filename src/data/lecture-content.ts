@@ -1,5 +1,5 @@
 // Subject-specific prototype lesson text. These notes are not official Handbook transcriptions.
-export type LectureText = { explanation: string; example: string; exercise: string }
+type LectureText = { explanation: string; example: string; exercise: string }
 const texts: Record<string, [string, string, string][]> = {
   algorithms: [
     ['Структура данных определяет, как хранятся элементы и сколько операций требуется для доступа к ним. Массив дает доступ по индексу за O(1), но вставка в начало требует сдвига элементов. Связный список упрощает вставку при известном узле, однако поиск позиции остается линейным.', 'Для очереди заявок нужно быстро добавлять элементы в конец и извлекать из начала. Очередь на кольцевом буфере выполняет обе операции за O(1) без сдвига всего массива.', 'Сравните массив, связный список и хеш-таблицу для хранения каталога книг. Укажите стоимость поиска, вставки и удаления.'],

@@ -5,10 +5,9 @@
 .sync-button[data-status="update"] { --sync-status-color: var(--color-sync-update); }
 .sync-button[data-status="syncing"] { --sync-status-color: var(--color-sync-progress); }
 .sync-button[data-status="error"] { --sync-status-color: var(--color-sync-error); }
-.sync-button[data-status="syncing"] > svg { animation: sync-rotate 1.5s linear infinite; }
 .sync-progress { position: absolute; bottom: 0; left: 4px; right: 4px; height: 2px; overflow: hidden; border-radius: 2px; background: hsl(var(--muted)); }
-.sync-progress > span { display: block; height: 100%; background: var(--color-sync-progress); transition: width var(--motion-base) var(--ease-enter); }
+.sync-progress > span { display: block; height: 100%; background: var(--color-sync-progress); transition: width var(--motion-micro) var(--ease-enter); }
 @keyframes sync-rotate { to { transform: rotate(360deg); } }
-html[data-motion-level="minimal"] .sync-button > svg,
-html[data-motion-reduced="true"] .sync-button > svg { animation: none; }
-@media (prefers-reduced-motion: reduce) { html:not([data-motion-reduced]) .sync-button > svg { animation: none; } }
+html[data-motion-level="minimal"] .sync-button .lucide-refresh-cw,
+html[data-motion-reduced="true"] .sync-button .lucide-refresh-cw { animation: none; }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-reduced]) .sync-button .lucide-refresh-cw { animation: none; } }

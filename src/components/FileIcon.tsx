@@ -1,6 +1,6 @@
 import { AudioLines, File, FileCode2, FileText, FileType, FileX, Film, Image, Presentation, ScrollText, Sheet, type LucideIcon } from 'lucide-react'
 import { SemanticIcon } from '@/components/ui/semantic-icon'
-import { fileKind, type FileKind } from '@/lib/file-kind'
+import { fileKind, type FileKind } from '@/lib/file-kind';
 
 const icons: Record<FileKind, LucideIcon> = {
   pdf: FileText, document: FileType, spreadsheet: Sheet, presentation: Presentation,

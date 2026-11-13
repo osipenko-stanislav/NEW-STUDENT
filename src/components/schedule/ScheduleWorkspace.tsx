@@ -1,3 +1,4 @@
+import { CalendarDatePicker } from '@/components/ui/calendar-date-picker'
 import { useLateDays } from '@/components/LateDaysProvider'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SegmentedControl } from '@/components/ui/segmented-control'
@@ -14,7 +15,6 @@ import { addDays, weekDays, moscowDate, minutesAt, classTone, scheduleRangeLabel
 import { useDisplayFormats } from '@/components/SettingsProvider'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
@@ -91,7 +91,7 @@ export default function ScheduleWorkspace({ onNavigate }: { onNavigate: (destina
           <Button variant="outline" size="icon" aria-label="Предыдущий период" onClick={() => move(-1)}><ChevronLeft aria-hidden="true" /></Button>
           <Button variant="outline" onClick={() => chooseDate(today)}>Сегодня</Button>
           <Button variant="outline" size="icon" aria-label="Следующий период" onClick={() => move(1)}><ChevronRight aria-hidden="true" /></Button>
-          <Popover open={pickerOpen} onOpenChange={setPickerOpen}><PopoverTrigger asChild><Button variant="ghost" className="schedule-date-picker"><CalendarDays aria-hidden="true" /><span>{view === 'list' ? new Intl.DateTimeFormat('ru-RU', { month: 'long', year: 'numeric', timeZone: 'Europe/Moscow' }).format(new Date(`${date}T12:00:00+03:00`)) : scheduleRangeLabel(dates[0], dates.at(-1)!)}</span></Button></PopoverTrigger><PopoverContent align="start" className="schedule-date-popover"><label htmlFor="schedule-date-input" className="text-sm font-medium">Выбери дату</label><Input id="schedule-date-input" type="date" value={date} onChange={event => { if (/^\d{4}-\d{2}-\d{2}$/.test(event.target.value)) chooseDate(event.target.value) }} /><Button variant="outline" onClick={() => setPickerOpen(false)}>Готово</Button></PopoverContent></Popover>
+          <Popover open={pickerOpen} onOpenChange={setPickerOpen}><PopoverTrigger asChild><Button variant="ghost" className="schedule-date-picker"><CalendarDays aria-hidden="true" /><span>{view === 'list' ? new Intl.DateTimeFormat('ru-RU', { month: 'long', year: 'numeric', timeZone: 'Europe/Moscow' }).format(new Date(`${date}T12:00:00+03:00`)) : scheduleRangeLabel(dates[0], dates.at(-1)!)}</span></Button></PopoverTrigger><PopoverContent align="start" className="schedule-date-popover"><label htmlFor="schedule-date-input" className="text-sm font-medium">Выбери дату</label><CalendarDatePicker inline id="schedule-date-input" label="Дата расписания" value={date} onValueChange={value => { if (/^\d{4}-\d{2}-\d{2}$/.test(value)) chooseDate(value) }} /><Button variant="outline" onClick={() => setPickerOpen(false)}>Готово</Button></PopoverContent></Popover>
         </div>
         <Select value={view} onValueChange={value => navigate({ scheduleView: value as ScheduleView }, true)}><SelectTrigger className="schedule-view-select" aria-label="Вид расписания"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="week">Неделя</SelectItem><SelectItem value="day">День</SelectItem><SelectItem value="two-days">Два дня</SelectItem><SelectItem value="list">Список за месяц</SelectItem></SelectContent></Select>
       </div>

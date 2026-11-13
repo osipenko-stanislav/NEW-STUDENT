@@ -8,10 +8,10 @@ export type HandbookNode = {
   content?: HandbookNode[]
 }
 export const handbookRootId = 'db3f475e-b70a-4423-abc0-b030db55c80b'
-export const handbookPages = manifest
+const handbookPages = manifest
 export const handbookById = new Map(handbookPages.map(page => [page.id, page]))
-export type HandbookPage = (typeof handbookPages)[number]
-export const handbookAliases: Record<string, string> = {
+type HandbookPage = (typeof handbookPages)[number]
+const handbookAliases: Record<string, string> = {
   '9fc10273-942d-4172-8dfc-21b559f4bb52': 'd455d7d6-de8a-44b8-a77d-88d13827edf9',
 }
 export function handbookChildren(id: string) { return handbookPages.filter(page => page.parentId === id) }

@@ -1,3 +1,4 @@
+import { AnimatedNumber } from '@/components/ui/animated-number'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Hourglass, ArrowRight } from 'lucide-react'
 import { useLateDays } from '@/components/LateDaysProvider'
@@ -23,7 +24,7 @@ export default function LateDaysWorkspace() {
   return <section className="page-container late-days-page" data-layout="workspace" aria-labelledby="late-days-title">
     <header className="late-days-page-heading"><h1 id="late-days-title" tabIndex={-1} ref={heading}>Late Days</h1><Select value={semesterId} onValueChange={setSemesterId}><SelectTrigger aria-label="Семестр Late Days"><SelectValue /></SelectTrigger><SelectContent>{lateDaysSemesters.map(item => <SelectItem key={item.id} value={item.id}>{item.name}{item.current ? '' : ' · Архив'}</SelectItem>)}</SelectContent></Select></header>
     {!semester.current ? <p className="late-days-muted">Архивный семестр · Только просмотр</p> : null}
-    <dl className="late-days-metrics"><div><dt>Осталось</dt><dd className="late-days-primary-number" key={balance.remaining}>{balance.remaining}</dd></div><div><dt>Использовано</dt><dd>{balance.used}</dd></div><div><dt>Лимит</dt><dd>{balance.limit}</dd></div></dl>
+    <dl className="late-days-metrics"><div><dt>Осталось</dt><dd className="late-days-primary-number" ><AnimatedNumber value={balance.remaining} minDigits={2} /></dd></div><div><dt>Использовано</dt><dd><AnimatedNumber value={balance.used} minDigits={2} /></dd></div><div><dt>Лимит</dt><dd>{balance.limit}</dd></div></dl>
     <div className="late-days-meter" role="meter" aria-label="Использовано Late Days" aria-valuemin={0} aria-valuemax={balance.limit} aria-valuenow={balance.used}><span style={{ width: `${balance.used / balance.limit * 100}%` }} /></div>
     <section className="late-days-analytics"><h2>Расход по месяцам</h2><p className="late-days-muted">Завершённые месяцы — на конец месяца, текущий — на сегодня</p><LateDaysChart key={semester.id} semester={semester} /></section>
     <section className="late-days-history"><h2>История операций</h2>{operations.length ? <ul>{operations.map(operation => {

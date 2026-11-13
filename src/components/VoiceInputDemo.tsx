@@ -1,3 +1,5 @@
+import { StateIcon } from '@/components/ui/state-icon'
+import { AnimatedNumber } from '@/components/ui/animated-number'
 import { useEffect, useRef, useState } from 'react'
 import { LoaderCircle, Mic, Square, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -44,7 +46,7 @@ export default function VoiceInputDemo({ disabled, onBusyChange, onTranscript }:
   }, [busy])
   return <>
     {busy ? <div className="voice-demo-panel" id="voice-demo-panel">
-      <div className="voice-demo-heading"><span className="voice-demo-label"><span className="voice-demo-dot" aria-hidden="true" />{phase === 'recording' ? 'Идет запись' : 'Распознаем речь…'}</span><span className="voice-demo-time" aria-label={`Длительность: ${seconds} секунд`}>00:{String(seconds).padStart(2, '0')}</span></div>
+      <div className="voice-demo-heading"><span className="voice-demo-label"><span className="voice-demo-dot" aria-hidden="true" />{phase === 'recording' ? 'Идет запись' : 'Распознаем речь…'}</span><span className="voice-demo-time" aria-label={`Длительность: ${seconds} секунд`}>00:<AnimatedNumber value={seconds} minDigits={2} /></span></div>
       <div className={`voice-demo-wave ${phase === 'transcribing' ? 'is-processing' : ''}`} aria-hidden="true">{[10, 18, 26, 14, 30, 22, 12, 28, 18, 32, 14, 24, 10, 20, 28, 16, 24, 12, 30, 20].map((height, index) => <span key={index} style={{ height, animationDelay: `${index * -90}ms` }} />)}</div>
       <p className="voice-demo-caption">Останови запись, чтобы добавить текст в сообщение.</p>
       <span className="sr-only" role="status">{phase === 'recording' ? 'Запись началась. Останови запись, чтобы добавить текст, или отмени.' : 'Распознаем речь.'}</span>
@@ -55,6 +57,6 @@ export default function VoiceInputDemo({ disabled, onBusyChange, onTranscript }:
       setNotice('')
       if (phase === 'recording') setPhase('transcribing')
       else { setSeconds(0); setPhase('recording') }
-    }}>{phase === 'recording' ? <Square aria-hidden="true" /> : phase === 'transcribing' ? <LoaderCircle aria-hidden="true" className="voice-demo-spinner" /> : <Mic aria-hidden="true" />}</Button>
+    }}><StateIcon state={phase}>{phase === 'recording' ? <Square aria-hidden="true" /> : phase === 'transcribing' ? <LoaderCircle aria-hidden="true" className="voice-demo-spinner" /> : <Mic aria-hidden="true" />}</StateIcon></Button>
   </>
 }

@@ -1,3 +1,4 @@
+import { StateIcon } from '@/components/ui/state-icon'
 import { useRef, useState, type FormEvent } from 'react'
 import { ChevronRight, MoreHorizontal, Pencil, Pin, PinOff, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -70,7 +71,7 @@ export default function ConversationHistory({
             <button type="button" title={conversation.title} aria-label={`Открыть диалог: ${conversation.title}`}
               aria-description={conversation.pinned ? 'Закреплен' : undefined}
               aria-current={activeId === conversation.id ? 'page' : undefined} onClick={() => onSelect(conversation.id)}>
-              {conversation.pinned ? <Pin aria-hidden="true" className="conversation-pin" /> : null}
+              <StateIcon state={conversation.pinned ? 'pinned' : 'empty'}>{conversation.pinned ? <Pin aria-hidden="true" className="conversation-pin" /> : null}</StateIcon>
               <span>{conversation.title}</span>
             </button>
           </SidebarMenuSubButton>

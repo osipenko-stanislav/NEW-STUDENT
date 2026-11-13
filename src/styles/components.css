@@ -85,3 +85,86 @@
   :where([data-slot="button"]:not([data-size="icon"], .ghost-icon)), :where([data-slot="select-trigger"]) { min-height: 44px; }
   :is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) :is([role="menuitem"], [role="option"]) { min-height: 44px; }
 }
+
+/* Semantic microinteractions; timing and amplitude are owned by motion-tokens. */
+.animated-number { display: inline-flex; vertical-align: baseline; font-variant-numeric: tabular-nums; }
+.animated-number-digits { display: inline-flex; }
+.animated-number-slot { position: relative; display: inline-grid; width: 1ch; height: 1.2em; line-height: 1.2; overflow: clip; }
+.animated-number-digit { grid-area: 1 / 1; text-align: center; }
+.state-icon { position: relative; display: inline-flex; width: 16px; height: 16px; flex-shrink: 0; }
+.state-icon-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.state-icon svg { width: 16px; height: 16px; }
+.segmented-control[data-has-indicator] { position: relative; isolation: isolate; }
+[data-slot="selection-indicator"] { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; border-radius: 8px; background: hsl(var(--background)); box-shadow: var(--shadow-control); }
+.segmented-control[data-has-indicator="true"] > :is([role="tab"], [role="radio"], [aria-pressed]) { position: relative; z-index: 1; }
+.segmented-control[data-has-indicator="true"] > :is([data-state="active"], [data-state="checked"], [aria-pressed="true"]) { background: transparent; box-shadow: none; }
+.checkbox-control { display: inline-flex; position: relative; flex-shrink: 0; width: 16px; height: 16px; vertical-align: middle; }
+.checkbox-control input { appearance: none; width: 100%; height: 100%; margin: 0; border: 1px solid hsl(var(--input)); border-radius: 4px; background: hsl(var(--background)); cursor: pointer; }
+.checkbox-control input:is(:checked, :indeterminate) { background: var(--color-violet); border-color: var(--color-violet); }
+.checkbox-control input:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
+.checkbox-control input:disabled { opacity: .5; cursor: not-allowed; }
+.checkbox-mark { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; fill: none; stroke: var(--color-ai-foreground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.checkbox-tick { stroke-dasharray: 16; stroke-dashoffset: 16; }
+.checkbox-control input:checked + svg .checkbox-tick { stroke-dashoffset: 0; }
+.checkbox-mixed { opacity: 0; }
+.checkbox-control input:indeterminate + svg .checkbox-mixed { opacity: 1; }
+.checkbox-control input:indeterminate + svg .checkbox-tick { stroke-dashoffset: 16; }
+.radio-indicator { opacity: 0; transform: scale(.6); }
+[data-slot="radio"][data-state="checked"] .radio-indicator { opacity: 1; transform: scale(1); }
+.number-stepper { display: inline-grid; grid-template-columns: 28px minmax(32px, 1fr) 28px; align-items: center; min-width: 112px; width: 100%; border: 1px solid hsl(var(--input)); border-radius: var(--radius-control); }
+.number-stepper > [data-slot="button"] { width: 28px; height: 32px; border-radius: 6px; }
+.number-stepper > input { width: 100%; min-width: 0; padding-inline: 0; text-align: center; border: 0; box-shadow: none; appearance: textfield; background: transparent; }
+.number-stepper > input::-webkit-inner-spin-button, .number-stepper > input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.late-days-plan-controls .number-stepper { width: 112px; }
+.late-days-plan-controls .number-stepper input { width: 100%; }
+.number-stepper:focus-within { outline: 2px solid hsl(var(--ring) / .45); outline-offset: 2px; }
+.late-days-quick > [aria-pressed="true"] { background: var(--color-violet-soft); color: var(--color-violet-text); }
+.notification-bell { display: flex; transform-origin: 50% 15%; }
+.material-library-item { border-radius: 0; }
+.material-library-item:focus-within { background: hsl(var(--accent) / .45); }
+@media (hover: hover) and (pointer: fine) {
+  .material-library-item:hover { background: hsl(var(--accent) / .45); }
+  .material-library-actions > button[aria-haspopup="menu"] { opacity: .6; }
+  .material-library-item:is(:hover, :focus-within) .material-library-actions > button[aria-haspopup="menu"] { opacity: 1; }
+}
+
+.search-clear-slot { display: inline-flex; width: 32px; height: 32px; flex-shrink: 0; }
+.search-clear-slot [data-slot="button"] { width: 32px; height: 32px; }
+
+.number-stepper > input:focus-visible { outline: none; box-shadow: none; }
+.state-icon[data-icon-state="pinned"] .lucide-pin { fill: hsl(var(--foreground) / .12); }
+
+/* Shared status/action/disclosure/calendar geometry. Recipes live in motion-recipes. */
+.animated-label { display: inline-flex; min-width: 0; vertical-align: middle; }
+.animated-label-visual { display: inline-grid; position: relative; }
+.animated-label-reserve { display: inline-grid; visibility: hidden; pointer-events: none; grid-area: 1 / 1; }
+.animated-label-reserve > span { grid-area: 1 / 1; }
+.animated-label-current { grid-area: 1 / 1; white-space: inherit; }
+.sync-rotor { display: inline-flex; width: 16px; height: 16px; transform-origin: center; }
+[data-feedback-state="error"]:not([data-variant="default"]) .state-icon { color: var(--color-red-text); }
+.animated-disclosure { display: grid; grid-template-rows: 0fr; }
+.animated-disclosure[data-open="true"] { grid-template-rows: 1fr; }
+.animated-disclosure > div { overflow: hidden; min-height: 0; }
+.calendar-date-field { display: flex; align-items: center; width: 100%; min-width: 0; border: 1px solid hsl(var(--input)); border-radius: var(--radius-control); }
+.calendar-date-field > input { border: 0; box-shadow: none; min-width: 0; flex: 1; }
+.calendar-date-field > input:focus-visible { outline: none; box-shadow: none; }
+.calendar-date-field > input::-webkit-calendar-picker-indicator { display: none; }
+.calendar-date-field:focus-within { outline: 2px solid hsl(var(--ring) / .45); outline-offset: 2px; }
+.calendar-date-field > button { flex-shrink: 0; width: 32px; height: 32px; margin-right: 2px; }
+[data-slot="popover-content"].calendar-popover { width: min(336px, calc(100dvw - 32px)); padding: 12px; overflow: hidden; }
+.calendar-month-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; }
+.calendar-month-heading h3 { font-size: calc(13px * var(--text-scale, 1)); text-transform: capitalize; }
+.calendar-weekdays, .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.calendar-weekdays { color: hsl(var(--muted-foreground)); font-size: calc(11px * var(--text-scale, 1)); text-align: center; margin-bottom: 8px; }
+.calendar-grid { position: relative; grid-auto-rows: 40px; min-height: 240px; }
+.calendar-week { display: contents; }
+.calendar-day[data-slot="button"] { position: relative; width: 100%; height: 40px; min-width: 0; min-height: 40px; padding: 0; font-size: calc(13px * var(--text-scale, 1)); z-index: 0; isolation: isolate; background: transparent; }
+.calendar-day > span:last-child { position: relative; z-index: 1; }
+.calendar-day[aria-selected="true"] { color: hsl(var(--primary-foreground)); }
+.calendar-selected-day { position: absolute; inset: 2px; z-index: 0; border-radius: 8px; background: hsl(var(--primary)); }
+.calendar-day:not([aria-selected="true"]):hover { background: hsl(var(--accent)); }
+
+
+.calendar-inline { min-width: 0; width: 100%; }
+.calendar-inline .calendar-date-field { margin-block: 8px 12px; }
+.calendar-grid-host { position: relative; overflow: clip; }

@@ -1,6 +1,6 @@
 import { academicTasks } from './academic-data.ts'
 import { demoToday } from './study-seed.ts'
-import { isHomework } from '../lib/academic-presentation.ts'
+import { isHomework } from '../lib/academic-presentation.ts';
 
 export type LateDaysSemester = { id: string; name: string; startsAt: string; endsAt: string; limit: number; current: boolean; grants: { days: number; at: string }[] }
 export type LateDaysOperation = {

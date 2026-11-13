@@ -11,7 +11,7 @@ export type AcademicTask = {
   grade: number | null; status: 'new' | 'in-progress' | 'submitted' | 'accepted' | 'rejected'
   dueAt: string; description: string; materialIds: string[]; timeLimitMinutes?: number
 }
-export type Enrollment = { id: string; courseId: string; semester: number | null; archived: boolean; assessments: FormulaRow[] }
+type Enrollment = { id: string; courseId: string; semester: number | null; archived: boolean; assessments: FormulaRow[] }
 const subjectFor = (id: string) => id === 'python-basic' ? 'python' as const : getCourse(id).area
 const titleFor = (id: string) => getCourse(id).title
 const topics: Record<string, string[]> = {

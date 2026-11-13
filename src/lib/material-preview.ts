@@ -1,6 +1,6 @@
-import { previewMaterialType } from './material-metadata.ts'
+import { previewMaterialType } from './material-metadata.ts';
 
-export type MaterialPreview = { kind: 'pdf' | 'image' | 'text' | 'video' | 'audio'; mime: string }
+type MaterialPreview = { kind: 'pdf' | 'image' | 'text' | 'video' | 'audio'; mime: string }
 
 const mediaTypes: Record<string, MaterialPreview['kind']> = {
   'video/mp4': 'video', 'video/webm': 'video', 'video/ogg': 'video', 'video/quicktime': 'video',

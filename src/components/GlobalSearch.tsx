@@ -1,5 +1,8 @@
+import { AnimatePresence, m } from 'motion/react'
+import { useAppMotion } from '@/components/MotionProvider'
+import { microTransition } from '@/lib/motion-tokens'
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
-import { BookOpen, BookOpenCheck, Compass, CornerDownLeft, FileText, FolderOpen, GraduationCap, History, LayoutGrid, Library, Search } from 'lucide-react'
+import { BookOpen, BookOpenCheck, Compass, CornerDownLeft, FileText, FolderOpen, GraduationCap, History, LayoutGrid, Library, Search, X } from 'lucide-react'
 import FileIcon from '@/components/FileIcon'
 import { SemanticIcon } from '@/components/ui/semantic-icon'
 import { Button } from '@/components/ui/button'
@@ -27,6 +30,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [viewport, setViewport] = useState<{ height: number; top: number } | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const { effectiveIntensity, spatialMotion } = useAppMotion()
   const inputRef = useRef<HTMLInputElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
   const restoreFocusRef = useRef<HTMLElement | null>(null)
@@ -176,6 +180,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
           aria-controls={listId} aria-activedescendant={selected ? `${listId}-${selected.id}` : undefined}
           className="global-search-input border-0 p-0 shadow-none focus-visible:ring-0"
           onChange={event => { setQuery(event.target.value); setSelectedId(null) }} />
+        <span className="search-clear-slot"><AnimatePresence initial={false}>{query ? <m.span key="clear" initial={{ opacity: 0, scale: spatialMotion ? .9 : 1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={microTransition(effectiveIntensity)}><Button type="button" variant="ghost" size="icon" aria-label="Очистить поиск" onClick={() => { setQuery(''); setSelectedId(null); inputRef.current?.focus() }}><X aria-hidden="true" /></Button></m.span> : null}</AnimatePresence></span>
       </div>
       {recent.length ? <div className="global-search-recents" role="group" aria-label="Недавно открытые">
         <History aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />

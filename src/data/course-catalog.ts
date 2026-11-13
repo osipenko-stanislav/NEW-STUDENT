@@ -1,5 +1,5 @@
-export type CourseArea = 'development' | 'math' | 'general'
-export type CourseLevel = 'basic' | 'medium' | 'advanced'
+type CourseArea = 'development' | 'math' | 'general'
+type CourseLevel = 'basic' | 'medium' | 'advanced'
 export type CourseFilter = 'all' | 'required' | 'elective' | 'auditor' | 'internal'
 export type Course = { id: string; title: string; area: CourseArea; category: Exclude<CourseFilter, 'all'>; levels: CourseLevel[]; source: 'handbook'; syllabusUrl?: string }
 export const handbookUrl = 'https://note.cu.ru/at/2284e072-1f5d-47d2-b4c9-cceb9716ef6f'
@@ -39,7 +39,7 @@ export function getCourse(id: string): Course {
   if (!course) throw new Error(`Unknown course: ${id}`)
   return course
 }
-export const courseAliases: Record<string, string> = {
+const courseAliases: Record<string, string> = {
   'Machine Learning': 'machine-learning', 'Программирование на Python': 'python-basic',
 }
 export function resolveCourseId(title: string): string | undefined {

@@ -1,3 +1,5 @@
+import { GradeValue } from '@/components/ui/grade-value'
+import { AnimatedNumber } from '@/components/ui/animated-number'
 import { useLateDays } from '@/components/LateDaysProvider'
 import { BookOpen, CalendarClock, ChevronRight, List, GraduationCap, MessageCircle, CircleHelp } from 'lucide-react'
 import { Card } from '@/components/ui/card'
@@ -5,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useDisplayFormats } from '@/components/SettingsProvider'
 import { statementForCourse, assistantAssignments } from '@/data/academic-data'
-import { calculateGrade, formatGrade } from '@/lib/grade-calculation'
+import { calculateGrade } from '@/lib/grade-calculation'
 import { featuredCourseId } from '@/data/course-catalog'
 import { courseAssignment } from '@/data/courses'
 import type { CourseDialog } from './CourseDialogs'
@@ -23,8 +25,8 @@ export default function CourseWidgets({ onDialog, onProgram, programOpen, toc, a
       : courseId === featuredCourseId ? <Button type="button" variant="outline" className="course-resource-link" onClick={() => onDialog('syllabus')}><GraduationCap aria-hidden="true" /><span><small>О курсе</small><strong>Силлабус</strong></span><ChevronRight aria-hidden="true" /></Button> : null}
     {toc ? <nav className="course-toc" aria-label="Оглавление урока"><h2><List aria-hidden="true" />На этой странице</h2><ol>{toc.map(entry => <li key={entry.id} data-depth={entry.depth ?? 0}><a href={`#${entry.id}`} aria-current={activeSection === entry.id ? 'location' : undefined} onClick={event => { event.preventDefault(); onAnchor?.(entry.id) }}>{entry.title}</a></li>)}</ol></nav>
       : <>
-        <Card className="course-widget-card course-progress"><div className="course-widget-content"><h2>Прогресс по курсу</h2><p className="course-grade-total">{formatGrade(result.raw)} <span>из 10</span></p><div className="course-progress-track" role="meter" aria-label="Накоплено баллов" aria-valuemin={0} aria-valuemax={10} aria-valuenow={result.raw}><span className="course-progress-earned" style={{ width: `${Math.min(100, result.raw * 10)}%` }} /></div>
-          <dl className="course-progress-legend"><div><dt><i data-tone="green" />Накоплено</dt><dd>{formatGrade(result.raw)}</dd></div><div><dt>После округления</dt><dd>{result.rounded}</dd></div></dl>
+        <Card className="course-widget-card course-progress"><div className="course-widget-content"><h2>Прогресс по курсу</h2><p className="course-grade-total"><GradeValue value={result.raw} /> <span>из 10</span></p><div className="course-progress-track" role="meter" aria-label="Накоплено баллов" aria-valuemin={0} aria-valuemax={10} aria-valuenow={result.raw}><span className="course-progress-earned" style={{ width: `${Math.min(100, result.raw * 10)}%` }} /></div>
+          <dl className="course-progress-legend"><div><dt><i data-tone="green" />Накоплено</dt><dd><GradeValue value={result.raw} /></dd></div><div><dt>После округления</dt><dd><AnimatedNumber value={result.rounded} /></dd></div></dl>
           </div><button type="button" className="course-widget-footer" onClick={onOpenGrades}>Смотреть ведомость</button></Card>
         <Card className="course-widget-card course-deadline-widget"><div className="course-widget-content"><h2>Ближайший дедлайн<CalendarClock aria-hidden="true" /></h2>
           <button type="button" className="course-deadline-summary" onClick={() => onDialog('assignment')}><span>{deadline.title}</span><time dateTime={effectiveDeadline(deadline.id) || deadline.dueAt}>{formatDateTime(effectiveDeadline(deadline.id) || deadline.dueAt, true)} МСК</time><Badge variant="neutral">{deadline.status}</Badge></button>

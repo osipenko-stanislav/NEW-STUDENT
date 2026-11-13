@@ -47,9 +47,7 @@ button:not(:disabled):active,
   animation-timing-function: var(--ease-exit);
 }
 
-button > svg, [role="button"] > svg {
-  transition: transform var(--motion-fast) var(--ease-enter), opacity var(--motion-fast) var(--ease-enter);
-}
+
 
 .workspace [role="tabpanel"][data-state="active"] {
   animation: content-reveal var(--motion-base) var(--ease-enter) both;
@@ -69,7 +67,7 @@ details[open] > :not(summary) {
     height: 0;
     overflow: clip;
     opacity: 0;
-    transition: height var(--motion-base) var(--ease-enter), opacity var(--motion-fast) var(--ease-enter), content-visibility var(--motion-base) allow-discrete;
+    transition: height var(--motion-disclosure) var(--ease-disclosure), opacity var(--motion-disclosure-exit) var(--ease-disclosure), content-visibility var(--motion-disclosure) allow-discrete;
   }
   .course-block[open]::details-content,
   .course-recording-class[open]::details-content,
@@ -81,9 +79,7 @@ details[open] > :not(summary) {
   }
 }
 
-[role="progressbar"] > *,
-[data-state="checked"] > span,
-[role="switch"] > span {
+[role="progressbar"] > * {
   transition: transform var(--motion-base) var(--ease-enter), background-color var(--motion-base) var(--ease-enter);
 }
 
@@ -200,6 +196,86 @@ html[data-motion-level="minimal"] .notifications-feed { animation: none !importa
 /* Resource changes use the existing timing and reduced-motion profiles. */
 .late-days-segment { transition: flex-grow var(--motion-base) var(--ease-move); }
 .late-days-meter > span { transition: width var(--motion-base) var(--ease-move); }
-:is(.late-days-balance > strong, .late-days-primary-number, .late-days-chart, .late-days-rescue-result) { animation: route-fade var(--motion-fast) var(--ease-enter); }
+.late-days-chart { animation: route-fade var(--motion-fast) var(--ease-enter); }
 html[data-motion-level="minimal"] :is(.late-days-segment, .late-days-meter > span) { transition: none; }
-html[data-motion-level="minimal"] :is(.late-days-balance > strong, .late-days-primary-number, .late-days-chart, .late-days-rescue-result) { animation: none; }
+html[data-motion-level="minimal"] .late-days-chart { animation: none; }
+
+/* Small movement follows the control's meaning, not its SVG tag. */
+[data-slot="button"], [data-slot="switch"], [data-slot="radio"] { transition-duration: var(--motion-micro); }
+[data-slot="button"][data-size="icon"]:not(:disabled):not([aria-disabled="true"]):active { scale: var(--micro-press-scale); translate: none; }
+[data-slot="button"][data-variant="ghost"]:not([data-size="icon"]):not(:disabled):active { scale: 1; translate: 0 .5px; }
+button > :is(.lucide-arrow-right, .lucide-arrow-up-right, .lucide-settings, .lucide-settings-2, .lucide-trash-2, .lucide-plus),
+button > img[src*="settings"], button > img[src*="plus-lined"], .navigation-chevron, .course-chevron, .gen-chevron,
+[data-slot="select-trigger"] .lucide-chevron-down { transition: transform var(--motion-micro) var(--ease-move); transform-origin: center; }
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover > .lucide-arrow-right { transform: translateX(var(--micro-distance)); }
+  button:not(:disabled):hover > .lucide-arrow-up-right { transform: translate(var(--micro-distance), calc(-1 * var(--micro-distance))); }
+  button:not(:disabled):hover > :is(.lucide-settings, .lucide-settings-2), button:not(:disabled):hover > img[src*="settings"] { transform: rotate(var(--micro-turn)); }
+  button:not(:disabled):hover > .lucide-trash-2 { transform: rotate(calc(-1 * var(--micro-turn))); }
+}
+button[aria-expanded="true"] > .lucide-plus { transform: rotate(45deg); }
+[data-slot="select-trigger"][data-state="open"] .lucide-chevron-down { transform: rotate(180deg); }
+[data-slot="selection-indicator"][data-moving="true"] { transition: transform var(--motion-tabs) var(--ease-tabs), width var(--motion-tabs) var(--ease-tabs), height var(--motion-tabs) var(--ease-tabs); }
+[data-slot="switch-thumb"] { transition: none !important; transform-origin: center; }
+[data-slot="switch"]:active [data-slot="switch-thumb"] { scale: 1.08 .94; }
+.checkbox-control input, .checkbox-mark path, .radio-indicator { transition: background-color var(--motion-micro) var(--ease-enter), border-color var(--motion-micro) var(--ease-enter), stroke-dashoffset var(--motion-micro) var(--ease-enter), opacity var(--motion-micro) var(--ease-enter), transform var(--motion-micro) var(--ease-move); }
+.checkbox-control:active { scale: .96; }
+:is([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"], .number-stepper) { transition: box-shadow var(--motion-micro) var(--ease-enter), outline-color var(--motion-micro) var(--ease-enter), border-color var(--motion-micro) var(--ease-enter); }
+[data-slot="input"]::placeholder, [data-slot="textarea"]::placeholder { transition: opacity var(--motion-micro) var(--ease-enter); }
+[data-slot="input"]:focus::placeholder, [data-slot="textarea"]:focus::placeholder { opacity: .65; }
+.notification-bell[data-pulse="true"] { animation: bell-feedback var(--notification-ring-duration) var(--notification-ring-ease); }
+@keyframes bell-feedback { 0%, 100% { rotate: 0deg; } 15% { rotate: var(--notification-ring-angle); } 30% { rotate: calc(var(--notification-ring-angle) * -.85); } 45% { rotate: calc(var(--notification-ring-angle) * .6); } 60% { rotate: calc(var(--notification-ring-angle) * -.4); } 78% { rotate: calc(var(--notification-ring-angle) * .18); } }
+.state-icon[data-icon-state="success"] .lucide-check path { stroke-dasharray: 24; animation: check-feedback var(--motion-check) var(--ease-check) both; }
+@keyframes check-feedback { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+html[data-motion-level="minimal"] :is(.checkbox-control, [data-slot="switch"]:active [data-slot="switch-thumb"]) { scale: 1; }
+html[data-motion-level="minimal"] :is(.notification-bell, .state-icon path) { animation: none !important; }
+html[data-motion-level="minimal"] :is([data-slot="selection-indicator"], .checkbox-control input, .checkbox-mark path, .radio-indicator) { transition: none; }
+
+button[aria-expanded="true"] > img[src*="plus-lined"] { transform: rotate(45deg); }
+[role="option"][data-state="checked"] { background: hsl(var(--accent)); }
+[role="option"] { transition: background-color var(--motion-micro) var(--ease-enter), color var(--motion-micro) var(--ease-enter); }
+[role="option"] .lucide-check { transition: opacity var(--motion-micro) var(--ease-enter); }
+
+.late-days-dialog [role="alert"] { animation: route-fade var(--motion-micro) var(--ease-enter); }
+html[data-motion-level="minimal"] .late-days-dialog [role="alert"] { animation: none; }
+
+[data-slot="badge"] { transition-duration: var(--motion-status); transition-timing-function: var(--ease-status); }
+.sync-button[data-status="error"] .state-icon { color: var(--color-sync-error); }
+
+/* Per-object recipes: a distinct time/ease contract for each interaction family. */
+.checkbox-mark path { transition-duration: var(--motion-check); transition-timing-function: var(--ease-check); }
+.radio-indicator { transition-duration: var(--motion-radio); transition-timing-function: var(--ease-radio); }
+.animated-disclosure { transition: grid-template-rows var(--motion-disclosure) var(--ease-disclosure); }
+.handbook-tree-chevron { transform-origin: center; transition: transform var(--motion-disclosure-exit) var(--ease-disclosure); }
+.handbook-tree-toggle[aria-expanded="true"] .handbook-tree-chevron { transform: rotate(90deg); }
+:is(.course-block, .course-recording-class, .gen-class-details, .gen-assignment-details, .course-mobile-toc, .grades-topic) > summary :is(.course-chevron, .gen-chevron, .lucide-chevron-down) { transition: transform var(--motion-disclosure-exit) var(--ease-disclosure); transform-origin: center; }
+.course-mobile-toc[open] > summary .lucide-chevron-down { transform: rotate(180deg); }
+[data-slot="input"], [data-slot="textarea"], .number-stepper, .calendar-date-field { transition-duration: var(--motion-field); transition-timing-function: var(--ease-field); }
+[data-slot="dropdown-menu-content"][data-state] { animation-duration: var(--motion-menu) !important; animation-timing-function: var(--ease-menu); }
+[data-slot="dropdown-menu-content"][data-state="closed"] { animation-duration: var(--motion-menu-exit) !important; }
+[data-slot="tooltip-content"][data-state] { animation-duration: var(--motion-tooltip) !important; animation-timing-function: var(--ease-tooltip); }
+[data-slot="tooltip-content"][data-state="closed"] { animation-duration: var(--motion-tooltip-exit) !important; }
+[role="menuitem"] { transition: background-color var(--motion-menu-exit) var(--ease-menu), color var(--motion-menu-exit) var(--ease-menu); }
+[role="menuitem"] > :is(.lucide-trash-2, .lucide-arrow-down-to-line, .lucide-download, .lucide-external-link) { transition: transform var(--motion-action) var(--ease-action); }
+[role="menuitem"][data-highlighted] > :is(.lucide-arrow-down-to-line, .lucide-download) { transform: translateY(var(--micro-distance)); }
+[role="menuitem"][data-highlighted] > .lucide-trash-2 { transform: rotate(calc(var(--micro-turn) * -1)); }
+[role="menuitem"][data-highlighted] > .lucide-external-link { transform: translate(var(--micro-distance), calc(var(--micro-distance) * -1)); }
+.action-spinner { animation: sync-rotate var(--motion-actionSpin) linear infinite; }
+:is(.sync-progress > span, .late-days-meter > span, .course-progress-earned, .course-progress-available, .homework-timer-track > span) { transition-duration: var(--motion-progress); transition-timing-function: var(--ease-progress); }
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover > .lucide-arrow-left { transform: translateX(calc(-1 * var(--micro-distance))); }
+  button:not(:disabled):hover > :is(.lucide-download, .lucide-arrow-down-to-line), a:hover > :is(.lucide-download, .lucide-arrow-down-to-line) { transform: translateY(var(--micro-distance)); }
+  button:not(:disabled):hover > .lucide-external-link { transform: translate(var(--micro-distance), calc(-1 * var(--micro-distance))); }
+  .course-entity-list button:hover > .course-entity-arrow, .handbook-child-pages a:hover > .lucide-chevron-right { transform: translateX(var(--micro-distance)); }
+}
+button > :is(.lucide-arrow-left, .lucide-download, .lucide-arrow-down-to-line, .lucide-external-link), .course-entity-arrow, .handbook-child-pages .lucide-chevron-right { transition: transform var(--motion-action) var(--ease-action); }
+@supports (interpolate-size: allow-keywords) {
+  :is(.grades-topic, .course-mobile-toc, .late-days-excluded, .late-days-rules, .handbook-details)::details-content { height: 0; overflow: clip; transition: height var(--motion-disclosure) var(--ease-disclosure), content-visibility var(--motion-disclosure) allow-discrete; }
+  :is(.grades-topic, .course-mobile-toc, .late-days-excluded, .late-days-rules, .handbook-details)[open]::details-content { height: auto; }
+}
+html[data-motion-level="minimal"] :is(.animated-disclosure, .handbook-tree-chevron) { transition: none !important; }
+html[data-motion-level="minimal"] :is(.action-spinner, .voice-demo-spinner, .file-preview-message .animate-spin) { animation: none !important; }
+html[data-motion-level="minimal"] :is([data-slot="tooltip-content"], [data-slot="dropdown-menu-content"])[data-state] { animation-name: route-fade !important; }
+
+.notification-trigger:not(:disabled):active { scale: .97; translate: none; transition-duration: var(--motion-bellPress); transition-timing-function: var(--ease-bellPress); }
+html[data-motion-level="minimal"] .notification-trigger:not(:disabled):active { scale: 1; }

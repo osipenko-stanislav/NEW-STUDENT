@@ -1,6 +1,6 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useAppMotion } from '@/components/MotionProvider'
-import type { ReactNode } from 'react'
+import type { ReactNode } from 'react';
 
 export function MotionPage({ motionKey, children }: { motionKey: string; children: ReactNode }) {
   const { spatialMotion, transition } = useAppMotion()
