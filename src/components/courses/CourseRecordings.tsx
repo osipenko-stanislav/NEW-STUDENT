@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/ui/empty-state'
 import { useState } from 'react'
 import { ChevronDown, CirclePlay, Search, UserRound, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -31,6 +32,6 @@ export default function CourseRecordings({ onOpen }: { onOpen: (recording: Cours
       {item.recordings.length ? <ul className="course-recording-files" aria-label="Доступные видеозаписи">{item.recordings.map(recording => <li key={recording.id}><button type="button" onClick={() => onOpen(recording)} aria-label={`Открыть запись: ${recording.title}`}><CirclePlay aria-hidden="true" /><span>{recording.title}</span><time>{recording.duration}</time></button></li>)}</ul>
         : <div className="course-no-recording"><Video aria-hidden="true" /><p>Запись ещё не опубликована</p></div>}
       </div>
-    </details>)}</div> : <div className="course-empty-results"><Search aria-hidden="true" /><h2>Записи не найдены</h2><p>Измени дату, тип занятия или преподавателя.</p><Button type="button" variant="outline" onClick={reset}>Показать все занятия</Button></div>}
+    </details>)}</div> : <EmptyState className="course-empty-results" icon={Search} title="Записи не найдены" description="Измени дату, тип занятия или преподавателя." action={<Button type="button" variant="outline" onClick={reset}>Показать все занятия</Button>} />}
   </section>
 }

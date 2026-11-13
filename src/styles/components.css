@@ -1,0 +1,87 @@
+/* components: shared design system. */
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+@supports (corner-shape: superellipse(1.1)) {
+  :is([data-slot="card"], [data-slot="dialog-content"], [data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="select-content"], .composer, .settings-group-card) {
+    corner-shape: superellipse(1.1);
+  }
+}
+:where([data-slot="button"]) { border-radius: var(--radius-control); }
+:where([data-slot="button"]:is([data-size="icon"], .ghost-icon, .widget-settings)), :where([data-slot="dialog-content"] > button:last-child) { border-radius: 999px; }
+:where([data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"])) {
+  box-shadow: var(--shadow-control);
+}
+:where([data-slot="button"][data-variant="default"]) { box-shadow: 0 2px 5px hsl(var(--shadow-color) / .1); }
+:where([data-slot="button"][data-variant="ghost"]) { box-shadow: none; }
+[data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"] {
+  border-radius: var(--radius-control);
+}
+[data-slot="input"], [data-slot="select-trigger"] {
+  box-shadow: inset 0 1px 2px hsl(var(--shadow-color) / .025);
+}
+[data-slot="input"]:focus-visible, [data-slot="select-trigger"]:focus-visible {
+  outline: 2px solid hsl(var(--ring) / .45);
+  outline-offset: 2px;
+}
+[data-slot="card"] { border-radius: var(--radius-surface); }
+[data-slot="dialog-content"] {
+  border-radius: var(--radius-dialog);
+  box-shadow: var(--shadow-dialog);
+}
+:is([data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="select-content"]) {
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-popover);
+}
+:is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) {
+  padding: 6px;
+}
+[data-slot="select-content"] > [data-radix-select-viewport] { padding: 0; }
+:is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) :is([role="menuitem"], [role="option"]) {
+  border-radius: var(--radius-control);
+  min-height: 36px;
+}
+[data-slot="sheet-content"] { box-shadow: var(--shadow-dialog); }
+[data-slot="tooltip-content"] { border-radius: 8px; animation-duration: var(--motion-fast); animation-timing-function: var(--ease-enter); }
+[data-slot="badge"] { border-radius: 6px; }
+.segmented-control:is([data-slot="tabs-list"], [data-slot="segmented-control"]) {
+  display: flex;
+  width: fit-content;
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 4px;
+  border: 0;
+  border-radius: 12px;
+  background: hsl(var(--muted));
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.segmented-control:is([data-slot="tabs-list"], [data-slot="segmented-control"]) > :is([role="tab"], [role="radio"], [aria-pressed]) {
+  flex: 0 0 auto;
+  min-height: 32px;
+  height: auto;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: hsl(var(--foreground));
+  box-shadow: none;
+  white-space: nowrap;
+  transition: background-color var(--motion-base) var(--ease-enter), box-shadow var(--motion-base) var(--ease-enter), color var(--motion-fast) var(--ease-enter);
+}
+.segmented-control:is([data-slot="tabs-list"], [data-slot="segmented-control"]) > :is([data-state="active"], [data-state="checked"], [aria-pressed="true"]) {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  box-shadow: var(--shadow-control);
+}
+.segmented-control > [role="tab"]::after { display: none; }
+[data-slot="popover-content"].widget-popover { border-radius: 20px; box-shadow: var(--shadow-popover); }
+@media (pointer: coarse) {
+  .segmented-control:is([data-slot="tabs-list"], [data-slot="segmented-control"]) > :is([role="tab"], [role="radio"], [aria-pressed]) { min-height: 44px; }
+  :where([data-slot="button"]:not([data-size="icon"], .ghost-icon)), :where([data-slot="select-trigger"]) { min-height: 44px; }
+  :is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) :is([role="menuitem"], [role="option"]) { min-height: 44px; }
+}

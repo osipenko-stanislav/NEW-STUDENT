@@ -1,4 +1,4 @@
-import { DownloadPackButton } from '@/components/DownloadDemoProvider'
+import { SegmentedControl } from '@/components/ui/segmented-control'
 import { useRef, useState, type DragEvent } from 'react'
 import { ArrowDown, ArrowUp, ChevronsUp, GripVertical, MoreHorizontal, Code2, Calculator, GraduationCap } from 'lucide-react'
 import { Card } from '@/components/ui/card'
@@ -12,8 +12,8 @@ import { useAppMotion } from '@/components/MotionProvider'
 const ids = courses.map(course => course.id)
 
 export function CourseLevels({ course }: { course: Course }) {
-  return course.levels.length ? <TooltipProvider delayDuration={200}><span className="course-levels" aria-label={`Уровни: ${course.levels.map(level => levelLabels[level]).join(', ')}`}>
-    {course.levels.map(level => <Tooltip key={level}><TooltipTrigger asChild><span tabIndex={0} className="course-level-target" aria-label={`${levelLabels[level]} уровень`}>
+  return course.levels.length ? <TooltipProvider delayDuration={200}><span className="course-levels" role="group" aria-label={`Уровни: ${course.levels.map(level => levelLabels[level]).join(', ')}`}>
+    {course.levels.map(level => <Tooltip key={level}><TooltipTrigger asChild><span role="img" tabIndex={0} className="course-level-target" aria-label={`${levelLabels[level]} уровень`}>
       <span aria-hidden="true" className="course-level-star" data-level={level} style={{ maskImage: `url(${import.meta.env.BASE_URL}assets/courses/${`level-${level}.svg`})` }} />
     </span></TooltipTrigger><TooltipContent>{levelLabels[level]} уровень</TooltipContent></Tooltip>)}
   </span></TooltipProvider> : null
@@ -50,11 +50,11 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void
     const bounds = event.currentTarget.getBoundingClientRect()
     setDrop({ id, after: event.clientX > bounds.x + bounds.width / 2 })
   }
-  return <section className="page-container course-catalog" aria-label="Мои курсы" tabIndex={-1} data-course-route-heading>
+  return <section className="page-container course-catalog" data-layout="workspace" aria-label="Мои курсы" tabIndex={-1} data-course-route-heading>
     <div className="course-catalog-header"><div className="course-catalog-toolbar">
-      <div className="course-filter-list" role="group" aria-label="Категории курсов">{courseFilters.map(item => <Button key={item.id} type="button" variant={filter === item.id ? 'default' : 'outline'}
-        aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</Button>)}</div>
-      <div className="course-catalog-actions"><DownloadPackButton /></div>
+      <SegmentedControl className="course-filter-list" aria-label="Категории курсов">{courseFilters.map(item => <Button key={item.id} type="button" variant={filter === item.id ? 'default' : 'outline'}
+        aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</Button>)}</SegmentedControl>
+
     </div>
     </div>
     <div className="sr-only"><p id="course-order-help">Перетащи карточку или измени порядок через меню.</p></div>

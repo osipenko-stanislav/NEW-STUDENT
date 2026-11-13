@@ -1,3 +1,5 @@
+import TaskDeadline from '@/components/late-days/TaskDeadline'
+import AcademicMaterialLink from '@/components/AcademicMaterialLink'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { BookOpen, ChevronRight, Clock3, Download, History, Paperclip, Send, X } from 'lucide-react'
 import { Card } from '@/components/ui/card'
@@ -9,7 +11,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import PageBackButton from '@/components/PageBackButton'
 import FileIcon from '@/components/FileIcon'
 import HomeworkModeBadge from './HomeworkModeBadge'
-import { useDownloadDemo } from '@/components/DownloadDemoProvider'
+import { useMaterialSync } from '@/components/MaterialSyncProvider'
 import { useDisplayFormats } from '@/components/SettingsProvider'
 import { navigate } from '@/hooks/use-navigation'
 import { homeworkEvent, updateHomework, useHomeworkRecords } from '@/hooks/use-homework'
@@ -44,7 +46,7 @@ export default function CourseHomework({ task }: { task: AcademicTask }) {
   const heading = useRef<HTMLHeadingElement>(null)
   const input = useRef<HTMLInputElement>(null)
   const { formatDateTime } = useDisplayFormats()
-  const { start } = useDownloadDemo()
+  const { exportMaterial } = useMaterialSync()
   const timed = !!task.timeLimitMinutes
   const remaining = timed ? remainingHomeworkTime(record, task.timeLimitMinutes!, now) : 0
   const finished = status === 'accepted' || status === 'submitted'
@@ -106,7 +108,7 @@ export default function CourseHomework({ task }: { task: AcademicTask }) {
     if (store(current => ({ ...current, comments: [...current.comments, homeworkEvent(comment.trim())] }))) setComment('')
   }
   const program = () => navigate({ taskId: null, lessonId: null, courseTab: 'homework' })
-  return <div className="page-container homework-page">
+  return <div className="page-container homework-page" data-layout="reading" data-with-rail>
     <header className="homework-heading">
       <PageBackButton />
       <div className="flex flex-wrap items-center gap-2 mb-3"><Badge variant={taskStatusVariants[status]}>{expired && !finished ? 'Время вышло' : taskStatusLabels[status]}</Badge><HomeworkModeBadge minutes={task.timeLimitMinutes} /></div>
@@ -115,12 +117,12 @@ export default function CourseHomework({ task }: { task: AcademicTask }) {
     </header>
     <aside className="homework-sidebar" aria-label="Сроки и результат задания">
       {timed ? <Card className="p-5 space-y-3"><h2 className="text-sm font-medium flex gap-2 items-center"><Clock3 className="size-4" aria-hidden="true" />Время на выполнение</h2>{record.startedAt && !finished ? <><p className="text-3xl font-semibold tabular-nums" aria-label="Осталось времени">{[hours, minutes, seconds].map(value => String(value).padStart(2, '0')).join(':')}</p><div className="homework-timer-track" aria-hidden="true"><span style={{ width: `${remaining / (task.timeLimitMinutes! * 60000) * 100}%` }} /></div><p className="text-xs text-muted-foreground">{expired ? record.savedAt ? 'Сохраненное решение отправлено на проверку.' : 'Время вышло. Решение не сохранено.' : 'После окончания таймера отправим сохраненное решение на проверку.'}</p></> : <><p className="text-2xl font-semibold">{task.timeLimitMinutes! / 60} часа</p><p className="text-xs text-muted-foreground">{finished ? 'Работа завершена.' : 'Таймер начнется после нажатия «Начать задание». Остановить его нельзя.'}</p>{!finished ? <Button className="w-full" onClick={() => { if (store(current => ({ ...current, startedAt: Date.now(), events: [...current.events, homeworkEvent('Задание начато. Таймер запущен')] }))) setNow(Date.now()) }}>Начать задание</Button> : null}</>}</Card> : null}
-      <Card className="homework-meta-surface"><dl className="space-y-4 text-sm"><div><dt className="text-muted-foreground">Максимальный балл</dt><dd className="font-medium mt-1">10</dd></div>{task.grade !== null ? <div><dt className="text-muted-foreground">Твоя оценка</dt><dd className="text-2xl font-semibold mt-1">{task.grade} <span className="text-sm font-normal text-muted-foreground">из 10</span></dd></div> : null}<div><dt className="text-muted-foreground">Дедлайн</dt><dd className="font-medium mt-1">{formatDateTime(task.dueAt)} МСК</dd></div></dl></Card>
+      <Card className="homework-meta-surface"><dl className="space-y-4 text-sm"><div><dt className="text-muted-foreground">Максимальный балл</dt><dd className="font-medium mt-1">10</dd></div>{task.grade !== null ? <div><dt className="text-muted-foreground">Твоя оценка</dt><dd className="text-2xl font-semibold mt-1">{task.grade} <span className="text-sm font-normal text-muted-foreground">из 10</span></dd></div> : null}<div><dt className="text-muted-foreground">Дедлайн</dt><dd className="font-medium mt-1"><TaskDeadline task={task} /></dd></div></dl></Card>
       <Button variant="outline" className="w-full justify-between" onClick={() => setHistory(true)}>История решения<History className="size-4" aria-hidden="true" /></Button>
     </aside>
     <main className="homework-content">
-      <Card className="homework-brief-surface space-y-6"><section><h2 className="text-lg font-semibold mb-3">Условие задания</h2><p className="text-sm leading-6">{task.description}</p>{expanded ? <div className="mt-4 space-y-2 text-sm leading-6"><h3 className="font-medium">Что должно быть в решении</h3><ol className="list-decimal pl-5 space-y-1"><li>Ход решения с объяснением выбранного метода.</li><li>Проверка результата на примерах.</li><li>Выводы по выполненной работе.</li></ol><p>Прикрепи файлы или ссылку на решение. Проверь, что преподаватель сможет открыть ссылку.</p></div> : null}<Button variant="link" className="h-auto px-0 mt-3" aria-expanded={expanded} onClick={() => setExpanded(value => !value)}>{expanded ? 'Свернуть условие' : 'Показать полностью'}</Button></section>
-        {materials.length ? <section><h2 className="text-sm font-semibold mb-3">Материалы задания</h2><ul className="space-y-2">{materials.map(material => <li key={material.id} className="homework-resource"><a className="flex min-w-0 flex-1 items-center gap-3" href={`${import.meta.env.BASE_URL}${material.url}`} target="_blank" rel="noreferrer"><FileIcon name={material.title} size="compact" /><span className="min-w-0 text-sm break-words">{material.title}<small className="block text-muted-foreground">{material.sizeLabel}</small></span></a><Button size="icon" variant="ghost" aria-label={`Скачать материал: ${material.title}`} onClick={() => start('file', material.title)}><Download aria-hidden="true" /></Button></li>)}</ul></section> : null}
+      <Card className="homework-brief-surface reading-prose space-y-6"><section><h2 className="text-lg font-semibold mb-3">Условие задания</h2><p className="text-sm leading-6">{task.description}</p>{expanded ? <div className="mt-4 space-y-2 text-sm leading-6"><h3 className="font-medium">Что должно быть в решении</h3><ol className="list-decimal pl-5 space-y-1"><li>Ход решения с объяснением выбранного метода.</li><li>Проверка результата на примерах.</li><li>Выводы по выполненной работе.</li></ol><p>Прикрепи файлы или ссылку на решение. Проверь, что преподаватель сможет открыть ссылку.</p></div> : null}<Button variant="link" className="h-auto px-0 mt-3" aria-expanded={expanded} onClick={() => setExpanded(value => !value)}>{expanded ? 'Свернуть условие' : 'Показать полностью'}</Button></section>
+        {materials.length ? <section><h2 className="text-sm font-semibold mb-3">Материалы задания</h2><ul className="space-y-2">{materials.map(material => <li key={material.id} className="homework-resource"><AcademicMaterialLink material={material} className="flex min-w-0 flex-1 items-center gap-3" ><FileIcon name={material.title} size="compact" /><span className="min-w-0 text-sm break-words">{material.title}<small className="block text-muted-foreground">{material.sizeLabel}</small></span></AcademicMaterialLink><Button size="icon" variant="ghost" aria-label={`Экспортировать материал: ${material.title}`} onClick={() => void exportMaterial(material.id)}><Download aria-hidden="true" /></Button></li>)}</ul></section> : null}
         <section><h2 className="text-sm font-semibold mb-3">Связанные лекции</h2><ul className="space-y-2">{related.map(lesson => <li key={lesson.id}><Button variant="outline" className="homework-lecture" onClick={() => navigate({ taskId: null, lessonId: lesson.id, originBlockId: lesson.blockId })}><BookOpen aria-hidden="true" /><span>{lesson.title}</span><ChevronRight className="ml-auto shrink-0" aria-hidden="true" /></Button></li>)}</ul></section>
       </Card>
       <Card className="p-5 sm:p-6"><h2 className="text-lg font-semibold mb-4">Решение</h2>

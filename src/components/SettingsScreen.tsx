@@ -37,7 +37,7 @@ type Category = (typeof categories)[number]['id']
 type Confirmation = 'history' | 'library' | 'data'
 const confirmations = {
   history: { title: 'Очистить историю разговоров?', description: 'Все локальные разговоры и сообщения будут удалены. Файлы останутся в библиотеке. Это действие нельзя отменить.', action: 'Очистить историю' },
-  library: { title: 'Очистить библиотеку?', description: 'Все загруженные файлы будут удалены с этого устройства. Разговоры и сообщения останутся, а вложения в них станут недоступны. Это действие нельзя отменить.', action: 'Очистить библиотеку' },
+  library: { title: 'Удалить личные файлы?', description: 'Личные файлы будут удалены с этого устройства. Учебные материалы сохранятся. Разговоры и сообщения останутся, а вложения в них станут недоступны. Это действие нельзя отменить.', action: 'Удалить личные файлы' },
   data: { title: 'Очистить все локальные данные?', description: 'Будут удалены разговоры, файлы, настройки и недавние поисковые переходы NEW STUDENT. Откроется чистый Навигатор. Это действие нельзя отменить.', action: 'Очистить данные' },
 }
 
@@ -168,7 +168,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
     </aside>
 
     <section ref={paneRef} className="settings-detail" aria-labelledby="settings-category-title" tabIndex={-1}>
-      <div className="page-container settings-detail-inner">
+      <div className="page-container settings-detail-inner" data-layout="workspace">
         <div className="settings-mobile-category"><label>Категория настроек</label>
           <SettingsSelect label="Категория настроек" value={category} onChange={value => changeCategory(value as Category)} options={categories.map(item => [item.id, item.title])} />
         </div>
@@ -195,7 +195,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
         {category === 'appearance' ? <>
           <SettingsGroup title="Тема">
             <SettingRow title="Режим" description="Системная тема следует настройкам устройства.">
-              <RadioGroup value={theme} onValueChange={value => onThemeChange(value as Theme)} orientation="horizontal" aria-label="Тема интерфейса" className="settings-theme-options">
+              <RadioGroup value={theme} onValueChange={value => onThemeChange(value as Theme)} orientation="horizontal" aria-label="Тема интерфейса" className="settings-theme-options segmented-control" data-slot="segmented-control">
                 {([['system', 'Системная', Monitor], ['light', 'Светлая', Sun], ['dark', 'Тёмная', Moon]] as const).map(([value, label, Icon]) =>
                   <RadioGroupItem key={value} value={value} className="settings-theme-choice" aria-label={label}><Icon aria-hidden="true" /><span>{label}</span></RadioGroupItem>)}
               </RadioGroup>
@@ -276,7 +276,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
           <StudyDownloadSettings />
           <SettingsGroup title="Локальные материалы">
             <div className="settings-storage-summary"><div><span>Файлы</span><strong>{materials.length}</strong></div><div><span>Занято файлами</span><strong>{formatMaterialSize(totalSize)}</strong></div></div>
-            <SettingRow title="Лимит хранилища сайта" description="Лимит задаёт браузер. Содержимое файлов хранится в IndexedDB на этом устройстве." icon={Database}>
+            <SettingRow title="Лимит хранилища сайта" description="Лимит задает браузер. Учебные материалы и личные файлы доступны на этом устройстве." icon={Database}>
               <span className="settings-value">{quota === null ? 'Не определён' : formatMaterialSize(quota)}</span>
             </SettingRow>
             <SettingRow title="Постоянное хранение" description={storageSupported ? 'Можно запросить у браузера защиту данных сайта от автоматического освобождения места. Решение принимает браузер.' : 'В этом браузере запрос постоянного хранения недоступен.'}>
@@ -285,8 +285,8 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Управление файлами">
-            <SettingRow title="Очистить библиотеку" description="Удалить файлы с устройства. Текст разговоров и сообщений сохранится." icon={Trash2}>
-              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy || !materials.length} onClick={() => setConfirmation('library')}>Очистить библиотеку</Button>
+            <SettingRow title="Личные файлы" description="Удалить загруженные тобой файлы. Учебные материалы и текст разговоров сохранятся." icon={Trash2}>
+              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy || !materials.some(item => !item.sourceAcademicId)} onClick={() => setConfirmation('library')}>Удалить личные файлы</Button>
             </SettingRow>
           </SettingsGroup>
         </> : null}

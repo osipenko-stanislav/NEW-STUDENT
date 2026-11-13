@@ -13,6 +13,7 @@ export type NavigationState = {
   courseTab: string
   statementId: string | null
   gradeTab: string
+  scheduleEventId: string | null
   scheduleDate: string | null
   scheduleView: 'week' | 'day' | 'two-days' | 'list' | null
   scheduleKind: 'all' | 'classes' | 'deadlines'
@@ -26,7 +27,7 @@ export type NavigationState = {
 }
 const initial: NavigationState = {
   materialId: null, handbookPageId: null, handbookAnchor: null,
-  scheduleDate: null, scheduleView: null, scheduleKind: 'all', scheduleCourse: 'all', scheduleFormat: 'all', scheduleRoom: 'all', scheduleTeacher: 'all',
+  scheduleEventId: null, scheduleDate: null, scheduleView: null, scheduleKind: 'all', scheduleCourse: 'all', scheduleFormat: 'all', scheduleRoom: 'all', scheduleTeacher: 'all',
   homeworkFilter: 'all', homeworkCourse: 'all',
   section: 'Навигатор', courseId: null, taskId: null, lessonId: null, originBlockId: 'block-1',
   courseTab: 'course', statementId: null, gradeTab: 'formula', conversationId: null,

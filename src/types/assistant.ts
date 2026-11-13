@@ -24,7 +24,8 @@ export type AssignmentsPart = {
 export type MaterialsPart = {
   type: 'materials'; version: 1; courseId?: string; items: DemoMaterial[]; query: string; subject: CourseFilter; fileType: 'all' | 'PDF' | 'IPYNB' | 'MD'
 }
-export type GenerativePart = SchedulePart | AssignmentsPart | MaterialsPart
+export type LateDaysPart = { type: 'late-days'; version: 1; mode: 'rescue' | 'balance' | 'history'; planId: string; strategy: 'burning' | 'all-one' | 'manual' | 'distribute' }
+export type GenerativePart = SchedulePart | AssignmentsPart | MaterialsPart | LateDaysPart
 export type MockContext = {
   scenario: 'schedule' | 'week' | 'assignments' | 'materials'
   day: string; subject: CourseFilter; courseId?: string

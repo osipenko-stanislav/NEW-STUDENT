@@ -1,3 +1,4 @@
+import { useLateDays } from '@/components/LateDaysProvider'
 import { BookOpen, CalendarClock, ChevronRight, List, GraduationCap, MessageCircle, CircleHelp } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,6 +15,7 @@ export default function CourseWidgets({ onDialog, onProgram, programOpen, toc, a
 }) {
   const result = calculateGrade(statementForCourse(courseId).formula!)
   const pending = assistantAssignments.find(item => item.courseId === courseId)
+  const { deadline: effectiveDeadline } = useLateDays()
   const deadline = pending ? { ...pending, status: pending.status === 'new' ? 'Не начато' : pending.status === 'submitted' ? 'На проверке' : 'В процессе' } : courseAssignment
   const { formatDateTime } = useDisplayFormats()
   return <aside className="course-widgets" aria-label={toc ? 'Навигация по уроку' : 'Виджеты курса'}>
@@ -25,7 +27,7 @@ export default function CourseWidgets({ onDialog, onProgram, programOpen, toc, a
           <dl className="course-progress-legend"><div><dt><i data-tone="green" />Накоплено</dt><dd>{formatGrade(result.raw)}</dd></div><div><dt>После округления</dt><dd>{result.rounded}</dd></div></dl>
           </div><button type="button" className="course-widget-footer" onClick={onOpenGrades}>Смотреть ведомость</button></Card>
         <Card className="course-widget-card course-deadline-widget"><div className="course-widget-content"><h2>Ближайший дедлайн<CalendarClock aria-hidden="true" /></h2>
-          <button type="button" className="course-deadline-summary" onClick={() => onDialog('assignment')}><span>{deadline.title}</span><time dateTime={deadline.dueAt}>{formatDateTime(deadline.dueAt, true)} МСК</time><Badge variant="neutral">{deadline.status}</Badge></button>
+          <button type="button" className="course-deadline-summary" onClick={() => onDialog('assignment')}><span>{deadline.title}</span><time dateTime={effectiveDeadline(deadline.id) || deadline.dueAt}>{formatDateTime(effectiveDeadline(deadline.id) || deadline.dueAt, true)} МСК</time><Badge variant="neutral">{deadline.status}</Badge></button>
           </div><button type="button" className="course-widget-footer" onClick={() => onDialog('assignment')}>Открыть задание</button></Card>
       </>}
     {courseId === featuredCourseId ? <Button type="button" variant="outline" className="course-resource-link" onClick={() => onDialog('chat')}><MessageCircle aria-hidden="true" /><span><small>Общение</small><strong>Чат курса</strong></span><ChevronRight aria-hidden="true" /></Button> : null}

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { afterEach, beforeEach, test } from 'node:test'
-import { filterSearchItems, loadRecentSearches, saveRecentSearches } from '../src/lib/global-search.ts'
+import { createSearchIndex, searchIndex, filterSearchItems, loadRecentSearches, saveRecentSearches } from '../src/lib/global-search.ts'
 import type { SearchItem } from '../src/types/search.ts'
 
 const items: SearchItem[] = [
@@ -89,4 +89,15 @@ test('finds handbook body text and material formats', () => {
   ]
   assert.equal(filterSearchItems(documents, 'pdf', 'materials')[0]?.id, 'material')
   assert.equal(filterSearchItems(documents, 'академический отпуск', 'handbook')[0]?.id, 'wiki')
+})
+
+
+test('reuses one immutable search index across queries and categories', () => {
+  const source = items.map(item => Object.freeze({ ...item }))
+  const index = createSearchIndex(source)
+  assert.deepEqual(searchIndex(index, 'алгебра', 'courses'), [source[1]])
+  assert.deepEqual(searchIndex(index, 'МАТРИЦЫ', 'materials'), [source[0]])
+  assert.deepEqual(searchIndex(index, '', 'all'), source)
+  assert.equal(searchIndex(index, 'зачётка', 'all')[0], source[2])
+  assert.deepEqual(source.map(item => item.id), ['material', 'course', 'record', 'homework'])
 })

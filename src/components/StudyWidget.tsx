@@ -1,3 +1,4 @@
+import { useLateDays } from '@/components/LateDaysProvider'
 import { useDisplayFormats } from '@/components/SettingsProvider'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,11 +18,12 @@ type StudyWidgetProps = {
 
 export default function StudyWidget({ kind, label, icon, open, onOpenChange, onNavigate }: StudyWidgetProps) {
   const { formatTime, formatDate } = useDisplayFormats()
+  const { deadline } = useLateDays()
   const isClass = kind === 'next-class'
   const title = isClass ? 'Ближайшие пары' : 'Ближайшие дедлайны'
   const action = isClass ? 'Открыть расписание' : 'Открыть домашки'
 
-  return <WidgetPopover open={open} onOpenChange={onOpenChange} title={title}
+  return <WidgetPopover open={open} onOpenChange={onOpenChange} title={title} previewOnHover={false}
     triggerLabel={label} triggerIcon={icon} triggerClassName={isClass ? 'status-widget-classes' : 'status-widget-deadlines'}
     triggerIconNode={isClass ? <Video className="size-4" aria-hidden="true" /> : <Clock3 className="size-4" aria-hidden="true" />}
     contentClassName={`study-widget-popover ${isClass ? '' : 'study-widget-popover-deadlines'}`}>
@@ -52,7 +54,7 @@ export default function StudyWidget({ kind, label, icon, open, onOpenChange, onN
         <p className="study-row-title">{homework.title}</p>
         <div className="study-row-meta study-homework-meta">
           <span>{homework.course}</span>
-          <DeadlineLabel dueAt={homework.dueAt} status={homework.status} />
+          <DeadlineLabel dueAt={deadline(homework.id) || homework.dueAt} status={homework.status} />
         </div>
       </li>)}
     </ul>}

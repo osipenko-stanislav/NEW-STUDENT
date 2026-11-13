@@ -1,3 +1,4 @@
+import { publishedMaterialRevision } from '@/lib/material-sync-demo'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import FileIcon from '@/components/FileIcon'
@@ -59,7 +60,8 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
       <div className="message-author">{message.role === 'user' ? 'Ты' : 'Ассистент'}</div>
       <div className="message-body">
         {message.command ? <Badge variant="ai" className="message-command">{message.command}</Badge> : null}
-        {message.attachments?.length ? <ul className="mb-2 space-y-1" aria-label="Вложения сообщения">
+        {message.attachments?.length ? <ul className="mb-2 space-y-1" aria-label={message.role === 'assistant' ? 'Используемые документы' : 'Вложения сообщения'}>
+          {message.role === 'assistant' ? <li className="text-xs text-muted-foreground">В контексте ответа</li> : null}
           {message.attachments.map((attachment, index) => {
             const material = materials.find(material => material.id === attachment.materialId)
             const available = attachment.materialId !== null && !!material
@@ -71,6 +73,7 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
                 <FileIcon name={attachment.name} size="compact" unavailable />
                 <span className="min-w-0 break-words [overflow-wrap:anywhere]">{attachment.name}<span className="block">Файл недоступен</span></span>
               </span>}
+              {material?.sourceAcademicId && (material.academicRevision ?? 0) < publishedMaterialRevision ? <span className="block mt-1 text-xs text-muted-foreground">Есть обновление документа. Сохраненная версия доступна.</span> : null}
             </li>
           })}
         </ul> : null}

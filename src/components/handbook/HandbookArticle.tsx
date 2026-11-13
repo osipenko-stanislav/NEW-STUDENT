@@ -55,7 +55,7 @@ export default function HandbookArticle({ node, onOpen }: Props): ReactNode {
       if (!handbookText(node).trim()) return null
       const level = Math.max(2, Math.min(6, Number(a.level ?? 2)))
       const Tag = `h${level}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-      return <Tag id={id} tabIndex={-1}>{children}</Tag>
+      return <Tag data-typography={level === 2 ? "accent-title" : undefined} id={id} tabIndex={-1}>{children}</Tag>
     }
     case 'paragraph': return <p id={id}>{children}</p>
     case 'hardBreak': return <br />

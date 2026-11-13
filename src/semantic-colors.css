@@ -1,5 +1,9 @@
 /* Palette values live here; components consume roles through shared variants. */
 :root {
+  --color-sync-current: #20B978;
+  --color-sync-update: #E6A43B;
+  --color-sync-progress: #548CF3;
+  --color-sync-error: #E0525A;
   --color-violet: #7C4DDB;
   --color-violet-text: #6938C0;
   --color-violet-soft: #F1EAFE;

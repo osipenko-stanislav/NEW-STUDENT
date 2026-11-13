@@ -1,3 +1,4 @@
+import { SegmentedControl } from '@/components/ui/segmented-control'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -44,7 +45,7 @@ export function useTheme() {
 }
 
 export default function ThemeSwitcher({ theme, onChange }: { theme: 'light' | 'dark'; onChange: (theme: Theme) => void }) {
-  return <div className="theme-switcher" role="group" aria-label="Тема интерфейса">
+  return <SegmentedControl className="theme-switcher" aria-label="Тема интерфейса">
       <Button type="button" variant="ghost" size="sm" className="theme-option"
         aria-label="Светлая" aria-pressed={theme === 'light'} onClick={() => onChange('light')}>
         <Sun aria-hidden="true" /><span>Светлая</span>
@@ -53,5 +54,5 @@ export default function ThemeSwitcher({ theme, onChange }: { theme: 'light' | 'd
         aria-label="Тёмная" aria-pressed={theme === 'dark'} onClick={() => onChange('dark')}>
         <Moon aria-hidden="true" /><span>Тёмная</span>
       </Button>
-  </div>
+  </SegmentedControl>
 }

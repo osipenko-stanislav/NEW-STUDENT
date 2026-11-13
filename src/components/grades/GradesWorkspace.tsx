@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/ui/empty-state'
 import { useHomeworkRecords } from '@/hooks/use-homework'
 import { academicTasks } from '@/data/academic-data'
 import { navigate, useNavigation } from '@/hooks/use-navigation'
@@ -23,7 +24,7 @@ function Help({ label, children }: { label: string; children: string }) {
   return <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="grades-help" aria-label={label}><CircleHelp aria-hidden="true" /></Button></TooltipTrigger><TooltipContent className="max-w-72">{children}</TooltipContent></Tooltip>
 }
 function Empty({ title, children, onReset }: { title: string; children: string; onReset?: () => void }) {
-  return <div className="grades-empty"><BookOpen aria-hidden="true" /><h2>{title}</h2><p>{children}</p>{onReset ? <Button type="button" variant="outline" onClick={onReset}>Сбросить фильтры</Button> : null}</div>
+  return <EmptyState className="grades-empty" icon={BookOpen} title={title} description={children} action={onReset ? <Button type="button" variant="outline" onClick={onReset}>Сбросить фильтры</Button> : null} />
 }
 function TaskStatus({ status }: { status: GradeTask['status'] }) {
   const Icon = status === 'Сдано' ? Check : status === 'Отклонено' ? X : status === 'На проверке' || status === 'В процессе' ? Clock3 : Circle
@@ -106,7 +107,7 @@ export default function GradesWorkspace({ onOpenCourse }: { onOpenCourse: (id: s
   function reset() { setSemester('all'); setFormat('all') }
   function toggle(key: SortKey) { setSort(current => ({ key, descending: current?.key === key ? !current.descending : false })) }
   function grade(item: GradeStatement) { return item.formula?.length ? calculateGrade(item.formula).rounded : item.grade }
-  return <TooltipProvider delayDuration={200}><div className="grades-surface" ref={scrollRef}><section className="page-container grades-page" aria-label={statement ? undefined : 'Ведомости'} aria-labelledby={statement ? 'grades-title' : undefined}>
+  return <TooltipProvider delayDuration={200}><div className="grades-surface" ref={scrollRef}><section className="page-container grades-page" data-layout="data" aria-label={statement ? undefined : 'Ведомости'} aria-labelledby={statement ? 'grades-title' : undefined}>
     {statement ? <>
       <header className="grades-heading"><Button variant="ghost" className="page-back-button" onClick={() => { setArchived(statement.archived ? 'archive' : 'current'); setScope(statement.semester === null ? 'outside' : 'semester'); setSelectedId(null) }}>Все ведомости</Button><h1 id="grades-title" tabIndex={-1}>{statement.title}</h1></header>
       <Tabs value={detailTab} onValueChange={setDetailTab}><TabsList aria-label="Разделы ведомости"><TabsTrigger value="formula">Формула оценки</TabsTrigger><TabsTrigger value="earned">Набранные баллы</TabsTrigger></TabsList><TabsContent value="formula" className="grades-tab"><Formula statement={statement} /></TabsContent><TabsContent value="earned" className="grades-tab"><Earned key={statement.id} statement={statement} /></TabsContent></Tabs>

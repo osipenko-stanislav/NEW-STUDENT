@@ -1,20 +1,19 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
-import { BookOpen, BookOpenCheck, Compass, CornerDownLeft, Search } from 'lucide-react'
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { BookOpen, BookOpenCheck, Compass, CornerDownLeft, FileText, FolderOpen, GraduationCap, History, LayoutGrid, Library, Search } from 'lucide-react'
 import FileIcon from '@/components/FileIcon'
 import { SemanticIcon } from '@/components/ui/semantic-icon'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { quickSearchSections, searchItems, sectionSearchItems } from '@/data/search-items'
-import { filterSearchItems, loadRecentSearches, saveRecentSearches } from '@/lib/global-search'
+import { createSearchIndex, searchIndex, loadRecentSearches, saveRecentSearches } from '@/lib/global-search'
 import type { SearchCategory, SearchItem } from '@/types/search'
 
-const categories: { value: SearchCategory; label: string }[] = [
-  { value: 'all', label: 'Все' }, { value: 'courses', label: 'Курсы' },
-  { value: 'materials', label: 'Материалы' }, { value: 'homework', label: 'Задания' },
-  { value: 'lessons', label: 'Уроки' }, { value: 'grades', label: 'Ведомости' },
-  { value: 'handbook', label: 'Хэндбук' }, { value: 'sections', label: 'Разделы' },
+const categories: { value: SearchCategory; label: string; icon: typeof Search }[] = [
+  { value: 'all', label: 'Все', icon: Search }, { value: 'courses', label: 'Курсы', icon: BookOpen },
+  { value: 'materials', label: 'Материалы', icon: FolderOpen }, { value: 'homework', label: 'Задания', icon: BookOpenCheck },
+  { value: 'lessons', label: 'Уроки', icon: FileText }, { value: 'grades', label: 'Ведомости', icon: GraduationCap },
+  { value: 'handbook', label: 'Хэндбук', icon: Library }, { value: 'sections', label: 'Разделы', icon: LayoutGrid },
 ]
 
 type GlobalSearchProps = { disabled?: boolean; onNavigate: (item: SearchItem) => void; onAskNavigator: (query: string) => void }
@@ -94,16 +93,16 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
     }).then(items => { if (active) setHandbookContent(Object.fromEntries(items.map(item => [item.id, item.text]))) }).catch(() => {})
     return () => { active = false }
   }, [open, handbookContent])
-  const indexedItems = searchItems.map(item => item.handbookPageId && handbookContent[item.handbookPageId]
-    ? { ...item, content: handbookContent[item.handbookPageId] } : item)
-  const matches = filterSearchItems(indexedItems, query, category)
+  const index = useMemo(() => createSearchIndex(searchItems.map(item => item.handbookPageId && handbookContent[item.handbookPageId]
+    ? { ...item, content: handbookContent[item.handbookPageId] } : item)), [handbookContent])
+  const matches = useMemo(() => open ? searchIndex(index, query, category) : [], [index, query, category, open])
   const recent = recentIds.map(recentId => searchItems.find(item => item.id === recentId))
     .filter((item): item is SearchItem => !!item)
   const quick = quickSearchSections.map(title => sectionSearchItems.find(item => item.section === title))
     .filter((item): item is SearchItem => !!item && !recentIds.includes(item.id)).slice(0, 4)
   const isStart = !query.trim() && category === 'all'
   const groups = isStart
-    ? [{ label: 'Недавние', items: recent }, { label: 'Быстрые переходы', items: quick }].filter(group => group.items.length > 0)
+    ? [{ label: 'Быстрые переходы', items: quick.length ? quick : sectionSearchItems.filter(item => !recentIds.includes(item.id)).slice(0, 4) }]
     : [{ label: query.trim() ? 'Результаты' : categories.find(item => item.value === category)!.label, items: matches }]
   const visibleItems = groups.flatMap(group => group.items)
   const selected = visibleItems.find(item => item.id === selectedId) ?? visibleItems[0]
@@ -130,16 +129,13 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
   function handleKeyboard(event: KeyboardEvent<HTMLDivElement>) {
     if (event.nativeEvent.isComposing || event.altKey || event.metaKey || event.ctrlKey) return
     const fromInput = event.target === inputRef.current
-    const fromTab = event.target instanceof HTMLElement && event.target.getAttribute('role') === 'tab'
-    if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && (fromInput || fromTab)) {
+    if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && fromInput) {
       event.preventDefault()
       if (!visibleItems.length) return
-      const current = fromTab ? -1 : visibleItems.findIndex(item => item.id === selected?.id)
-      const next = fromTab
-        ? (event.key === 'ArrowDown' ? 0 : visibleItems.length - 1)
-        : event.key === 'ArrowDown'
-          ? (current + 1) % visibleItems.length
-          : (current - 1 + visibleItems.length) % visibleItems.length
+      const current = visibleItems.findIndex(item => item.id === selected?.id)
+      const next = event.key === 'ArrowDown'
+        ? (current + 1) % visibleItems.length
+        : (current - 1 + visibleItems.length) % visibleItems.length
       setSelectedId(visibleItems[next].id)
       inputRef.current?.focus()
     }
@@ -159,7 +155,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
       </Button>
     </DialogTrigger>
     <DialogContent ref={dialogRef} className="global-search-dialog" onKeyDown={handleKeyboard}
-      style={viewport ? { maxHeight: Math.max(0, Math.min(640, viewport.height - 32)), top: viewport.top + viewport.height / 2 } : undefined}
+      style={viewport ? { maxHeight: Math.max(0, Math.min(720, viewport.height - 32)), top: viewport.top + viewport.height / 2 } : undefined}
       onOpenAutoFocus={event => { event.preventDefault(); inputRef.current?.focus() }}
       onCloseAutoFocus={event => {
         event.preventDefault()
@@ -181,19 +177,36 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
           className="global-search-input border-0 p-0 shadow-none focus-visible:ring-0"
           onChange={event => { setQuery(event.target.value); setSelectedId(null) }} />
       </div>
-      <Tabs value={category} onValueChange={value => { setCategory(value as SearchCategory); setSelectedId(null) }}
-        className="global-search-tabs-root">
-        <div className="global-search-categories">
-          <TabsList aria-label="Категории поиска" className="global-search-tabs">
-            {categories.map(item => <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>)}
-          </TabsList>
+      {recent.length ? <div className="global-search-recents" role="group" aria-label="Недавно открытые">
+        <History aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+        {recent.map(item => <Button key={item.id} type="button" variant="secondary" size="sm"
+          className="global-search-recent" title={item.title} onClick={() => navigate(item)}>
+          <span>{item.title}</span>
+        </Button>)}
+      </div> : null}
+      <div className="global-search-layout">
+        <div className="global-search-category-list" role="group" aria-label="Категории поиска"
+          onKeyDown={event => {
+            if (!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
+            event.preventDefault()
+            const buttons = [...event.currentTarget.querySelectorAll<HTMLButtonElement>('button')]
+            const current = buttons.indexOf(event.target as HTMLButtonElement)
+            const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1
+              : (current + (event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length
+            buttons[next]?.focus()
+          }}>
+          {categories.map(({ value, label, icon: CategoryIcon }) => <Button key={value} type="button" variant="ghost"
+            className="global-search-category" aria-pressed={category === value}
+            onClick={() => { setCategory(value); setSelectedId(null) }}>
+            <CategoryIcon aria-hidden="true" /><span>{label}</span>
+          </Button>)}
         </div>
-        <TabsContent value={category} className="global-search-panel">
+        <div className="global-search-panel">
           <div className="global-search-results">
             <div id={listId} role="listbox" aria-label="Результаты поиска">
-              {groups.filter(group => group.items.length > 0).map((group, groupIndex) => <div key={group.label}
-                role="group" aria-labelledby={`${id}-group-${groupIndex}`}>
-                <h3 id={`${id}-group-${groupIndex}`} className="global-search-group-title">{group.label}</h3>
+              {groups.filter(group => group.items.length > 0).map(group => <div key={group.label}
+                role="group" aria-label={group.label}>
+                <div aria-hidden="true" className="global-search-group-title">{group.label}</div>
                 {group.items.map(item => <button key={item.id} id={`${listId}-${item.id}`} type="button" role="option"
                   tabIndex={-1} aria-selected={item.id === selected?.id} className="global-search-result"
                   aria-label={`${item.title}. ${item.path}`}
@@ -221,14 +234,14 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
               <p className="global-search-empty-hint">Запрос появится в поле ввода.</p>
             </div> : null}
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
       <div className="global-search-footer" aria-hidden="true">
         <span><kbd>↑↓</kbd> Выбор</span>
         <span><kbd>↵</kbd> {selected ? 'Открыть' : 'В Навигатор'}</span>
         <span><kbd>Esc</kbd> Закрыть</span>
       </div>
-      <span className="sr-only" role="status">{isStart ? 'Быстрые переходы и недавние объекты' : `Найдено: ${visibleItems.length}`}</span>
+      <span className="sr-only" role="status">{isStart ? 'Быстрые переходы' : `Найдено: ${visibleItems.length}`}</span>
     </DialogContent>
   </Dialog>
 }

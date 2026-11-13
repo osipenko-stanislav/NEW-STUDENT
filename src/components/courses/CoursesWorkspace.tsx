@@ -10,7 +10,7 @@ import CourseHomeworks from './CourseHomeworks'
 import CourseGradeSummary from './CourseGradeSummary'
 import CourseLessonReader from './CourseLessonReader'
 import { blocksForCourse, lessonsForCourse } from '@/data/course-curricula'
-import { academicMaterials, academicTasks } from '@/data/academic-data'
+import { academicTasks } from '@/data/academic-data'
 import { tasksForCourse } from '@/data/academic-data'
 import CourseProgram from './CourseProgram'
 import CourseProgramPanel from './CourseProgramPanel'
@@ -53,17 +53,16 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
       openLesson(entity.lessonId, blockId)
       if (window.matchMedia('(max-width: 767px)').matches) setProgramOpen(false)
     } else if (entity.materialId) {
-      const material = academicMaterials.find(item => item.id === entity.materialId)
-      if (material) window.open(`${import.meta.env.BASE_URL}${material.url}`, '_blank', 'noopener,noreferrer')
+      navigate({ materialId: entity.materialId }, true)
     } else setTaskId(entity.id)
   }
-  if (selectedTask && selectedTask.courseId === courseId) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><CourseHomework key={selectedTask.id} task={selectedTask} /></div></div>
+  if (selectedTask && selectedTask.courseId === courseId) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><CourseHomework key={selectedTask.id} task={selectedTask} /><AcademicMaterialDialog id={materialId} onClose={() => navigate({ materialId: null }, true)} /></div></div>
   return <div className={`course-workspace ${programOpen && lesson ? 'has-program' : ''}`}><div ref={scrollRef} className="course-surface" aria-label="Учебная область">
-    {!course ? <CourseCatalog onOpen={openCourse} /> : <div key={routeKey} className={`page-container course-page course-layout motion-route-enter ${lesson ? 'course-lesson-layout' : ''}`}>
+    {!course ? <CourseCatalog onOpen={openCourse} /> : <div key={routeKey} data-layout={lesson ? "reading" : "workspace"} data-with-rail={!programOpen || !lesson ? true : undefined} className={`page-container course-page course-layout motion-route-enter ${lesson ? 'course-lesson-layout' : ''}`}>
       <Tabs value={tab} onValueChange={setTab} className="course-main-column">
         <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button>{lesson ? <ChevronRight aria-hidden="true" /> : null}
           {lesson ? <><button type="button" onClick={program}>{course.title}</button><ChevronRight aria-hidden="true" /><button type="button" onClick={() => openBlock(originBlockId)}>Блок {blocks.findIndex(block => block.id === originBlockId) + 1}</button></> : null}</nav>
-          <div className="course-title-row"><h1 tabIndex={-1} data-course-route-heading>{lesson ? lesson.title : course.title}</h1>{!lesson ? <CourseLevels course={course} /> : null}</div>
+          <div className="course-title-row"><h1 data-typography="accent-title" tabIndex={-1} data-course-route-heading>{lesson ? lesson.title : course.title}</h1>{!lesson ? <CourseLevels course={course} /> : null}</div>
           {lesson ? <p className="course-heading-subtitle">{originBlock?.title}</p> : <p className="course-heading-subtitle">{areaLabels[course.area]} · {courseFilters.find(item => item.id === course.category)!.label}</p>}
           {!lesson ? <TabsList aria-label="Разделы курса" className="course-tab-list"><TabsTrigger value="course">Курс</TabsTrigger><TabsTrigger value="homework">Домашки</TabsTrigger><TabsTrigger value="recordings">Видеозаписи</TabsTrigger><TabsTrigger value="materials">Материалы</TabsTrigger><TabsTrigger value="grades">Ведомость по курсу</TabsTrigger></TabsList> : null}
           {!lesson && course.id !== featuredCourseId ? <a className="course-text-link block mt-4 text-sm" href={course.syllabusUrl ?? handbookUrl} target="_blank" rel="noreferrer">{course.syllabusUrl ? 'Силлабус в Хэндбуке ↗' : 'Каталог силлабусов в Хэндбуке ↗'}</a> : null}

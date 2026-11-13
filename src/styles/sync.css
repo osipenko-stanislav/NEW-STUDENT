@@ -1,0 +1,14 @@
+/* Synchronization is a non-blocking header control, not a new status surface. */
+.sync-button { position: relative; flex-shrink: 0; }
+.sync-status-dot { position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 50%; outline: 2px solid hsl(var(--background)); background: var(--sync-status-color); transition: background-color var(--motion-base) var(--ease-enter); }
+.sync-button[data-status="current"] { --sync-status-color: var(--color-sync-current); }
+.sync-button[data-status="update"] { --sync-status-color: var(--color-sync-update); }
+.sync-button[data-status="syncing"] { --sync-status-color: var(--color-sync-progress); }
+.sync-button[data-status="error"] { --sync-status-color: var(--color-sync-error); }
+.sync-button[data-status="syncing"] > svg { animation: sync-rotate 1.5s linear infinite; }
+.sync-progress { position: absolute; bottom: 0; left: 4px; right: 4px; height: 2px; overflow: hidden; border-radius: 2px; background: hsl(var(--muted)); }
+.sync-progress > span { display: block; height: 100%; background: var(--color-sync-progress); transition: width var(--motion-base) var(--ease-enter); }
+@keyframes sync-rotate { to { transform: rotate(360deg); } }
+html[data-motion-level="minimal"] .sync-button > svg,
+html[data-motion-reduced="true"] .sync-button > svg { animation: none; }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-reduced]) .sync-button > svg { animation: none; } }

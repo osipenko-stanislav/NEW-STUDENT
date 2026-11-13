@@ -37,7 +37,7 @@ export default function WeatherWidget({ temperature, open, onOpenChange }: {
         <img src={asset('weather-banner-glow.svg')} alt="" aria-hidden="true" className="weather-banner-glow" />
         <div className="weather-advice">
           <h3>Как одеться?</h3>
-          <p className="weather-advice-title">Сегодня потеплее</p>
+          <p data-typography="accent-title" className="weather-advice-title">Сегодня потеплее</p>
           <p className="weather-advice-description">На улице прохладно, в Москве началась настоящая осень</p>
         </div>
         <img src={asset('weather-coat.png')} alt="" aria-hidden="true" className="weather-coat" width="96" height="96" />

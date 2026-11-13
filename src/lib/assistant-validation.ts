@@ -16,6 +16,7 @@ export function isMockContext(value: unknown): value is MockContext {
 export function isGenerativePart(value: unknown): value is GenerativePart {
   if (!record(value) || value.version !== 1 || (value.courseId !== undefined && typeof value.courseId !== 'string')) return false
   switch (value.type) {
+    case 'late-days': return ['rescue', 'balance', 'history'].includes(String(value.mode)) && typeof value.planId === 'string' && value.planId.length > 0 && ['burning', 'all-one', 'manual', 'distribute'].includes(String(value.strategy))
     case 'schedule': return ['day', 'week'].includes(String(value.mode)) && ['all', 'classes', 'deadlines'].includes(String(value.view))
       && date(value.selectedDay) && array(value.days, day => record(day) && strings(day, ['short', 'label']) && date(day.date))
       && (value.days as { date: string }[]).some(day => day.date === value.selectedDay)

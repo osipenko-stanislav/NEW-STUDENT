@@ -9,7 +9,10 @@ const sessionKeys = [
   'student-settings:v1',
   'student-course-order:v1',
   'student-download-demo:v1',
+  'student-material-sync:v1',
   'student-homework:v1',
+  'student-notifications:v1',
+  'student-late-days:v1',
 ] as const
 
 export async function resetSessionStorage(): Promise<void> {

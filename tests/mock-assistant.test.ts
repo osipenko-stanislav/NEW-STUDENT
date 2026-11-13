@@ -64,7 +64,7 @@ test('unsupported requests remain honest, retain context, and never analyze atta
   assert.match(text(unknown.content), /Не\sудалось найти ответ/)
   assert.deepEqual(unknown.mockContext, week.mockContext)
   const files = createMockResponse({ command: null, text: 'Проанализируй этот PDF', attachments: [{ materialId: 'file', name: 'file.pdf' }] })
-  assert.match(text(files.content), /Не\sудалось разобрать их содержимое/)
+  assert.match(text(files.content), /содержимое пока не\sиспользуется в\sответах/)
   assert.equal(block(files), undefined)
   const badClarification = response('Домашки', 'сделай за меня все задания')
   assert.equal(block(badClarification), undefined)

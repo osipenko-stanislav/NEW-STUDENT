@@ -1,0 +1,14 @@
+# Local material availability: UX demo
+
+This is a prepared interaction demo, not a university synchronization client. There are no server APIs, background download manager, file-watching protocol or new offline-app infrastructure.
+
+- `material-sync-demo.ts` describes a fixed published revision (2) and prepared revisions (1/2). Status compares the complete local material revision to that published revision; elapsed time alone never makes a document stale.
+- `local-materials.ts` contains the existing 17 sample documents as bytes. Regenerate it with `node --experimental-strip-types scripts/prepare-local-materials.mjs`. The short update adds a prepared practice paragraph to Markdown files and leaves PDF/notebook bytes intact.
+- `MaterialSyncProvider` owns the four header states, a short three-step process, last update and the existing auto-sync preferences (`downloadAutoSync`, `downloadInterval`). `downloadFolder` remains readable for settings compatibility but is no longer a prerequisite or a visible setting. No second auto-sync preference is introduced.
+- `MaterialLibrary` and the existing IndexedDB file store are reused. University files carry `sourceAcademicId` and `academicRevision`; personal files have neither. Stable IDs and chat attachment references avoid copying a file for each conversation. Updating university files does not remove personal files. Clearing personal files preserves the university set.
+- The first visit seeds revision 1 locally. With auto-sync enabled it updates to revision 2; with auto-sync disabled the amber state remains available to inspect. Setting the browser offline and pressing update demonstrates failure; the previous local bytes remain readable. Returning online and retrying demonstrates recovery.
+- Course and library previews use the local library, including after reload. Export creates a real external file from the stored bytes. Export does not run synchronization or open a download-progress modal.
+- Navigator reference responses are authored in `material-context-demo.ts` for the prepared academic set. They display referenced document IDs and distinguish revisions. Personal files may be attached but their contents are not parsed or sent to a model. No LLM or arbitrary-file analysis is represented.
+- The logo reset retains its existing implementation and also clears the sync timestamp/state; the next session starts with the prepared baseline. No service worker is added: offline checks concern material access inside an already loaded demo, not installation or launching the entire app without its local host.
+
+The library settings show auto-sync, check interval, manual update, last update and existing browser storage information. Header status colors are dedicated semantic roles in `semantic-colors.css`, mapped to the requested HEX values without changing the other product accents.

@@ -1,5 +1,6 @@
 export type ConversationMaterial = {
   sourceAcademicId?: string
+  academicRevision?: number
   id: string
   // Upload provenance only, never an access or visibility restriction.
   // A draft:<UUID> is replaced by the first conversation created from that draft.

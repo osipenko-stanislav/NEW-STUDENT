@@ -56,7 +56,7 @@ export default function FilePreview({ material, library, sourceUrl }: { material
     <p className="text-muted-foreground">Попробуй еще раз или скачай файл, чтобы открыть его на устройстве.</p>
     <Button type="button" variant="outline" onClick={() => { library?.clearError(); setAttempt(value => value + 1) }}>Повторить</Button>
   </div>
-  if (state.status === 'text') return <div className="file-preview-text">
+  if (state.status === 'text') return <div className="file-preview-text reading-prose">
     <pre aria-label={`Содержимое файла: ${material.name}`}>{state.text || 'Файл пуст'}</pre>
     {state.truncated ? <p className="file-preview-notice">Показано начало файла. Скачай его, чтобы прочитать целиком.</p> : null}
   </div>

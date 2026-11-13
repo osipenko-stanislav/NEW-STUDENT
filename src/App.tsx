@@ -1,9 +1,19 @@
-import { useHomeworkTimers } from '@/hooks/use-homework'
+import { LateDaysProvider, useLateDays } from '@/components/LateDaysProvider'
+import LateDaysEntry from '@/components/late-days/LateDaysEntry'
+import { createMockResponse } from '@/lib/mock-assistant'
+import { createLateDaysResponse } from '@/lib/late-days-assistant'
+import SupportHelper from '@/components/SupportHelper'
+import { NotificationsProvider, useNotifications } from '@/components/NotificationsProvider'
+import NotificationsPopover from '@/components/notifications/NotificationsPopover'
+import type { StudentNotification } from '@/data/notifications'
+import { notificationDetails } from '@/lib/notifications'
+import { createMaterialContextResponse } from '@/lib/material-context-demo'
+import { refreshHomeworkRecords, useHomeworkRecords, useHomeworkTimers } from '@/hooks/use-homework'
 import { navigate, useNavigation } from '@/hooks/use-navigation'
 import { navigationForSearch } from '@/lib/search-navigation'
 import type { SearchItem } from '@/types/search'
 import { gradeStatements } from '@/data/grades'
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type FormEvent } from 'react'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
@@ -18,17 +28,14 @@ import { SettingsProvider, useSettings, useDisplayFormats } from '@/components/S
 import { AppMotionProvider, useAppMotion } from '@/components/MotionProvider'
 import { MotionPage } from '@/components/MotionContent'
 import { AnimatePresence, m } from 'motion/react'
-import SettingsScreen from '@/components/SettingsScreen'
 import VoiceInputDemo from '@/components/VoiceInputDemo'
 import { AcademicMaterialActionsProvider } from '@/components/AcademicMaterialActions'
-import { DownloadDemoProvider } from '@/components/DownloadDemoProvider'
+import { MaterialLibraryProvider } from '@/components/MaterialLibraryProvider'
+import { MaterialSyncProvider } from '@/components/MaterialSyncProvider'
+import MaterialSyncButton from '@/components/MaterialSyncButton'
 import { academicMaterials } from '@/data/academic-data'
-import CoursesWorkspace from '@/components/courses/CoursesWorkspace'
-import GradesWorkspace from '@/components/grades/GradesWorkspace'
-import ScheduleWorkspace from '@/components/schedule/ScheduleWorkspace'
-import HomeworkWorkspace from '@/components/homework/HomeworkWorkspace'
 import { appInfo } from '@/data/app-info'
-import ThemeSwitcher, { useTheme } from '@/components/ThemeSwitcher'
+import { useTheme } from '@/components/ThemeSwitcher'
 import WeatherWidget from '@/components/WeatherWidget'
 import StudyWidget from '@/components/StudyWidget'
 import PreferencesDialog from '@/components/PreferencesDialog'
@@ -48,12 +55,19 @@ import {
 
 const asset = (name: string) => `${import.meta.env.BASE_URL}assets/figma/${name}`
 const HandbookWorkspace = lazy(() => import('@/components/handbook/HandbookWorkspace'))
+const HomeworkWorkspace = lazy(() => import('@/components/homework/HomeworkWorkspace'))
+const ScheduleWorkspace = lazy(() => import('@/components/schedule/ScheduleWorkspace'))
+const GradesWorkspace = lazy(() => import('@/components/grades/GradesWorkspace'))
+const CoursesWorkspace = lazy(() => import('@/components/courses/CoursesWorkspace'))
+const NotificationsWorkspace = lazy(() => import('@/components/notifications/NotificationsWorkspace'))
+const LateDaysWorkspace = lazy(() => import('@/components/late-days/LateDaysWorkspace'))
+const SettingsScreen = lazy(() => import('@/components/SettingsScreen'))
 const navigatorOrbs: readonly OrbLayer[] = [
   { offset: [-0.06, 0.02], scale: 1, opacity: 0.66, phase: 0 },
   { offset: [0.07, 0.03], scale: 0.78, opacity: 0.64, phase: 2.1 },
   { offset: [0.015, -0.04], scale: 0.9, opacity: 0.74, phase: 4.2 },
 ]
-const suggestions = ['Расписание сегодня', 'Моя неделя', 'Домашки', 'Материалы']
+const suggestions = ['Расписание сегодня', 'Моя неделя', 'Домашки', 'Материалы', '🔥 Я в огне']
 const nextClassTime = upcomingClassSlots[0].startsAt
 const deadlineCount = homeworkDeadlines.length
 const widgets = [
@@ -66,7 +80,6 @@ const widgetOptions = widgets.map(widget => ({ value: widget.id, label: widget.l
 const suggestionOptions = suggestions.map(suggestion => ({ value: suggestion, label: suggestion }))
 const panels = {
   bookmarks: { title: 'Закладки', description: 'Здесь появятся сохранённые материалы.' },
-  notifications: { title: 'Уведомления', description: 'Новых уведомлений пока нет.' },
   profile: { title: 'Иван', description: 'Студент Центрального университета' },
 }
 type Panel = keyof typeof panels
@@ -90,6 +103,8 @@ function StudentInterface({ onResetSession, isResetting }: {
   const { effectiveIntensity, spatialMotion, transition } = useAppMotion()
   const { formatTime } = useDisplayFormats()
   useHomeworkTimers()
+  const lateDays = useLateDays()
+  const homeworkRecords = useHomeworkRecords()
   const { section, studyTarget } = useNavigation()
   const setSection = (section: string) => navigate({ section })
   const [panel, setPanel] = useState<Panel | null>(null)
@@ -127,6 +142,19 @@ function StudentInterface({ onResetSession, isResetting }: {
   const importingAcademic = useRef(false)
   const currentConversationId = useRef<string | null>(null)
   currentConversationId.current = activeConversation?.id ?? null
+  const notifications = useNotifications()
+  function openNotification(event: StudentNotification) {
+    const details = notificationDetails(event)
+    if (!details) return
+    notifications.markRead(event.id)
+    navigate(details.destination)
+    setMaterialsOpen(false)
+    setOpenMobile(false)
+    setOpenWidget(null)
+    stopTyping()
+    const parent = navigation.find(group => group.children?.includes(details.destination.section ?? ''))
+    if (parent) setExpandedGroups(groups => ({ ...groups, [parent.title]: true }))
+  }
   const isConversation = section === 'Навигатор' && activeConversation !== null
 
   useEffect(() => { setHistoryOpen(settings.historyMode === 'expanded') }, [settings.historyMode])
@@ -187,19 +215,9 @@ function StudentInterface({ onResetSession, isResetting }: {
     setAcademicError(null)
     try {
       const existing = library.getSnapshot().materials.find(item => item.sourceAcademicId === id)
-      if (existing) {
-        if (!library.attach(existing.id, scopeId)) throw new Error('attach')
-      } else {
-        const response = await fetch(`${import.meta.env.BASE_URL}${material.url}`)
-        if (!response.ok) throw new Error('fetch')
-        const blob = await response.blob()
-        const extension = material.fileType.toLowerCase()
-        const name = material.title.toLowerCase().endsWith(`.${extension}`) ? material.title : `${material.title}.${extension}`
-        const mime = material.fileType === 'PDF' ? 'application/pdf' : material.fileType === 'MD' ? 'text/markdown' : 'application/x-ipynb+json'
-        const added = await library.add([new window.File([blob], name, { type: mime })], scopeId, id)
-        if (!added.length) throw new Error('save')
-      }
+      if (!existing || !library.attach(existing.id, scopeId)) throw new Error('attach')
       setSection('Навигатор')
+      if (!prompt.trim()) setPrompt('Кратко объясни материал')
       setMaterialsOpen(false)
       setOpenMobile(false)
       requestAnimationFrame(() => promptRef.current?.focus())
@@ -257,7 +275,7 @@ function StudentInterface({ onResetSession, isResetting }: {
   }
 
   async function clearLibrary() {
-    const ids = materials.map(material => material.id)
+    const ids = materials.filter(material => !material.sourceAcademicId).map(material => material.id)
     if (!await library.clear()) return false
     ids.forEach(detachMaterial)
     return true
@@ -277,6 +295,14 @@ function StudentInterface({ onResetSession, isResetting }: {
   }
 
   function useSuggestion(value: string) {
+    if (value === '🔥 Я в огне') {
+      if (activeGeneration || voiceBusy || materialsBusy) return
+      const draft = { text: '', command: value }
+      const sent = sendMessage(draft, createLateDaysResponse(draft, lateDays.state, homeworkRecords))
+      if (sent) library.completeSend(scopeId, sent.conversationId)
+      clearComposer()
+      return
+    }
     setPromptCommand(value)
     promptRef.current?.focus()
   }
@@ -315,7 +341,10 @@ function StudentInterface({ onResetSession, isResetting }: {
     }
     if (library.getSnapshot().pending > 0 || activeGeneration) return
     const attachments = selectedMaterials.map(material => ({ materialId: material.id, name: material.name }))
-    const sent = sendMessage({ text: prompt, command: promptCommand, attachments })
+    const draft = { text: prompt, command: promptCommand, attachments }
+    const previousIds = new Set(activeConversation?.messages.filter(item => item.role === 'assistant').at(-1)?.attachments?.map(item => item.materialId) ?? [])
+    const contextMaterials = selectedMaterials.length ? selectedMaterials : materials.filter(item => previousIds.has(item.id))
+    const sent = sendMessage(draft, createLateDaysResponse(draft, lateDays.state, homeworkRecords) ?? createMaterialContextResponse(draft, contextMaterials) ?? createMockResponse(draft, activeConversation?.messages, { state: lateDays.state, records: homeworkRecords }))
     if (sent) library.completeSend(scopeId, sent.conversationId)
     clearComposer()
     promptRef.current?.focus()
@@ -398,7 +427,7 @@ function StudentInterface({ onResetSession, isResetting }: {
           <GhostButton label={menuOpen ? 'Свернуть меню' : 'Развернуть меню'} onClick={toggleSidebar}>
             <Icon name="lucide-panel-left.svg" />
           </GhostButton>
-          <span className="header-section-title">{section}</span>
+          {!['Уведомления', 'Late Days'].includes(section) ? <span className="header-section-title">{section}</span> : null}
         </div>
         <div className="header-search">
           <div className="search-container">
@@ -409,11 +438,9 @@ function StudentInterface({ onResetSession, isResetting }: {
           </div>
         </div>
         <div className="header-actions">
-          <ThemeSwitcher theme={resolvedTheme} onChange={setTheme} />
-          <GhostButton label="Late days: 24" className="late-days-action" onClick={() => selectSection('Late days')}>
-            <Icon name="calendar-plus01-lined1.svg" /><span>24</span>
-          </GhostButton>
-          <GhostButton label="Уведомления" onClick={() => setPanel('notifications')}><Icon name="bell03-lined.svg" /></GhostButton>
+          <MaterialSyncButton />
+          <LateDaysEntry onHistory={() => { selectSection('Late Days'); setMaterialsOpen(false) }} />
+          <NotificationsPopover onOpen={openNotification} onHistory={() => { selectSection('Уведомления'); setMaterialsOpen(false) }} />
           <GhostButton label="Расписание" onClick={() => selectSection('Расписание')}><Icon name="calendar-lined1.svg" /></GhostButton>
           <GhostButton label="Библиотека" id="materials-trigger" aria-controls="materials-sidebar" aria-expanded={materialsOpen}
             onClick={() => { setMaterialPicker(false); setMaterialInfoId(null); setMaterialsOpen(open => !open) }}><Icon name="archive-lined.svg" /></GhostButton>
@@ -424,8 +451,10 @@ function StudentInterface({ onResetSession, isResetting }: {
         </div>
       </header>
       <div className={`workspace-layout ${materialsOpen ? 'has-materials' : ''}`}>
-      <div className={`workspace ${isConversation ? 'workspace-chat' : ''} ${section === 'Настройки' ? 'workspace-settings' : ''} ${section === 'Курсы' ? 'workspace-courses' : ''} ${section === 'Ведомости' ? 'workspace-grades' : ''} ${section === 'Хэндбук' ? 'workspace-handbook' : ''}`} aria-label={section}><MotionPage motionKey={section}>
-        {section === 'Хэндбук' ? <Suspense fallback={<p className="p-6 text-sm text-muted-foreground" role="status">Загружаем хэндбук…</p>}><HandbookWorkspace /></Suspense> : null}
+      <div className={`workspace ${isConversation ? 'workspace-chat' : ''} ${section === 'Настройки' ? 'workspace-settings' : ''} ${section === 'Курсы' ? 'workspace-courses' : ''} ${section === 'Ведомости' ? 'workspace-grades' : ''} ${section === 'Хэндбук' ? 'workspace-handbook' : ''}`} aria-label={section}><MotionPage motionKey={section}><Suspense fallback={<div className="route-loading" role="status">Загружаем раздел…</div>}>
+        {section === 'Late Days' ? <LateDaysWorkspace /> : null}
+        {section === 'Уведомления' ? <NotificationsWorkspace onOpen={openNotification} /> : null}
+        {section === 'Хэндбук' ? <HandbookWorkspace /> : null}
         {section === 'Расписание' ? <ScheduleWorkspace onNavigate={selectSection} /> : null}
         {section === 'Домашки' ? <HomeworkWorkspace onNavigate={selectSection} /> : null}
         {section === 'Ведомости' ? <GradesWorkspace key={studyTarget} onOpenCourse={id => selectSection(`Курсы/${id}`)} /> : null}
@@ -481,7 +510,7 @@ function StudentInterface({ onResetSession, isResetting }: {
                 fallback={<img src={asset('navigator-visual.png')} alt="" className="orb-fallback" width="500" height="270" />}
               />
             </div>
-            <h1 id="navigator-title">Привет, Иван! С чего начнем?</h1>
+            <h1 data-typography="accent-title" id="navigator-title">Привет, Иван! С чего начнем?</h1>
           </div>
           </m.div>}</AnimatePresence>
           <div className="assistant-input">
@@ -571,15 +600,16 @@ function StudentInterface({ onResetSession, isResetting }: {
             </p> : null}
           </div>
         </section> : null}
-      </MotionPage></div>
+      </Suspense></MotionPage></div>
     <MaterialsPanel open={materialsOpen} onOpenChange={open => { setMaterialsOpen(open); if (!open) setMaterialInfoId(null) }}
       materials={materials} library={library} error={materialsError} busy={materialsBusy}
       picker={materialPicker} selectedIds={selectedMaterials.map(material => material.id)} conversations={conversations}
       infoId={materialInfoId} onInfoChange={setMaterialInfoId}
-      onAttach={id => library.attach(id, scopeId)}
+      onAttach={id => { if (!library.attach(id, scopeId)) return; if (!prompt.trim()) setPrompt('Кратко объясни материал'); setSection('Навигатор'); setMaterialsOpen(false); setMaterialInfoId(null); setOpenMobile(false); requestAnimationFrame(() => promptRef.current?.focus()) }}
       onRemove={async id => { if (await library.remove(id)) detachMaterial(id) }} />
       </div>
     </SidebarInset>
+    <SupportHelper />
     <Sheet open={panel !== null} onOpenChange={open => { if (!open) setPanel(null) }}>
       <SheetContent>
         <SheetHeader>
@@ -601,14 +631,17 @@ export default function App() {
     resetInProgress.current = true
     setIsResetting(true)
     const success = await library.resetSession()
-    if (success) setSessionVersion(version => version + 1)
+    if (success) {
+      refreshHomeworkRecords()
+      setSessionVersion(version => version + 1)
+    }
     resetInProgress.current = false
     setIsResetting(false)
     return success
   }
 
-  return <><SettingsProvider key={sessionVersion}><AppMotionProvider><SidebarProvider inert={isResetting} aria-busy={isResetting} className="student-app" style={{ '--sidebar-width': '288px', '--sidebar-width-icon': '64px' } as CSSProperties}>
-    <DownloadDemoProvider><StudentInterface onResetSession={resetSession} isResetting={isResetting} /></DownloadDemoProvider>
+  return <><SettingsProvider key={sessionVersion}><AppMotionProvider><SidebarProvider inert={isResetting} aria-busy={isResetting} className="student-app">
+    <MaterialLibraryProvider><MaterialSyncProvider><LateDaysProvider><NotificationsProvider><StudentInterface onResetSession={resetSession} isResetting={isResetting} /></NotificationsProvider></LateDaysProvider></MaterialSyncProvider></MaterialLibraryProvider>
   </SidebarProvider></AppMotionProvider></SettingsProvider>
     {isResetting ? <div role="status" className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 text-sm">
       Сбрасываем сессию…

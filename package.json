@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc -b && vite build --configLoader runner",
+    "build": "npm run check:ui && tsc -b && vite build --configLoader runner",
     "test:storage": "node --experimental-strip-types --test tests/conversation-storage.test.ts",
     "test:titles": "node --experimental-strip-types --test tests/conversation-title.test.ts",
     "test:materials": "node --experimental-strip-types --test tests/material-metadata.test.ts",
     "test:search": "node --experimental-strip-types --test tests/global-search.test.ts",
     "test:assistant": "node --experimental-strip-types --test tests/mock-assistant.test.ts",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --experimental-strip-types --test tests/*.test.ts"
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "check:ui": "node scripts/check-ui.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "latest",

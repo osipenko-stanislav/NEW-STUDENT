@@ -11,13 +11,14 @@ type WidgetPopoverProps = {
   triggerIcon: string
   triggerIconNode?: ReactNode
   triggerClassName?: string
+  previewOnHover?: boolean
   contentClassName: string
   children: ReactNode
 }
 
 export default function WidgetPopover({
   open, onOpenChange, title, triggerLabel, triggerAriaLabel = triggerLabel, triggerIcon,
-  triggerClassName = '', triggerIconNode, contentClassName, children,
+  triggerClassName = '', triggerIconNode, previewOnHover = true, contentClassName, children,
 }: WidgetPopoverProps) {
   const triggerRef = useRef<HTMLButtonElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -64,11 +65,13 @@ export default function WidgetPopover({
   return <Popover open={open} onOpenChange={changeOpen}>
     <PopoverTrigger asChild>
       <Button ref={triggerRef} type="button" variant="ghost" className={`status-widget ${triggerClassName}`}
-        aria-label={triggerAriaLabel} onPointerEnter={openOnHover} onPointerLeave={closeAfterLeave}
+        aria-label={triggerAriaLabel}
+        onPointerEnter={previewOnHover ? openOnHover : undefined}
+        onPointerLeave={previewOnHover ? closeAfterLeave : undefined}
         onFocus={event => {
-          if (!suppressFocusOpen.current && event.currentTarget.matches(':focus-visible')) changeOpen(true)
+          if (previewOnHover && !suppressFocusOpen.current && event.currentTarget.matches(':focus-visible')) changeOpen(true)
         }}
-        onBlur={closeAfterLeave}
+        onBlur={previewOnHover ? closeAfterLeave : undefined}
         onKeyDown={event => {
           if (event.key === 'ArrowDown') {
             event.preventDefault()
@@ -83,9 +86,10 @@ export default function WidgetPopover({
     </PopoverTrigger>
     <PopoverContent ref={contentRef} className={`widget-popover ${contentClassName}`} side="bottom" align="start"
       sideOffset={8} collisionPadding={16} aria-label={title}
-      onPointerEnter={cancelClose} onPointerLeave={closeAfterLeave}
+      onPointerEnter={previewOnHover ? cancelClose : undefined}
+      onPointerLeave={previewOnHover ? closeAfterLeave : undefined}
       onFocusCapture={() => { restoreFocus.current = true; cancelClose() }}
-      onBlurCapture={closeAfterLeave}
+      onBlurCapture={previewOnHover ? closeAfterLeave : undefined}
       onInteractOutside={() => { restoreFocus.current = false }}
       onOpenAutoFocus={event => event.preventDefault()}
       onCloseAutoFocus={event => {

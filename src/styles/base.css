@@ -1,0 +1,46 @@
+/* base: shared design system. */
+@font-face {
+  font-family: 'Universita';
+  src: url('../../assets/Universita.otf') format('opentype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Root UI';
+  src: url('../../assets/PT-Root-UI/pt-root-ui_regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Root UI';
+  src: url('../../assets/PT-Root-UI/pt-root-ui_medium.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Root UI';
+  src: url('../../assets/PT-Root-UI/pt-root-ui_bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-ui);
+  }
+}
+::selection { background: hsl(var(--foreground) / 0.16); color: hsl(var(--foreground)); }
+input, textarea { caret-color: hsl(var(--foreground)); }
+* { scrollbar-width: thin; scrollbar-color: hsl(var(--foreground) / 0.2) transparent; }

@@ -1,3 +1,5 @@
+import { useLateDays } from '@/components/LateDaysProvider'
+import { SegmentedControl } from '@/components/ui/segmented-control'
 import { navigate } from '@/hooks/use-navigation'
 import { useHomeworkRecords } from '@/hooks/use-homework'
 import { academicTasks } from '@/data/academic-data'
@@ -31,7 +33,8 @@ export default function ScheduleResponse({ part, onNavigate }: { part: ScheduleP
   const chosenDay = part.days.find(item => item.date === day)!
   const slots = part.classes.filter(item => item.date === day)
   const records = useHomeworkRecords()
-  const deadlines = isWeek ? part.assignments.map(item => ({ ...item, status: records[item.id]?.submittedAt ? 'submitted' as const : records[item.id]?.savedAt || records[item.id]?.startedAt ? 'in-progress' as const : item.status })).filter(item => item.dueAt.startsWith(day)) : []
+  const { deadline } = useLateDays()
+  const deadlines = isWeek ? part.assignments.map(item => ({ ...item, dueAt: deadline(item.id) || item.dueAt, status: records[item.id]?.submittedAt ? 'submitted' as const : records[item.id]?.savedAt || records[item.id]?.startedAt ? 'in-progress' as const : item.status })).filter(item => item.dueAt.startsWith(day)) : []
   const events = [
     ...(view !== 'deadlines' ? slots.map(slot => ({ time: slot.startsAt, id: slot.id, slot })) : []),
     ...(view !== 'classes' ? deadlines.map(homework => ({ time: homework.dueAt.slice(11, 16), id: homework.id, homework })) : []),
@@ -59,10 +62,10 @@ export default function ScheduleResponse({ part, onNavigate }: { part: ScheduleP
           <span>{item.short}</span><span>{item.label.split(' ')[0]}</span>
         </TabsTrigger>)}
       </TabsList>
-      <div className="gen-filters" role="group" aria-label="События недели">
+      <div className="gen-filters"><SegmentedControl aria-label="События недели">
         {([['all', 'Все'], ['classes', 'Занятия'], ['deadlines', 'Дедлайны']] as const).map(([value, label]) => <Button key={value} type="button" size="sm"
           variant={view === value ? 'secondary' : 'ghost'} aria-pressed={view === value} onClick={() => setView(value)}>{label}</Button>)}
-      </div>
+      </SegmentedControl></div>
       <TabsContent value={day} className="m-0">{content}</TabsContent>
     </Tabs> : content}
     <div className="gen-footer"><Button type="button" variant="outline" onClick={() => { navigate({ scheduleDate: day, scheduleKind: view, scheduleView: 'day' }, true); onNavigate('Расписание') }}>Открыть расписание</Button></div>

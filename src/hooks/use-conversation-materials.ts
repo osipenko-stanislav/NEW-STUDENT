@@ -1,8 +1,8 @@
-import { useState, useSyncExternalStore } from 'react'
-import { MaterialLibrary } from '@/lib/material-library'
+import { useSyncExternalStore } from 'react'
+import { useMaterialLibrary } from '@/components/MaterialLibraryProvider'
 
 export function useConversationMaterials(conversationId: string | null) {
-  const [library] = useState(() => new MaterialLibrary())
+  const library = useMaterialLibrary()
   const snapshot = useSyncExternalStore(library.subscribe, library.getSnapshot)
   const scopeId = conversationId ?? snapshot.draftId
   const selectedIds = new Set(snapshot.attachments.filter(item => item.scopeId === scopeId).map(item => item.materialId))

@@ -1,3 +1,4 @@
+import { useLateDays } from '@/components/LateDaysProvider'
 import HomeworkModeBadge from '@/components/courses/HomeworkModeBadge'
 import { academicTasks } from '@/data/academic-data'
 import { useHomeworkRecords } from '@/hooks/use-homework'
@@ -15,7 +16,8 @@ import type { AssignmentFilter, AssignmentsPart } from '@/types/assistant'
 export default function AssignmentsResponse({ part, onNavigate }: { part: AssignmentsPart; onNavigate: (section: string) => void }) {
   const [filter, setFilter] = useState<AssignmentFilter>(part.filter)
   const records = useHomeworkRecords()
-  const items = part.items.map(item => ({ ...item, status: records[item.id]?.submittedAt ? 'submitted' as const : records[item.id]?.savedAt || records[item.id]?.startedAt ? 'in-progress' as const : item.status })).filter(item => (part.subject === 'all' || item.subject === part.subject)
+  const { deadline } = useLateDays()
+  const items = part.items.map(item => ({ ...item, dueAt: deadline(item.id) || item.dueAt, status: records[item.id]?.submittedAt ? 'submitted' as const : records[item.id]?.savedAt || records[item.id]?.startedAt ? 'in-progress' as const : item.status })).filter(item => (part.subject === 'all' || item.subject === part.subject)
     && matchesHomeworkFilter(item.status, filter))
   return <section className="gen-ui" aria-label="Список домашних заданий">
     <div className="gen-header"><h3 className="gen-heading"><SemanticIcon icon={BookOpenCheck} tone="violet" />Домашки</h3><p>Все сроки по Москве</p></div>

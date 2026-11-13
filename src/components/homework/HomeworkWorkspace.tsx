@@ -1,3 +1,7 @@
+import { useLateDays } from '@/components/LateDaysProvider'
+import TaskDeadline from '@/components/late-days/TaskDeadline'
+import RescueButton from '@/components/late-days/RescueButton'
+import { EmptyState } from '@/components/ui/empty-state'
 import { navigate, useNavigation } from '@/hooks/use-navigation'
 import { BookOpenCheck } from 'lucide-react'
 import { academicTasks } from '@/data/academic-data'
@@ -13,7 +17,6 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import AssignmentStatusFilter from '@/components/AssignmentStatusFilter'
 import HomeworkModeBadge from '@/components/courses/HomeworkModeBadge'
-import DeadlineLabel from '@/components/DeadlineLabel'
 
 const tasks = academicTasks.filter(task => task.enrollmentId === `current-${task.courseId}` && isHomework(task))
 const subjectLabels: Record<string, string> = { math: 'Математика', python: 'Python', development: 'Разработка', general: 'Общие дисциплины' }
@@ -23,17 +26,19 @@ export default function HomeworkWorkspace({ onNavigate }: { onNavigate: (destina
   const setFilter = (homeworkFilter: AssignmentFilter) => navigate({ homeworkFilter }, true)
   const setCourse = (homeworkCourse: string) => navigate({ homeworkCourse }, true)
   const records = useHomeworkRecords()
-  const visible = tasks.map(task => ({ ...task, status: homeworkStatus(task, records[task.id]) }))
+  const { deadline } = useLateDays()
+  const visible = tasks.map(task => ({ ...task, dueAt: deadline(task), status: homeworkStatus(task, records[task.id]) }))
     .filter(task => matchesHomeworkFilter(task.status, filter) && (course === 'all' || (course.startsWith('subject:') ? (task.courseId === 'python-basic' ? 'python' : courses.find(item => item.id === task.courseId)?.area) === course.slice(8) : task.courseId === course)))
     .sort((a, b) => Number(homeworkFilterStatus(a.status) === 'submitted') - Number(homeworkFilterStatus(b.status) === 'submitted') || a.dueAt.localeCompare(b.dueAt) || a.title.localeCompare(b.title, 'ru'))
   const filtered = filter !== 'all' || course !== 'all'
   function reset() { navigate({ homeworkFilter: 'all', homeworkCourse: 'all' }, true) }
-  return <section className="page-container study-page all-homework-page" aria-label="Домашки">
+  return <section className="page-container study-page all-homework-page" data-layout="data" aria-label="Домашки">
     <p className="study-page-context">Сроки по Москве</p>
     <section className="homework-list-surface">
       <div className="homework-filters">
         <div className="homework-course-filter"><label htmlFor="homework-course-filter">Курс</label><Select value={course} onValueChange={setCourse}><SelectTrigger id="homework-course-filter"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Все курсы</SelectItem>{course.startsWith('subject:') ? <SelectItem value={course}>{subjectLabels[course.slice(8)]}</SelectItem> : null}{courses.map(item => <SelectItem key={item.id} value={item.id}>{item.title}</SelectItem>)}</SelectContent></Select></div>
         <AssignmentStatusFilter value={filter} onChange={setFilter} />
+        <RescueButton />
         {filtered ? <Button variant="ghost" onClick={reset} className="homework-reset">Сбросить фильтры</Button> : null}
       </div>
       <p className="sr-only" role="status">Заданий: {visible.length}. Сначала несданные, затем сданные.</p>
@@ -41,10 +46,10 @@ export default function HomeworkWorkspace({ onNavigate }: { onNavigate: (destina
         <ul className="homework-all-list" aria-label="Все домашние задания">{visible.map(task => <li key={task.id} className="homework-all-row" data-task-id={task.id}>
           <div className="homework-all-copy"><Button variant="link" className="homework-task-link" onClick={() => onNavigate(`Курсы/${task.courseId}/${task.id}`)}>{task.title}</Button>
             <Button variant="link" className="homework-course-link" onClick={() => onNavigate(`Курсы/${task.courseId}`)}>{courseNames.get(task.courseId)}</Button><HomeworkModeBadge minutes={task.timeLimitMinutes} /></div>
-          <div className="homework-all-deadline"><DeadlineLabel dueAt={task.dueAt} status={homeworkFilterStatus(task.status)} /></div>
+          <div className="homework-all-deadline"><TaskDeadline task={task} /></div>
           <Badge className="homework-all-status" variant={taskStatusVariants[task.status]}>{taskStatusLabels[task.status]}</Badge>
           <span className="homework-all-grade" aria-label={`Балл: ${formatGrade(task.grade)}`}>{formatGrade(task.grade)}{task.grade !== null ? <small> / 10</small> : null}</span>
-        </li>)}</ul></> : <div className="study-empty"><BookOpenCheck aria-hidden="true" /><h2>Домашки не найдены</h2><p>Выбери другой курс или статус.</p><Button variant="outline" onClick={reset}>Показать все домашки</Button></div>}
+        </li>)}</ul></> : <EmptyState className="study-empty" icon={BookOpenCheck} title="Домашки не найдены" description="Выбери другой курс или статус." action={<Button variant="outline" onClick={reset}>Показать все домашки</Button>} />}
     </section>
   </section>
 }

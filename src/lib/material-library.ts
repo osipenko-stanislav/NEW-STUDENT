@@ -1,4 +1,4 @@
-import { clearMaterialFiles, deleteMaterialFiles, getMaterialFile, putMaterialFiles } from './material-files.ts'
+import { deleteMaterialFiles, getMaterialFile, putMaterialFiles } from './material-files.ts'
 import { loadMaterialMetadata, newMaterialDraftId, saveMaterialMetadata } from './material-metadata.ts'
 import { resetSessionStorage } from './session-reset.ts'
 import type { ConversationMaterial, MaterialSnapshot } from '@/types/material'
@@ -26,6 +26,29 @@ export class MaterialLibrary {
 
   clearError = () => this.update({ error: null })
   reportError = (error: string) => this.update({ error })
+
+  /** Replace the prepared university set only. Stable IDs keep every chat reference
+   * live; this queue does not mark personal files busy during the demo animation. */
+  synchronizeAcademic(files: { sourceAcademicId: string; name: string; blob: Blob }[], revision: number): Promise<boolean> {
+    const operation = this.queue.then(async () => {
+      if (this.resetting) return false
+      const academic = files.map(file => {
+        const previous = this.snapshot.materials.find(item => item.sourceAcademicId === file.sourceAcademicId)
+        return { id: previous?.id ?? `academic:${file.sourceAcademicId}`, originId: previous?.originId ?? 'university',
+          sourceAcademicId: file.sourceAcademicId, academicRevision: revision, name: file.name,
+          type: file.blob.type, size: file.blob.size, addedAt: previous?.addedAt ?? Date.now() }
+      })
+      await putMaterialFiles(academic.map((item, index) => ({ id: item.id, blob: files[index].blob })))
+      if (this.resetting) return false
+      const ids = new Set(academic.map(item => item.sourceAcademicId))
+      const materials = [...this.snapshot.materials.filter(item => !item.sourceAcademicId || !ids.has(item.sourceAcademicId)), ...academic]
+      saveMaterialMetadata({ ...this.snapshot, materials })
+      this.update({ materials })
+      return true
+    })
+    this.queue = operation.then(() => undefined, () => undefined)
+    return operation
+  }
 
   private run<T>(action: () => Promise<T>, fallback: T, message: string): Promise<T> {
     this.update({ pending: this.snapshot.pending + 1, error: null })
@@ -83,15 +106,8 @@ export class MaterialLibrary {
   }
 
   clear(): Promise<boolean> {
-    return this.run(async () => {
-      const previous = this.snapshot
-      const next = { ...previous, materials: [], attachments: [] }
-      saveMaterialMetadata(next)
-      try { await clearMaterialFiles() }
-      catch (error) { saveMaterialMetadata(previous); throw error }
-      this.update({ materials: [], attachments: [] })
-      return true
-    }, false, 'Не удалось очистить библиотеку. Проверь доступ к хранилищу браузера.')
+    return this.run(async () => { await this.removeWhere(material => !material.sourceAcademicId); return true },
+      false, 'Не удалось удалить личные файлы. Проверь доступ к хранилищу браузера.')
   }
 
   forgetConversationSelections(ids: string[]): boolean {

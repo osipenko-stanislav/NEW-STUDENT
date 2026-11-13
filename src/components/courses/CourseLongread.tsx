@@ -1,4 +1,5 @@
-import { useDownloadDemo } from '@/components/DownloadDemoProvider'
+import AcademicMaterialLink from '@/components/AcademicMaterialLink'
+import { useMaterialSync } from '@/components/MaterialSyncProvider'
 import { useEffect, useRef, useState, type RefObject } from 'react'
 import { ArrowDownToLine, ArrowLeft, ArrowRight, BookOpen, ChevronDown, Clock3, List, Play, VideoOff } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -45,7 +46,7 @@ export function useActiveLessonSection(scrollRef: RefObject<HTMLDivElement | nul
 export default function CourseLongread({ lesson, activeSection, onAnchor, onLesson, onProgram, onAssignment, onVideo }: {
   lesson: CourseLesson; activeSection: string; onAnchor: (id: string) => void; onLesson: (id: string) => void; onProgram: () => void; onAssignment: () => void; onVideo: () => void
 }) {
-  const { start: downloadDemo } = useDownloadDemo()
+  const { exportMaterial } = useMaterialSync()
   const currentIndex = courseLessons.findIndex(item => item.id === lesson.id)
   const metrics = lesson.id === 'block-1-topic-1'
   const validation = lesson.id === 'block-1-topic-2'
@@ -56,8 +57,8 @@ export default function CourseLongread({ lesson, activeSection, onAnchor, onLess
     <Button type="button" variant="outline" id="course-mobile-program-trigger" className="course-mobile-program-trigger" aria-controls="course-program-panel" aria-expanded={false} onClick={onProgram}><BookOpen aria-hidden="true" />Программа курса</Button>
     <MobileLessonToc active={activeSection} onAnchor={onAnchor} />
     <article key={lesson.id} className="course-reader">
-      <div ref={readerRef} className="course-reader-body">
-        <section><h2 id="lesson-overview" tabIndex={-1}>Содержание занятия</h2>
+      <div ref={readerRef} className="course-reader-body reading-prose">
+        <section><h2 data-typography="accent-title" id="lesson-overview" tabIndex={-1}>Содержание занятия</h2>
           <p>{lesson.summary}</p>
           <figure className="course-network-figure"><CourseDiagram /><figcaption>Подготовка данных, построение модели и проверка результата — части одного эксперимента.</figcaption></figure>
           <h3>На что обратить внимание</h3><ul>{lesson.focus.map(item => <li key={item}>{item}</li>)}</ul>
@@ -67,17 +68,17 @@ export default function CourseLongread({ lesson, activeSection, onAnchor, onLess
           {metrics ? <div className="course-equation" aria-label="MSE равно сумме квадратов разностей предсказаний и ответов, делённой на число примеров">MSE = 1/n ∑ (ŷᵢ − yᵢ)²</div> : null}
           <p>{metrics ? 'Квадратичная ошибка сильнее штрафует большие отклонения. Перед выбором метрики подумай, какие ошибки в прикладной задаче обходятся дороже.' : validation ? 'При кросс-валидации модель несколько раз обучается на разных частях данных и проверяется на оставшейся части. Так можно оценить устойчивость результата к выбору разбиения.' : 'Сформулируй гипотезу, проверь её на небольшом примере и сравни результат с простым базовым решением. Зафиксируй условия эксперимента и ограничения выбранного метода.'}</p>
         </section>
-        <section><h2 id="lesson-practice" tabIndex={-1}>Практика</h2><p>Проведи небольшой воспроизводимый эксперимент. Меняй один параметр за раз, чтобы понимать причину изменений.</p>
+        <section><h2 data-typography="accent-title" id="lesson-practice" tabIndex={-1}>Практика</h2><p>Проведи небольшой воспроизводимый эксперимент. Меняй один параметр за раз, чтобы понимать причину изменений.</p>
           <ol><li>Раздели данные на обучающую и валидационную выборки.</li><li>Выбери простую модель и зафиксируй начальные параметры.</li><li>Выбери метрику качества под задачу.</li><li>Обучи модель на тренировочной выборке.</li><li>Сравни результаты на обеих выборках и запиши выводы.</li></ol>
           <blockquote>Сначала проверь решение на небольшом наборе данных. Сравнивай модели в одинаковых условиях и сохраняй не только результат, но и параметры эксперимента.</blockquote>
           <p>Примеры оценки качества доступны в <a href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noreferrer">документации scikit-learn</a>.</p>
         </section>
-        <section><h2 id="lesson-materials" tabIndex={-1}>Дополнительные материалы</h2><p>Конспект и короткая памятка для практики.</p>
-          <ul className="course-lesson-materials">{learningMaterials.map(material => <li key={material.id}><a href={`${import.meta.env.BASE_URL}${material.url}`} target="_blank" rel="noreferrer" aria-label={`Открыть материал: ${material.title}`}><FileIcon name={material.title} size="compact" /><span><strong>{material.title}</strong><small>{material.sizeLabel}</small></span></a><Button type="button" variant="ghost" size="icon" aria-label={`Скачать материал: ${material.title}`} onClick={() => downloadDemo('file', material.title)}><ArrowDownToLine aria-hidden="true" /></Button></li>)}</ul>
+        <section><h2 data-typography="accent-title" id="lesson-materials" tabIndex={-1}>Дополнительные материалы</h2><p>Конспект и короткая памятка для практики.</p>
+          <ul className="course-lesson-materials">{learningMaterials.map(material => <li key={material.id}><AcademicMaterialLink material={material}  aria-label={`Открыть материал: ${material.title}`}><FileIcon name={material.title} size="compact" /><span><strong>{material.title}</strong><small>{material.sizeLabel}</small></span></AcademicMaterialLink><Button type="button" variant="ghost" size="icon" aria-label={`Экспортировать материал: ${material.title}`} onClick={() => void exportMaterial(material.id)}><ArrowDownToLine aria-hidden="true" /></Button></li>)}</ul>
         </section>
-        <section><h2 id="lesson-video" tabIndex={-1}>Видеозапись с лекции</h2><div className="course-embedded-video"><div><VideoOff aria-hidden="true" /><p>Видеофайл пока не добавлен</p><Button type="button" variant="outline" onClick={onVideo}><Play aria-hidden="true" />Информация о записи</Button></div></div></section>
-        <section><h2 id="lesson-assignment" tabIndex={-1}>Задание</h2><div className="course-assignment-card"><div><Badge variant="neutral">{courseAssignment.status}</Badge><h3>{courseAssignment.title}</h3><p>До {courseAssignment.points} баллов · домашнее задание</p><Button type="button" variant="outline" onClick={onAssignment}>Открыть задание</Button></div></div></section>
-        <section><h2 id="lesson-summary" tabIndex={-1}>Итог</h2><p>Работа с ML-моделью — это цикл проверки гипотез. Качество зависит от данных, выбранного метода и корректной организации эксперимента.</p><p>Переходи к практике, сравни результаты и сохрани наблюдения: они помогут объяснить, почему модель работает именно так.</p></section>
+        <section><h2 data-typography="accent-title" id="lesson-video" tabIndex={-1}>Видеозапись с лекции</h2><div className="course-embedded-video"><div><VideoOff aria-hidden="true" /><p>Видеофайл пока не добавлен</p><Button type="button" variant="outline" onClick={onVideo}><Play aria-hidden="true" />Информация о записи</Button></div></div></section>
+        <section><h2 data-typography="accent-title" id="lesson-assignment" tabIndex={-1}>Задание</h2><div className="course-assignment-card"><div><Badge variant="neutral">{courseAssignment.status}</Badge><h3>{courseAssignment.title}</h3><p>До {courseAssignment.points} баллов · домашнее задание</p><Button type="button" variant="outline" onClick={onAssignment}>Открыть задание</Button></div></div></section>
+        <section><h2 data-typography="accent-title" id="lesson-summary" tabIndex={-1}>Итог</h2><p>Работа с ML-моделью — это цикл проверки гипотез. Качество зависит от данных, выбранного метода и корректной организации эксперимента.</p><p>Переходи к практике, сравни результаты и сохрани наблюдения: они помогут объяснить, почему модель работает именно так.</p></section>
       </div>
     </article>
     <nav className="course-lesson-navigation" aria-label="Навигация между уроками"><Button type="button" variant="ghost" disabled={currentIndex === 0} onClick={() => onLesson(courseLessons[currentIndex - 1].id)}><ArrowLeft aria-hidden="true" />Предыдущий урок</Button><Button type="button" variant="ghost" disabled={currentIndex === courseLessons.length - 1} onClick={() => onLesson(courseLessons[currentIndex + 1].id)}>Следующий урок<ArrowRight aria-hidden="true" /></Button></nav>

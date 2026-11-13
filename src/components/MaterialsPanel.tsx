@@ -1,6 +1,6 @@
 import { useDisplayFormats } from '@/components/SettingsProvider'
-import { useEffect, useRef, useState } from 'react'
-import { Download, ExternalLink, FolderOpen, Info, MoreHorizontal, Trash2, X } from 'lucide-react'
+import { useEffect, useRef, useState, Fragment } from 'react'
+import { Download, ExternalLink, FolderOpen, Info, MoreHorizontal, MessageSquarePlus, Trash2, X } from 'lucide-react'
 import FileIcon from '@/components/FileIcon'
 import FilePreview from '@/components/FilePreview'
 import { Button } from '@/components/ui/button'
@@ -34,6 +34,7 @@ type Props = {
 export default function MaterialsPanel({ open, onOpenChange, materials, picker, selectedIds, conversations, infoId, onInfoChange, onAttach, onRemove, library, error, busy }: Props) {
   const { formatDate, formatDateTime } = useDisplayFormats()
   const [reading, setReading] = useState(false)
+  const ordered = [...materials.filter(item => item.sourceAcademicId), ...materials.filter(item => !item.sourceAcademicId)]
   const selected = materials.find(material => material.id === infoId) ?? null
   const infoTrigger = useRef<HTMLButtonElement | null>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -98,7 +99,7 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
       <SidebarHeader className="flex-row items-start justify-between gap-3 border-b p-4">
         <div className="min-w-0">
           <h2 id="materials-title" ref={headingRef} tabIndex={-1} className="text-base font-semibold outline-none">Библиотека</h2>
-          <p className="mt-1 text-xs text-muted-foreground">{picker ? 'Выбери файлы для сообщения' : 'Все загруженные файлы'}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{picker ? 'Выбери материал для разговора' : 'Учебные материалы и личные файлы'}</p>
         </div>
         <Button type="button" variant="ghost" size="icon" className="size-7 shrink-0" aria-label="Закрыть библиотеку"
           onClick={closePanel}><X className="size-4" aria-hidden="true" /></Button>
@@ -109,7 +110,7 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
           <p className="max-w-64 text-sm">В библиотеке пока нет файлов</p>
           <p className="max-w-64 text-xs leading-5 text-muted-foreground">Прикрепи файл кнопкой «+» в поле ввода.</p>
         </div> : <ul aria-label="Файлы библиотеки" className="material-library-list">
-          {materials.map(material => <li key={material.id} className="material-library-item">
+          {ordered.map((material, index) => <Fragment key={material.id}>{(index === 0 || !!ordered[index - 1].sourceAcademicId !== !!material.sourceAcademicId) ? <li className="material-library-group"><h3>{material.sourceAcademicId ? 'Учебные материалы' : 'Личные файлы'}</h3></li> : null}<li className="material-library-item">
             <button type="button" className="material-library-info outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={`Информация о файле: ${material.name}`}
               onClick={event => { infoTrigger.current = event.currentTarget; onInfoChange(material.id) }}>
@@ -122,19 +123,19 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
               <Info className="mt-1 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             </button>
             <div className="material-library-actions">
-              {picker ? <Button type="button" variant="outline" size="sm" className="mr-auto h-8 px-2 text-xs"
+              <Button type="button" variant="outline" size="sm" className="mr-auto h-8 px-2 text-xs"
                 disabled={busy || selectedIds.includes(material.id)} onClick={() => onAttach(material.id)}
-                aria-label={`${selectedIds.includes(material.id) ? 'Прикреплен' : 'Прикрепить'}: ${material.name}`}>
-                {selectedIds.includes(material.id) ? 'Прикреплен' : 'Прикрепить'}
-              </Button> : null}
+                aria-label={`${selectedIds.includes(material.id) ? 'Прикреплен' : picker ? 'Прикрепить' : 'В Навигатор'}: ${material.name}`}>
+                {selectedIds.includes(material.id) ? 'Прикреплен' : picker ? 'Прикрепить' : 'В Навигатор'}
+              </Button>
               <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-8" aria-label={`Действия с файлом: ${material.name}`}><MoreHorizontal className="size-4" aria-hidden="true" /></Button></DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem disabled={reading} onSelect={() => void download(material)}><Download className="size-4" aria-hidden="true" />Скачать</DropdownMenuItem>
-                  <DropdownMenuItem disabled={busy} onSelect={() => void onRemove(material.id)}><Trash2 className="size-4" aria-hidden="true" />Удалить</DropdownMenuItem>
+                  <DropdownMenuItem disabled={reading} onSelect={() => void download(material)}><Download className="size-4" aria-hidden="true" />Экспортировать</DropdownMenuItem>
+                  {!material.sourceAcademicId ? <DropdownMenuItem disabled={busy} onSelect={() => void onRemove(material.id)}><Trash2 className="size-4" aria-hidden="true" />Удалить</DropdownMenuItem> : null}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          </li>)}
+          </li></Fragment>)}
         </ul>}
       </SidebarContent>
       {picker ? <div className="border-t p-4"><Button type="button" variant="outline" className="w-full" onClick={closePanel}>Готово</Button></div> : null}
@@ -156,7 +157,7 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
               <TabsTrigger value="info">Информация</TabsTrigger>
             </TabsList>
             <TabsContent value="preview" className="material-file-tab-panel">
-              <FilePreview key={selected.id} material={selected} library={library} />
+              <FilePreview key={`${selected.id}:${selected.academicRevision}`} material={selected} library={library} />
             </TabsContent>
             <TabsContent value="info" className="material-file-tab-panel">
               <dl className="material-file-metadata">
@@ -170,11 +171,11 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
             </TabsContent>
           </Tabs>
           {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
-          <DialogFooter className="shrink-0 gap-2 sm:space-x-0">
+          <DialogFooter className="shrink-0 gap-2 sm:space-x-0"><Button type="button" variant="outline" disabled={selectedIds.includes(selected.id)} onClick={() => { onInfoChange(null); onAttach(selected.id) }}><MessageSquarePlus aria-hidden="true" />В Навигатор</Button>
             {resolveMaterialPreview(selected) ? <Button type="button" variant="outline" disabled={reading}
               onClick={() => void openFile(selected)}><ExternalLink className="mr-2 size-4" aria-hidden="true" />Открыть в новой вкладке</Button> : null}
             <Button type="button" variant="outline" disabled={reading} onClick={() => void download(selected)}>
-              <Download className="mr-2 size-4" aria-hidden="true" />Скачать</Button>
+              <Download className="mr-2 size-4" aria-hidden="true" />Экспортировать</Button>
           </DialogFooter>
         </DialogContent> : null}
       </Dialog>

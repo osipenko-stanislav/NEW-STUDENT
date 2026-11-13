@@ -1,7 +1,7 @@
 import { navigate, useNavigation } from '@/hooks/use-navigation'
 import { useState } from 'react'
 import { loadConversations, saveConversations, sortConversations } from '@/lib/conversation-storage'
-import { createMockResponse } from '@/lib/mock-assistant'
+import { createMockResponse, type MockResponse } from '@/lib/mock-assistant'
 import { useMockGeneration } from '@/hooks/use-mock-generation'
 import { createConversationTitle } from '@/lib/conversation-title'
 import type { ChatMessage, Conversation, ConversationDraft } from '@/types/conversation'
@@ -13,10 +13,10 @@ export function useConversations() {
   const setActiveId = (conversationId: string | null, replace = false) => navigate({ conversationId }, replace)
   const activeConversation = snapshot.conversations.find(conversation => conversation.id === activeId) ?? null
 
-  function sendMessage(draft: ConversationDraft) {
+  function sendMessage(draft: ConversationDraft, preparedResponse?: MockResponse) {
     const text = draft.text.trim()
     if ((!text && !draft.command) || (activeConversation && generation.isGenerating(activeConversation.id))) return
-    const response = createMockResponse(draft, activeConversation?.messages)
+    const response = preparedResponse ?? createMockResponse(draft, activeConversation?.messages)
     const assistantId = crypto.randomUUID()
     // Keep activity strictly ordered even if two sends occur in the same millisecond.
     const now = snapshot.conversations.reduce((latest, conversation) => Math.max(latest, conversation.updatedAt + 1), Date.now())

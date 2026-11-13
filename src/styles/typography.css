@@ -1,0 +1,10 @@
+/* Content accents are opt-in. Tag names and surrounding surfaces never assign
+   a display font to system headings, forms, tables or compact labels. */
+[data-typography="accent-title"],
+.student-app [data-typography="accent-title"] {
+  font-family: var(--font-content);
+  font-weight: 400;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

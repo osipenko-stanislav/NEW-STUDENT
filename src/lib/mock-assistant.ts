@@ -1,9 +1,15 @@
+import { taskDeadline } from './late-days.ts'
+import { homeworkStatus, type HomeworkRecord } from './homework-storage.ts'
+import { academicTasks } from '../data/academic-data.ts'
+import type { LateDaysState } from '../data/late-days.ts'
+import { createLateDaysResponse } from './late-days-assistant.ts'
+import { seedLateDays } from '../data/late-days.ts'
 import { demoAssignments, demoClasses, demoDays, demoMaterials, demoToday, demoTomorrow } from '../data/study-demo.ts'
 import { courses } from '../data/course-catalog.ts'
-import type { AssignmentsPart, CourseFilter, MockContext, SchedulePart } from '../types/assistant.ts'
-import type { ChatMessage, ConversationDraft, MessagePart } from '../types/conversation.ts'
+import type { AssignmentsPart, CourseFilter, DemoAssignment, MockContext, SchedulePart } from '../types/assistant.ts'
+import type { ChatMessage, ConversationDraft, MessageAttachment, MessagePart } from '../types/conversation.ts'
 
-export type MockResponse = { content: MessagePart[]; mockContext?: MockContext; suggestions: string[] }
+export type MockResponse = { content: MessagePart[]; attachments?: MessageAttachment[]; mockContext?: MockContext; suggestions: string[] }
 type Intent = 'today' | 'tomorrow' | 'week' | 'assignments' | 'materials' | 'deadlines' | 'nearest' | 'active' | 'submitted' | 'math' | 'python' | 'mathMaterials' | 'pythonMaterials' | 'pdf'
 export function normalizeMockQuery(value: string): string {
   return value.toLocaleLowerCase('ru').replaceAll('ё', 'е').replace(/[.,!?…/]+/g, '').replace(/\s+/g, ' ').trim()
@@ -29,10 +35,10 @@ const intents = new Map(Object.entries(phrases).flatMap(([intent, values]) => va
 const commandIntents: Record<string, Intent> = { 'расписание сегодня': 'today', 'моя неделя': 'week', 'домашки': 'assignments', 'материалы': 'materials' }
 const contextFor = (scenario: MockContext['scenario'], day = demoToday, subject: CourseFilter = 'all'): MockContext => ({ scenario, day, subject })
 
-function schedule(mode: 'day' | 'week', day: string, view: SchedulePart['view'] = 'all', subject: CourseFilter = 'all'): MockResponse {
+function scheduleResponse(currentAssignments: DemoAssignment[], mode: 'day' | 'week', day: string, view: SchedulePart['view'] = 'all', subject: CourseFilter = 'all'): MockResponse {
   const date = demoDays.find(item => item.date === day)!
   const classes = demoClasses.filter(item => subject === 'all' || item.subject === subject)
-  const assignments = demoAssignments.filter(item => subject === 'all' || item.subject === subject)
+  const assignments = currentAssignments.filter(item => subject === 'all' || item.subject === subject)
   const selectedClasses = classes.filter(item => mode === 'week' || item.date === day)
   const selectedAssignments = assignments.filter(item => mode === 'week' || item.dueAt.startsWith(day))
   const text = mode === 'week'
@@ -43,8 +49,8 @@ function schedule(mode: 'day' | 'week', day: string, view: SchedulePart['view'] 
     suggestions: mode === 'week' ? ['А что у меня завтра?', 'Покажи только домашки', 'Какая ближайшая сдача?']
       : day === demoToday ? ['А что у меня завтра?', 'Моя неделя', 'Какая ближайшая сдача?'] : ['Расписание сегодня', 'Моя неделя', 'Покажи только домашки'] }
 }
-function assignments(filter: AssignmentsPart['filter'] = 'all', subject: CourseFilter = 'all', nearest = false, day?: string, courseId?: string): MockResponse {
-  let items = demoAssignments.filter(item => (!courseId || item.courseId === courseId) && (subject === 'all' || item.subject === subject) && (!day || item.dueAt.startsWith(day)))
+function assignmentsResponse(currentAssignments: DemoAssignment[], filter: AssignmentsPart['filter'] = 'all', subject: CourseFilter = 'all', nearest = false, day?: string, courseId?: string): MockResponse {
+  let items = currentAssignments.filter(item => (!courseId || item.courseId === courseId) && (subject === 'all' || item.subject === subject) && (!day || item.dueAt.startsWith(day)))
   if (nearest) items = items.filter(item => item.status !== 'submitted').slice(0, 1)
   const closest = items[0]
   const visible = items.filter(item => filter === 'all' || (filter === 'active' ? item.status !== 'submitted' : item.status === filter))
@@ -76,11 +82,21 @@ function queryCourse(text: string) {
 
 function unsupported(context?: MockContext, hasFiles = false): MockResponse {
   return { content: [{ type: 'text', text: hasFiles
-    ? 'Файлы прикреплены к сообщению. Не удалось разобрать их содержимое. Попробуй задать вопрос по расписанию, домашкам или учебным материалам.'
+    ? 'Файлы прикреплены к сообщению. Их содержимое пока не используется в ответах. Могу помочь с расписанием, домашками и учебными материалами.'
     : 'Не удалось найти ответ. Попробуй уточнить запрос: я могу помочь с расписанием, домашками и учебными материалами.' }],
     ...(context ? { mockContext: context } : {}), suggestions: ['Расписание сегодня', 'Домашки', 'Материалы'] }
 }
-export function createMockResponse(draft: ConversationDraft, messages: ChatMessage[] = []): MockResponse {
+export function createMockResponse(draft: ConversationDraft, messages: ChatMessage[] = [], lateContext?: { state: LateDaysState; records: Record<string, HomeworkRecord> }): MockResponse {
+  const lateDays = createLateDaysResponse(draft, lateContext?.state ?? seedLateDays(), lateContext?.records ?? {})
+  if (lateDays) return lateDays
+  const currentAssignments = lateContext ? demoAssignments.map(item => {
+    const task = academicTasks.find(task => task.id === item.id)!
+    const dueAt = taskDeadline(lateContext.state, task)
+    const status = homeworkStatus(task, lateContext.records[task.id])
+    return { ...item, dueAt, status: status === 'accepted' || status === 'rejected' ? 'submitted' as const : status, dueLabel: new Intl.DateTimeFormat('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' }).format(new Date(dueAt)) }
+  }).sort((a, b) => a.dueAt.localeCompare(b.dueAt) || a.id.localeCompare(b.id)) : demoAssignments
+  const schedule = (mode: 'day' | 'week', day: string, view: SchedulePart['view'] = 'all', subject: CourseFilter = 'all') => scheduleResponse(currentAssignments, mode, day, view, subject)
+  const assignments = (filter: AssignmentsPart['filter'] = 'all', subject: CourseFilter = 'all', nearest = false, day?: string, courseId?: string) => assignmentsResponse(currentAssignments, filter, subject, nearest, day, courseId)
   const previous = [...messages].reverse().find(message => message.role === 'assistant' && message.mockContext)?.mockContext
   const command = draft.command ? commandIntents[normalizeMockQuery(draft.command)] : undefined
   const text = normalizeMockQuery(draft.text)

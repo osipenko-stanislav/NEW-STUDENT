@@ -1,21 +1,22 @@
+/* handbook: feature composition. */
 .workspace-handbook { overflow: hidden; }
 .handbook-workspace { display: flex; height: 100%; min-height: 0; container: handbook-workspace / inline-size; }
-.handbook-sidebar { flex: 0 0 320px; border-right: 1px solid hsl(var(--border)); overflow: auto; padding: 20px 12px; background: hsl(var(--background)); }
+.handbook-sidebar { border-right: 1px solid hsl(var(--border)); overflow: auto; padding: 20px 12px; background: hsl(var(--background)); flex: 0 0 var(--sidebar-tree-width); }
 .handbook-tree ul { list-style: none; margin: 0; padding: 0; }
-.handbook-tree-row { display: flex; align-items: center; border-radius: var(--radius); margin-block: 0; min-height: 30px; }
+.handbook-tree-row { display: flex; align-items: center; min-height: 30px; border-radius: 8px; margin-block: 2px; }
 .handbook-tree-row:hover, .handbook-tree-home:hover { background: hsl(var(--accent)); }
 .handbook-tree-row[data-active=true], .handbook-tree-home[aria-current=page] { background: hsl(var(--accent)); font-weight: 600; color: hsl(var(--accent-foreground)); }
 .handbook-tree-row > a { display: flex; align-items: center; padding: 4px 8px 4px 2px; min-width: 0; flex: 1; line-height: 1.4; font-size: calc(13px * var(--text-scale, 1)); overflow-wrap: anywhere; }
 .handbook-tree-row .handbook-tree-toggle { width: 28px; height: 28px; flex-shrink: 0; }
 .handbook-tree-toggle svg { width: 14px; height: 14px; }
 .handbook-tree-file { width: 14px; height: 14px; margin: 6px 7px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
-.handbook-tree-home { display: flex; gap: 9px; align-items: center; padding: 6px 10px; border-radius: var(--radius); font-size: calc(13px * var(--text-scale, 1)); margin-bottom: 8px; }
+.handbook-tree-home { display: flex; gap: 9px; align-items: center; padding: 6px 10px; font-size: calc(13px * var(--text-scale, 1)); margin-bottom: 8px; border-radius: 8px; }
 .handbook-tree-home svg { width: 16px; height: 16px; flex-shrink: 0; }
 .handbook-reading-area { flex: 1; min-width: 0; overflow: auto; scrollbar-gutter: stable; container: handbook-reading / inline-size; }
 .handbook-toolbar { display: none; align-items: center; grid-column: 1 / -1; gap: 12px; }
 .handbook-mobile-tree { display: none; }
-.handbook-document-layout { display: grid; grid-template-columns: minmax(0, 1fr) 184px; column-gap: 24px; row-gap: var(--page-navigation-gap); align-items: start; }
-.handbook-document-layout:not(:has(.handbook-outline)) { grid-template-columns: minmax(0, 1fr); }
+.handbook-document-layout { display: grid; row-gap: var(--page-navigation-gap); align-items: start; --layout-rail: var(--panel-inline-width); grid-template-columns: minmax(0, 1fr) var(--panel-inline-width); column-gap: var(--layout-gap); }
+.handbook-document-layout:not(:has(.handbook-outline)) { grid-template-columns: minmax(0, 1fr); --layout-rail: 0px; }
 .handbook-page { min-width: 0; }
 .handbook-page-header { margin-bottom: 24px; display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
 .handbook-page h1, .handbook-search-results > h1 { font-size: calc(30px * var(--text-scale, 1)); line-height: 1.25; letter-spacing: -.025em; font-weight: 600; overflow-wrap: anywhere; text-wrap: balance; }
@@ -60,11 +61,11 @@
 .handbook-file span { flex: 1; min-width: 0; }
 .handbook-file svg { width: 18px; height: 18px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
 .handbook-source-tabs { margin-block: 20px; }
-.handbook-source-tabs [role=tablist] { max-width: 100%; height: auto; flex-wrap: wrap; justify-content: flex-start; }
+.handbook-source-tabs [role=tablist] { max-width: 100%; height: auto; justify-content: flex-start; }
 .handbook-child-pages { margin-top: 40px; padding-top: 24px; }
 .handbook-child-pages h2 { font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; margin-bottom: 16px; }
 .handbook-child-pages ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.handbook-child-pages a { display: flex; align-items: center; gap: 10px; height: 100%; padding: 14px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); font-size: calc(14px * var(--text-scale, 1)); }
+.handbook-child-pages a { display: flex; align-items: center; gap: 10px; height: 100%; padding: 14px; border: 1px solid hsl(var(--border)); font-size: calc(14px * var(--text-scale, 1)); border-radius: 12px; }
 .handbook-child-pages a:hover { background: hsl(var(--accent)); }
 .handbook-child-pages svg { width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
 .handbook-child-pages span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
@@ -79,19 +80,18 @@
 .handbook-empty h2 { font-size: 18px; font-weight: 600; }
 .handbook-empty p { margin: 12px 0 20px; color: hsl(var(--muted-foreground)); }
 .handbook-loading { padding-block: 24px; color: hsl(var(--muted-foreground)); }
-.handbook-mobile-sheet { width: min(90vw, 360px); padding: 24px 12px; }
+.handbook-mobile-sheet { padding: 24px 12px; }
 .handbook-mobile-sheet .handbook-tree { margin-top: 24px; }
 .handbook-mobile-sheet .handbook-tree-row { min-height: 44px; }
 .handbook-mobile-sheet .handbook-tree-row > a { padding-block: 12px; }
 .handbook-mobile-sheet .handbook-tree-toggle { height: 44px; width: 36px; }
-@container handbook-reading (max-width: 800px) { .handbook-outline { display: none; } .handbook-document-layout { grid-template-columns: minmax(0, 1fr); } }
-@container handbook-workspace (max-width: 760px) {
+@container handbook-reading (max-width: 1143px) { .handbook-outline { display: none; } .handbook-document-layout { grid-template-columns: minmax(0, 1fr); --layout-rail: 0px; } }
+@container handbook-workspace (max-width: 1023px) {
   .handbook-sidebar { display: none; }
   .handbook-mobile-tree { display: inline-flex; flex-shrink: 0; height: 44px; }
   .handbook-toolbar { display: flex; }
-  .handbook-search input { height: 44px; }
+  .handbook-search input { height: 44px; padding-inline-end: 38px; }
   .handbook-search kbd { display: none; }
-  .handbook-search input { padding-inline-end: 38px; }
 }
 @container handbook-workspace (max-width: 500px) {
   .handbook-toolbar { flex-wrap: wrap; gap: 12px; }
@@ -112,4 +112,5 @@
 .handbook-inline-outline nav { display: grid; gap: 4px; padding-bottom: 16px; }
 .handbook-inline-outline a { display: block; padding: 8px 12px; color: hsl(var(--muted-foreground)); border-radius: var(--radius); }
 .handbook-inline-outline a:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
-@container handbook-reading (max-width: 800px) { .handbook-inline-outline { display: block; } }
+@container handbook-reading (max-width: 1143px) { .handbook-inline-outline { display: block; } }
+:is(.handbook-callout, .handbook-table-scroll, .handbook-file) { border-radius: var(--radius-surface); }

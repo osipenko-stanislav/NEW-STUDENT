@@ -72,7 +72,7 @@ export const academicTasks: AcademicTask[] = enrollments.flatMap(enrollment => e
     const topicIndex = index % 3
     return { id: `${enrollment.id}-${row.id}-${index + 1}`, courseId: enrollment.courseId, enrollmentId: enrollment.id,
       title: `${row.title} ${index + 1}. ${topics[enrollment.courseId][topicIndex]}`, topic: `Тема ${topicIndex + 1}: ${topics[enrollment.courseId][topicIndex]}`,
-      timeLimitMinutes: index % 2 === 0 ? 180 : undefined, activityId: row.id, activity: row.title, grade: row.average + offset, status: 'accepted', dueAt: '2026-11-10T23:59:00+03:00',
+      timeLimitMinutes: index % 2 === 0 ? 180 : undefined, activityId: row.id, activity: row.title, grade: row.average + offset, status: 'accepted', dueAt: enrollment.archived ? '2026-05-10T23:59:00+03:00' : '2026-11-10T23:59:00+03:00',
       description: `Выполнить задания по теме «${topics[enrollment.courseId][topicIndex]}». Подготовить решение и объяснить выводы.`, materialIds: materialsForCourse(enrollment.courseId).map(item => item.id) }
   })
   if (rowIndex === 0 && !enrollment.archived) {
