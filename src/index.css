@@ -63,6 +63,12 @@
     --page-gutter: 24px;
     --control-height: 36px;
     --surface-radius: 12px;
+    --motion-fast: 120ms;
+    --motion-base: 220ms;
+    --motion-slow: 360ms;
+    --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-exit: cubic-bezier(0.55, 0, 1, 0.45);
+    --ease-move: cubic-bezier(0.65, 0, 0.35, 1);
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 3.9%;
     --sidebar-primary: 240 5.9% 10%;
@@ -107,6 +113,77 @@
     @apply bg-background text-foreground;
     font-family: 'PT Root UI', ui-sans-serif, system-ui, sans-serif;
   }
+}
+
+/* Shared motion language: quick feedback, calm orientation, no decorative drift. */
+button:not(:disabled),
+a[href],
+[role="button"]:not([aria-disabled="true"]),
+[role="tab"]:not(:disabled) {
+  transition:
+    color var(--motion-fast) var(--ease-enter),
+    background-color var(--motion-fast) var(--ease-enter),
+    border-color var(--motion-fast) var(--ease-enter),
+    box-shadow var(--motion-fast) var(--ease-enter),
+    opacity var(--motion-fast) var(--ease-enter),
+    scale var(--motion-fast) var(--ease-enter),
+    translate var(--motion-fast) var(--ease-enter),
+    transform var(--motion-fast) var(--ease-enter);
+}
+
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]):active,
+[role="tab"]:not(:disabled):active {
+  translate: 0 1px;
+  scale: 0.985;
+  transition-duration: 80ms;
+}
+
+[data-radix-popper-content-wrapper] {
+  transform-origin: var(--radix-popover-content-transform-origin, center);
+}
+
+.workspace > :not([hidden]) {
+  animation: workspace-enter var(--motion-base) var(--ease-enter) both;
+}
+
+.workspace [role="tabpanel"][data-state="active"] {
+  animation: content-reveal var(--motion-base) var(--ease-enter) both;
+}
+
+details[open] > :not(summary) {
+  animation: details-reveal var(--motion-base) var(--ease-enter) both;
+}
+
+[role="progressbar"] > *,
+[data-state="checked"] > span,
+[role="switch"] > span {
+  transition: transform var(--motion-base) var(--ease-enter), background-color var(--motion-base) var(--ease-enter);
+}
+
+.global-search-enter,
+.conversation-menu-trigger,
+.profile-status,
+.design-badge {
+  transition: opacity var(--motion-fast) var(--ease-enter), transform var(--motion-fast) var(--ease-enter);
+}
+
+.global-search-result[aria-selected="true"] .global-search-enter { transform: translateX(0); }
+.global-search-result:not([aria-selected="true"]) .global-search-enter { transform: translateX(-4px); }
+
+@keyframes workspace-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes content-reveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes details-reveal {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .student-sidebar { background: hsl(var(--sidebar-background)); border: 0; }
@@ -316,7 +393,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .workspace-layout { display: flex; flex: 1; min-width: 0; min-height: 0; overflow: hidden; }

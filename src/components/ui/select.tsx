@@ -48,7 +48,7 @@ const SelectContent = React.forwardRef<
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content ref={ref} position={position} sideOffset={sideOffset} collisionPadding={collisionPadding}
       className={cn(
-        'select-content relative z-50 max-h-[min(320px,var(--radix-select-content-available-height))] w-[var(--radix-select-trigger-width)] min-w-32 max-w-[calc(100vw-16px)] overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md origin-[--radix-select-content-transform-origin] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95',
+        'select-content relative z-50 max-h-[min(320px,var(--radix-select-content-available-height))] w-[var(--radix-select-trigger-width)] min-w-32 max-w-[calc(100vw-16px)] overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md origin-[--radix-select-content-transform-origin] duration-200 ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-150 data-[state=closed]:ease-in data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95',
         className,
       )} {...props}>
       <SelectScrollUpButton />
@@ -70,7 +70,7 @@ const SelectItem = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
 >(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Item ref={ref} className={cn(
-    'relative flex min-h-9 w-full cursor-default select-none items-center rounded-md py-2 pl-8 pr-2 text-sm leading-5 outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+    'relative flex min-h-9 w-full cursor-default select-none items-center rounded-md py-2 pl-8 pr-2 text-sm leading-5 outline-none transition-colors duration-150 data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
     className,
   )} {...props}>
     <span className="absolute left-2 flex size-4 items-center justify-center"><SelectPrimitive.ItemIndicator><Check className="size-4" aria-hidden="true" /></SelectPrimitive.ItemIndicator></span>
