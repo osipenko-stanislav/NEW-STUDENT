@@ -13,12 +13,3 @@ export function MotionPage({ motionKey, children }: { motionKey: string; childre
     </m.div>
   </AnimatePresence>
 }
-
-export function MotionRoute({ motionKey, className, children }: { motionKey: string; className?: string; children: ReactNode }) {
-  const { spatialMotion, transition } = useAppMotion()
-  return <m.div key={motionKey} className={className}
-    initial={spatialMotion ? { opacity: 0, y: 7 } : { opacity: 0.92 }}
-    animate={{ opacity: 1, y: 0 }} transition={transition}>
-    {children}
-  </m.div>
-}

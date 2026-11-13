@@ -19,7 +19,6 @@ import CourseDialogs, { RecordingPreview, type CourseDialog } from './CourseDial
 import CourseWidgets from './CourseWidgets'
 import CourseRecordings from './CourseRecordings'
 import CourseLongread, { lessonToc, useActiveLessonSection } from './CourseLongread'
-import { MotionRoute } from '@/components/MotionContent'
 
 export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onAskNavigator: (query: string) => void; onOpenGrades: (courseId: string) => void }) {
   const { materialId, courseId, lessonId, taskId, originBlockId, courseTab: tab } = useNavigation()
@@ -60,7 +59,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   }
   if (selectedTask && selectedTask.courseId === courseId) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><CourseHomework key={selectedTask.id} task={selectedTask} /></div></div>
   return <div className={`course-workspace ${programOpen && lesson ? 'has-program' : ''}`}><div ref={scrollRef} className="course-surface" aria-label="Учебная область">
-    {!course ? <CourseCatalog onOpen={openCourse} /> : <MotionRoute motionKey={routeKey} className={`page-container course-page course-layout ${lesson ? 'course-lesson-layout' : ''}`}>
+    {!course ? <CourseCatalog onOpen={openCourse} /> : <div key={routeKey} className={`page-container course-page course-layout motion-route-enter ${lesson ? 'course-lesson-layout' : ''}`}>
       <Tabs value={tab} onValueChange={setTab} className="course-main-column">
         <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button>{lesson ? <ChevronRight aria-hidden="true" /> : null}
           {lesson ? <><button type="button" onClick={program}>{course.title}</button><ChevronRight aria-hidden="true" /><button type="button" onClick={() => openBlock(originBlockId)}>Блок {blocks.findIndex(block => block.id === originBlockId) + 1}</button></> : null}</nav>
@@ -84,7 +83,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
         {!lesson ? <><TabsContent value="homework" className="m-0"><CourseHomeworks courseId={course.id} onOpen={setTaskId} /></TabsContent><TabsContent value="materials" className="m-0"><CourseResources courseId={course.id} /></TabsContent><TabsContent value="grades" className="m-0"><CourseGradeSummary courseId={course.id} onOpen={() => onOpenGrades(course.id)} /></TabsContent></> : null}
       </Tabs>
       <CourseWidgets courseId={course.id} onOpenGrades={() => onOpenGrades(course.id)} onDialog={value => { if (value === 'assignment') setTaskId(tasksForCourse(course.id).find(task => task.grade === null)?.id ?? null); else setDialog(value) }} onProgram={() => setProgramOpen(true)} programOpen={programOpen} toc={lesson ? lessonToc : undefined} activeSection={activeSection} onAnchor={onAnchor} />
-    </MotionRoute>}
+    </div>}
     </div>
     {programOpen && lesson && course ? <CourseProgramPanel blocks={blocks} lessons={lessons} courseTitle={course.title} activeLessonId={lesson.id} onSelect={selectEntity} onClose={() => {
       setProgramOpen(false)
