@@ -71,8 +71,9 @@
 .handbook-outline { min-width: 0; position: sticky; top: var(--page-top); }
 .handbook-outline nav { max-height: calc(100svh - 180px); overflow: auto; font-size: calc(12px * var(--text-scale, 1)); }
 .handbook-outline p { font-weight: 500; padding: 0 0 12px 12px; }
-.handbook-outline a { display: block; border-left: 1px solid hsl(var(--border)); padding-block: 7px; color: hsl(var(--muted-foreground)); line-height: 1.5; }
+.handbook-outline a { display: block; border-left: 1px solid hsl(var(--border)); padding-block: 7px; color: hsl(var(--muted-foreground)); line-height: 1.5; transition: color var(--motion-fast) var(--ease-enter), border-color var(--motion-base) var(--ease-enter), background-color var(--motion-base) var(--ease-enter); }
 .handbook-outline a:hover, .handbook-outline a[aria-current=location] { color: hsl(var(--foreground)); border-color: hsl(var(--foreground)); }
+.handbook-outline a[aria-current=location] { background: hsl(var(--accent) / .65); }
 .handbook-empty { padding: 48px 24px; text-align: center; }
 .handbook-empty > svg { margin: 0 auto 16px; color: hsl(var(--muted-foreground)); }
 .handbook-empty h2 { font-size: 18px; font-weight: 600; }

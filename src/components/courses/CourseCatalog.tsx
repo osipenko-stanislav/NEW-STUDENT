@@ -7,6 +7,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { areaLabels, courses, courseFilters, levelLabels, type Course, type CourseFilter } from '@/data/courses'
 import { loadCourseOrder, moveCourse, saveCourseOrder } from '@/lib/course-order'
+import { AnimatePresence, m } from 'motion/react'
+import { useAppMotion } from '@/components/MotionProvider'
 const ids = courses.map(course => course.id)
 
 export function CourseLevels({ course }: { course: Course }) {
@@ -18,6 +20,7 @@ export function CourseLevels({ course }: { course: Course }) {
 }
 
 export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void }) {
+  const { effectiveIntensity, spatialMotion, transition } = useAppMotion()
   const [snapshot, setSnapshot] = useState(() => loadCourseOrder(ids))
   const [filter, setFilter] = useState<CourseFilter>('all')
   const [dragged, setDragged] = useState<string | null>(null)
@@ -55,8 +58,10 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void
     </div>
     </div>
     <div className="sr-only"><p id="course-order-help">Перетащи карточку или измени порядок через меню.</p></div>
-    <div className="course-grid" aria-describedby="course-order-help">
-      {visible.map((course, index) => <Card role="article" key={course.id} className={`course-tile ${dragged === course.id ? 'is-dragging' : ''}`}
+    <div className="course-grid" aria-describedby="course-order-help"><AnimatePresence initial={false}>
+      {visible.map((course, index) => <m.div key={course.id} layout={effectiveIntensity !== 'minimal'} className="course-tile-motion"
+        initial={spatialMotion ? { opacity: 0, y: 8 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
+        <Card role="article" className={`course-tile ${dragged === course.id ? 'is-dragging' : ''}`}
         data-course-id={course.id} data-drop={drop?.id === course.id ? drop.after ? 'after' : 'before' : undefined} draggable
         onDragStart={event => { if ((event.target as HTMLElement).closest('.course-tile-menu')) { event.preventDefault(); return } suppressClick.current = true; setDragged(course.id); event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', course.id) }}
         onDragOver={event => dragOver(event, course.id)} onDragEnd={finishDrag}
@@ -73,8 +78,8 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void
           <DropdownMenuItem disabled={index === visible.length - 1} onSelect={() => move(course.id, 'down')}><ArrowDown aria-hidden="true" />Переместить ниже</DropdownMenuItem>
         </DropdownMenuContent></DropdownMenu></div>
         <GripVertical className="course-tile-grip" aria-hidden="true" />
-      </Card>)}
-    </div>
+      </Card></m.div>)}
+    </AnimatePresence></div>
     {snapshot.error ? <p className="course-storage-error" role="alert">{snapshot.error}</p> : null}
     <p className="sr-only" role="status">{notice}</p>
   </section>

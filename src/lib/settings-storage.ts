@@ -1,4 +1,5 @@
 export const settingsStorageKey = 'student-settings:v1'
+export type MotionIntensity = 'minimal' | 'balanced' | 'expressive'
 export type UserSettings = {
   downloadFolder: string
   downloadAutoSync: boolean
@@ -7,7 +8,8 @@ export type UserSettings = {
   dateFormat: 'long' | 'numeric' | 'iso'
   density: 'comfortable' | 'compact'
   textSize: 'small' | 'default' | 'large'
-  interfaceAnimations: boolean
+  motionIntensity: MotionIntensity
+  respectReducedMotion: boolean
   orbAnimation: boolean
   sendShortcut: 'enter' | 'modifier-enter'
   spellcheck: boolean
@@ -19,7 +21,7 @@ export type UserSettings = {
 export const defaultSettings: UserSettings = {
   downloadFolder: '', downloadAutoSync: true, downloadInterval: 30,
   timeFormat: '24', dateFormat: 'long', density: 'comfortable', textSize: 'default',
-  interfaceAnimations: true, orbAnimation: true, sendShortcut: 'enter', spellcheck: true, confirmConversationDeletion: true,
+  motionIntensity: 'balanced', respectReducedMotion: true, orbAnimation: true, sendShortcut: 'enter', spellcheck: true, confirmConversationDeletion: true,
   historyMode: 'collapsed', hiddenWidgets: [], hiddenSuggestions: [],
 }
 
@@ -29,12 +31,13 @@ export function normalizeSettings(value: unknown): UserSettings {
   const record = value as Record<string, unknown>
   const options = {
     timeFormat: ['24', '12'], dateFormat: ['long', 'numeric', 'iso'], density: ['comfortable', 'compact'],
-    textSize: ['small', 'default', 'large'], sendShortcut: ['enter', 'modifier-enter'], historyMode: ['collapsed', 'expanded', 'hidden'],
+    textSize: ['small', 'default', 'large'], motionIntensity: ['minimal', 'balanced', 'expressive'], sendShortcut: ['enter', 'modifier-enter'], historyMode: ['collapsed', 'expanded', 'hidden'],
   } as const
   for (const key of Object.keys(options) as (keyof typeof options)[]) {
     if ((options[key] as readonly unknown[]).includes(record[key])) Object.assign(result, { [key]: record[key] })
   }
-  for (const key of ['interfaceAnimations', 'orbAnimation', 'spellcheck', 'confirmConversationDeletion', 'downloadAutoSync'] as const) {
+  if (!('motionIntensity' in record) && record.interfaceAnimations === false) result.motionIntensity = 'minimal'
+  for (const key of ['respectReducedMotion', 'orbAnimation', 'spellcheck', 'confirmConversationDeletion', 'downloadAutoSync'] as const) {
     if (typeof record[key] === 'boolean') result[key] = record[key]
   }
   for (const key of ['hiddenWidgets', 'hiddenSuggestions'] as const) {

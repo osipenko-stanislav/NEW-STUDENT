@@ -28,8 +28,11 @@
 .course-filter-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .course-catalog-caption { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 24px 0 16px; font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
 .course-grid { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 228px), 1fr)); gap: 12px; }
-.course-tile { position: relative; min-width: 0; min-height: 156px; transition: border-color 150ms; }
-@media (hover: hover) { .course-tile:hover { border-color: hsl(var(--ring) / .4); } }
+.course-tile-motion { min-width: 0; }
+.course-tile { position: relative; min-width: 0; min-height: 156px; transition: border-color var(--motion-fast) var(--ease-enter), box-shadow var(--motion-fast) var(--ease-enter), translate var(--motion-fast) var(--ease-enter); }
+@media (hover: hover) { .course-tile:hover { border-color: hsl(var(--ring) / .4); translate: 0 -2px; box-shadow: 0 8px 22px hsl(var(--foreground) / .07); } }
+html[data-motion-level="minimal"] .course-tile:hover { translate: none; box-shadow: none; }
+html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box-shadow: 0 12px 28px hsl(var(--foreground) / .1); }
 .course-tile-open { display: flex; width: 100%; min-height: 156px; flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px; padding-top: 60px; border-radius: inherit; text-align: left; }
 .course-tile-open:focus-visible { outline-offset: 0 !important; }
 .course-tile-area { position: absolute; top: 18px; left: 20px; display: flex; align-items: center; gap: 6px; max-width: calc(100% - 120px); font-size: calc(11px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
@@ -104,8 +107,8 @@
 .course-grade-total { margin: 16px 0 12px; font-size: calc(38px * var(--text-scale, 1)); line-height: 1; letter-spacing: -.025em; font-weight: 500; font-variant-numeric: tabular-nums; }
 .course-grade-total > span { font-size: calc(13px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); letter-spacing: 0; font-weight: 400; }
 .course-progress-track { display: flex; width: 100%; height: 8px; gap: 3px; overflow: hidden; border-radius: 3px; background: hsl(var(--muted)); }
-.course-progress-earned { width: 68%; height: 100%; background: var(--color-green); border-radius: 3px; }
-.course-progress-available { width: 20%; height: 100%; background: var(--color-amber); border-radius: 3px; }
+.course-progress-earned { width: 68%; height: 100%; background: var(--color-green); border-radius: 3px; transition: width var(--motion-slow) var(--ease-enter); }
+.course-progress-available { width: 20%; height: 100%; background: var(--color-amber); border-radius: 3px; transition: width var(--motion-slow) var(--ease-enter); }
 .course-progress-legend { display: grid; gap: 8px; margin: 16px 0 0; font-size: calc(11px * var(--text-scale, 1)); line-height: 16px; color: hsl(var(--muted-foreground)); }
 .course-progress-legend > div { display: flex; justify-content: space-between; gap: 8px; }
 .course-progress-legend dt { display: flex; align-items: center; gap: 6px; }
@@ -168,17 +171,6 @@
 .course-reader { padding-block: 8px 32px; }
 .course-reader-body { max-width: 70ch; margin-inline: auto; font-size: calc(16px * var(--text-scale, 1)); line-height: 1.75; overflow-wrap: anywhere; }
 .course-reader-body > section + section { margin-top: 40px; }
-.course-reader-reveal .course-reader-body[data-reveal-ready="true"] > section {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 420ms var(--ease-enter) var(--course-reveal-delay, 0ms),
-    transform 420ms var(--ease-enter) var(--course-reveal-delay, 0ms);
-}
-.course-reader-reveal .course-reader-body[data-reveal-ready="true"] > section[data-revealed="true"] {
-  opacity: 1;
-  transform: translateY(0);
-}
 .course-reader h2 { margin-bottom: 16px; font-size: calc(24px * var(--text-scale, 1)); line-height: 1.35; letter-spacing: -.015em; font-weight: 600; }
 .course-reader h3 { margin-top: 28px; margin-bottom: 12px; font-size: calc(20px * var(--text-scale, 1)); line-height: 1.4; font-weight: 500; }
 .course-reader h4 { margin-top: 24px; margin-bottom: 12px; font-size: calc(16px * var(--text-scale, 1)); line-height: 1.5; font-weight: 600; }

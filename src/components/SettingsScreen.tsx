@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import { useDisplayFormats, useSettings } from '@/components/SettingsProvider'
+import { useAppMotion } from '@/components/MotionProvider'
 import type { Theme } from '@/components/ThemeSwitcher'
 import { appInfo } from '@/data/app-info'
 import { formatMaterialSize } from '@/lib/material-metadata'
@@ -84,6 +85,7 @@ type Props = {
 
 export default function SettingsScreen({ theme, onThemeChange, themeError, conversations, materials, busy, storageError, onClearHistory, onClearLibrary, onClearData }: Props) {
   const { settings, updateSettings, resetSettings, error } = useSettings()
+  const { effectiveIntensity, systemReduced } = useAppMotion()
   const { formatDate, formatTime } = useDisplayFormats()
   const [category, setCategory] = useState<Category>('general')
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
@@ -116,7 +118,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
   function setPreference<K extends keyof UserSettings>(key: K, value: UserSettings[K]) {
     if (updateSettings({ [key]: value })) setNotice('Настройка сохранена')
   }
-  function toggle(key: 'interfaceAnimations' | 'orbAnimation' | 'spellcheck' | 'confirmConversationDeletion', label: string) {
+  function toggle(key: 'respectReducedMotion' | 'orbAnimation' | 'spellcheck' | 'confirmConversationDeletion', label: string) {
     return <Switch aria-label={label} checked={settings[key]} onCheckedChange={value => setPreference(key, value)} />
   }
   async function confirm() {
@@ -210,8 +212,12 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Анимация">
-            <SettingRow title="Анимации интерфейса" description="Плавное появление экранов, учебных блоков, меню и других элементов." icon={Sparkles}>
-              {toggle('interfaceAnimations', 'Анимации интерфейса')}
+            <SettingRow title="Интенсивность" description={`Фактически: ${{ minimal: 'минимальная', balanced: 'сбалансированная', expressive: 'выразительная' }[effectiveIntensity]}${systemReduced && settings.respectReducedMotion ? ' — действует системное уменьшение движения' : ''}.`} icon={Sparkles}>
+              <SettingsSelect label="Интенсивность анимаций" value={settings.motionIntensity} options={[["minimal", "Минимальная"], ["balanced", "Сбалансированная"], ["expressive", "Выразительная"]]}
+                onChange={value => setPreference('motionIntensity', value as UserSettings['motionIntensity'])} />
+            </SettingRow>
+            <SettingRow title="Учитывать системное уменьшение движения" description="При системной настройке reduce используется минимальная интенсивность.">
+              {toggle('respectReducedMotion', 'Учитывать системное уменьшение движения')}
             </SettingRow>
             <SettingRow title="Анимация Orb" description="Движение сферы на экране нового чата. Системное уменьшение движения имеет приоритет.">
               {toggle('orbAnimation', 'Анимация Orb')}

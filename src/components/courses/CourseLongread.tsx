@@ -7,7 +7,6 @@ import FileIcon from '@/components/FileIcon'
 import CourseDiagram from './CourseDiagram'
 import { courseAssignment, courseLessons, learningMaterials, type CourseLesson } from '@/data/courses'
 import type { TocEntry } from './CourseWidgets'
-import { useCourseMaterialReveal } from './use-course-material-reveal'
 export const lessonToc: TocEntry[] = [
   { id: 'lesson-overview', title: 'Содержание лекции' }, { id: 'lesson-loss', title: 'Ключевые идеи', depth: 1 },
   { id: 'lesson-practice', title: 'Практика' }, { id: 'lesson-materials', title: 'Дополнительные материалы' },
@@ -49,13 +48,12 @@ export default function CourseLongread({ lesson, activeSection, onAnchor, onLess
   const currentIndex = courseLessons.findIndex(item => item.id === lesson.id)
   const metrics = lesson.id === 'block-1-topic-1'
   const validation = lesson.id === 'block-1-topic-2'
-  const readerRef = useCourseMaterialReveal(lesson.id)
   return <>
     <div className="course-lesson-meta"><Badge variant="active">{lesson.format}</Badge><span><Clock3 aria-hidden="true" />{lesson.readingMinutes} минут чтения</span></div>
     <Button type="button" variant="outline" id="course-mobile-program-trigger" className="course-mobile-program-trigger" aria-controls="course-program-panel" aria-expanded={false} onClick={onProgram}><BookOpen aria-hidden="true" />Программа курса</Button>
     <MobileLessonToc active={activeSection} onAnchor={onAnchor} />
-    <article key={lesson.id} className="course-reader course-reader-reveal">
-      <div ref={readerRef} className="course-reader-body">
+    <article key={lesson.id} className="course-reader">
+      <div className="course-reader-body">
         <section><h2 id="lesson-overview" tabIndex={-1}>Содержание занятия</h2>
           <p>{lesson.summary}</p>
           <figure className="course-network-figure"><CourseDiagram /><figcaption>Подготовка данных, построение модели и проверка результата — части одного эксперимента.</figcaption></figure>

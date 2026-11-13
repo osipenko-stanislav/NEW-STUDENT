@@ -25,9 +25,10 @@ test('defaults do not create storage or share mutable arrays', () => {
 })
 test('validates preferences independently and strips unknown fields', () => {
   assert.deepEqual(normalizeSettings({timeFormat:'12',dateFormat:'junk',spellcheck:false,interfaceAnimations:'false',orbAnimation:'false',hiddenWidgets:['weather','weather'],hiddenSuggestions:[12],password:'secret'}), {...defaultSettings,timeFormat:'12',spellcheck:false,hiddenWidgets:['weather']})
+  assert.equal(normalizeSettings({ interfaceAnimations: false }).motionIntensity, 'minimal')
 })
 test('persists all working preferences across reload', () => {
-  const settings=normalizeSettings({timeFormat:'12',dateFormat:'iso',density:'compact',textSize:'large',sendShortcut:'modifier-enter',spellcheck:false,interfaceAnimations:false,orbAnimation:false,historyMode:'hidden',confirmConversationDeletion:false,hiddenSuggestions:['Домашки']})
+  const settings=normalizeSettings({timeFormat:'12',dateFormat:'iso',density:'compact',textSize:'large',motionIntensity:'expressive',respectReducedMotion:false,sendShortcut:'modifier-enter',spellcheck:false,orbAnimation:false,historyMode:'hidden',confirmConversationDeletion:false,hiddenSuggestions:['Домашки']})
   saveSettings(settings)
   assert.deepEqual(loadSettings(),{settings,error:null})
 })

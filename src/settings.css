@@ -99,4 +99,4 @@
 .download-pack-summary dt { font-size: 13px; color: hsl(var(--muted-foreground)); }
 .download-pack-summary dd { margin-top: 4px; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .download-demo-progress { height: 8px; border-radius: 4px; overflow: hidden; background: hsl(var(--muted)); }
-.download-demo-progress > span { display: block; height: 100%; background: hsl(var(--primary)); }
+.download-demo-progress > span { display: block; height: 100%; background: hsl(var(--primary)); transition: width var(--motion-base) var(--ease-enter); }

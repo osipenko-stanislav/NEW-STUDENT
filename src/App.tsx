@@ -15,6 +15,9 @@ import { useConversationMaterials } from '@/hooks/use-conversation-materials'
 import type { MaterialLibrary } from '@/lib/material-library'
 import Orb, { type OrbLayer } from '@/components/Orb'
 import { SettingsProvider, useSettings, useDisplayFormats } from '@/components/SettingsProvider'
+import { AppMotionProvider, useAppMotion } from '@/components/MotionProvider'
+import { MotionPage } from '@/components/MotionContent'
+import { AnimatePresence, m } from 'motion/react'
 import SettingsScreen from '@/components/SettingsScreen'
 import VoiceInputDemo from '@/components/VoiceInputDemo'
 import { AcademicMaterialActionsProvider } from '@/components/AcademicMaterialActions'
@@ -84,6 +87,7 @@ function StudentInterface({ onResetSession, isResetting }: {
 }) {
   const [theme, setTheme, resolvedTheme, themeError] = useTheme()
   const { settings, updateSettings } = useSettings()
+  const { effectiveIntensity, spatialMotion, transition } = useAppMotion()
   const { formatTime } = useDisplayFormats()
   useHomeworkTimers()
   const { section, studyTarget } = useNavigation()
@@ -420,7 +424,7 @@ function StudentInterface({ onResetSession, isResetting }: {
         </div>
       </header>
       <div className={`workspace-layout ${materialsOpen ? 'has-materials' : ''}`}>
-      <div className={`workspace ${isConversation ? 'workspace-chat' : ''} ${section === 'Настройки' ? 'workspace-settings' : ''} ${section === 'Курсы' ? 'workspace-courses' : ''} ${section === 'Ведомости' ? 'workspace-grades' : ''} ${section === 'Хэндбук' ? 'workspace-handbook' : ''}`} aria-label={section}>
+      <div className={`workspace ${isConversation ? 'workspace-chat' : ''} ${section === 'Настройки' ? 'workspace-settings' : ''} ${section === 'Курсы' ? 'workspace-courses' : ''} ${section === 'Ведомости' ? 'workspace-grades' : ''} ${section === 'Хэндбук' ? 'workspace-handbook' : ''}`} aria-label={section}><MotionPage motionKey={section}>
         {section === 'Хэндбук' ? <Suspense fallback={<p className="p-6 text-sm text-muted-foreground" role="status">Загружаем хэндбук…</p>}><HandbookWorkspace /></Suspense> : null}
         {section === 'Расписание' ? <ScheduleWorkspace onNavigate={selectSection} /> : null}
         {section === 'Домашки' ? <HomeworkWorkspace onNavigate={selectSection} /> : null}
@@ -431,9 +435,12 @@ function StudentInterface({ onResetSession, isResetting }: {
           onClearHistory={clearHistory} onClearLibrary={clearLibrary} onClearData={() => onResetSession(library)} /> : null}
         {section === 'Навигатор' ? <section className={`navigator ${isConversation ? 'navigator-chat' : ''}`}
           aria-labelledby={isConversation ? 'conversation-title' : 'navigator-title'}>
-          {activeConversation ? <ConversationMessages onNavigatorHome={() => selectSection('Навигатор')} conversation={activeConversation} materials={materials} generation={activeGeneration}
+          <AnimatePresence initial={false} mode="popLayout">{activeConversation ? <m.div key="conversation" className="navigator-state navigator-state-conversation"
+            initial={spatialMotion ? { opacity: 0, y: 8 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
+            <ConversationMessages onNavigatorHome={() => selectSection('Навигатор')} conversation={activeConversation} materials={materials} generation={activeGeneration}
             onNavigate={selectSection} onFollowUp={value => { setPromptCommand(null); setPrompt(value); requestAnimationFrame(() => promptRef.current?.focus()) }}
-            onOpenMaterial={id => { setMaterialPicker(false); setMaterialInfoId(id); setMaterialsOpen(true) }} /> : <>
+            onOpenMaterial={id => { setMaterialPicker(false); setMaterialInfoId(id); setMaterialsOpen(true) }} /></m.div> : <m.div key="empty" className="navigator-state navigator-state-empty"
+              initial={spatialMotion ? { opacity: 0, y: -6 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
           <div className="navigator-widgets" role="group" aria-label="Виджеты">
             {widgets.filter(widget => !hiddenWidgets.includes(widget.id)).map(widget => {
               return widget.id === 'weather'
@@ -453,7 +460,7 @@ function StudentInterface({ onResetSession, isResetting }: {
             <div className="navigator-visual" aria-hidden="true">
               <Orb
                 active={isTyping}
-                paused={!settings.interfaceAnimations || !settings.orbAnimation}
+                paused={effectiveIntensity === 'minimal' || !settings.orbAnimation}
                 layers={navigatorOrbs}
                 maxFps={30}
                 colors={['#9c43fe', '#4cc2e9', '#101499']}
@@ -466,7 +473,7 @@ function StudentInterface({ onResetSession, isResetting }: {
                 wobble={3.6}
                 highlight={1.1}
                 tiltX={-1}
-                speed={0.45}
+                speed={effectiveIntensity === 'expressive' ? 0.55 : 0.45}
                 backgroundColor={resolvedTheme === 'dark' ? '#141414' : '#ffffff'}
                 clickPulse={false}
                 intro={false}
@@ -476,7 +483,7 @@ function StudentInterface({ onResetSession, isResetting }: {
             </div>
             <h1 id="navigator-title">Привет, Иван! С чего начнем?</h1>
           </div>
-          </>}
+          </m.div>}</AnimatePresence>
           <div className="assistant-input">
             <form className="composer" data-voice-active={voiceBusy} onSubmit={event => { if (voiceBusy) { event.preventDefault(); return }; submitPrompt(event) }}>
               <div className="composer-editor">
@@ -564,7 +571,7 @@ function StudentInterface({ onResetSession, isResetting }: {
             </p> : null}
           </div>
         </section> : null}
-      </div>
+      </MotionPage></div>
     <MaterialsPanel open={materialsOpen} onOpenChange={open => { setMaterialsOpen(open); if (!open) setMaterialInfoId(null) }}
       materials={materials} library={library} error={materialsError} busy={materialsBusy}
       picker={materialPicker} selectedIds={selectedMaterials.map(material => material.id)} conversations={conversations}
@@ -600,9 +607,9 @@ export default function App() {
     return success
   }
 
-  return <><SettingsProvider key={sessionVersion}><SidebarProvider inert={isResetting} aria-busy={isResetting} className="student-app" style={{ '--sidebar-width': '288px', '--sidebar-width-icon': '64px' } as CSSProperties}>
+  return <><SettingsProvider key={sessionVersion}><AppMotionProvider><SidebarProvider inert={isResetting} aria-busy={isResetting} className="student-app" style={{ '--sidebar-width': '288px', '--sidebar-width-icon': '64px' } as CSSProperties}>
     <DownloadDemoProvider><StudentInterface onResetSession={resetSession} isResetting={isResetting} /></DownloadDemoProvider>
-  </SidebarProvider></SettingsProvider>
+  </SidebarProvider></AppMotionProvider></SettingsProvider>
     {isResetting ? <div role="status" className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 text-sm">
       Сбрасываем сессию…
     </div> : null}
