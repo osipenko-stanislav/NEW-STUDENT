@@ -20,7 +20,7 @@
 .settings-detail-heading p { margin-top: 4px; font-size: calc(14px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
 .settings-group + .settings-group { margin-top: 28px; }
 .settings-group-heading { margin-bottom: 12px; }
-.settings-group-heading h3 { font-size: calc(14px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); font-weight: 600; }
+.settings-group-heading h3 { font-family: 'PT Root UI', ui-sans-serif, system-ui, sans-serif; font-size: calc(14px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); font-weight: 600; }
 .settings-group-heading p { margin-top: 4px; max-width: 64ch; font-size: calc(13px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
 .settings-group-card { overflow: hidden; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .settings-row { display: flex; align-items: center; gap: 12px; padding: 18px 0; min-width: 0; }
