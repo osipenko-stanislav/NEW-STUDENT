@@ -47,11 +47,13 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void
     const bounds = event.currentTarget.getBoundingClientRect()
     setDrop({ id, after: event.clientX > bounds.x + bounds.width / 2 })
   }
-  return <section className="page-container course-catalog" aria-labelledby="course-catalog-title">
-    <header className="course-catalog-header"><div className="course-catalog-heading"><div><h1 id="course-catalog-title" tabIndex={-1} data-course-route-heading>Мои курсы</h1></div><div className="course-catalog-actions"><DownloadPackButton /></div></div>
+  return <section className="page-container course-catalog" aria-label="Мои курсы" tabIndex={-1} data-course-route-heading>
+    <div className="course-catalog-header"><div className="course-catalog-toolbar">
       <div className="course-filter-list" role="group" aria-label="Категории курсов">{courseFilters.map(item => <Button key={item.id} type="button" variant={filter === item.id ? 'default' : 'outline'}
         aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</Button>)}</div>
-    </header>
+      <div className="course-catalog-actions"><DownloadPackButton /></div>
+    </div>
+    </div>
     <div className="sr-only"><p id="course-order-help">Перетащи карточку или измени порядок через меню.</p></div>
     <div className="course-grid" aria-describedby="course-order-help">
       {visible.map((course, index) => <Card role="article" key={course.id} className={`course-tile ${dragged === course.id ? 'is-dragging' : ''}`}

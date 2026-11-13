@@ -3,8 +3,7 @@
 .grades-page { min-width: 0; }
 .grades-heading { margin-bottom: 24px; }
 .grades-heading h1 { font-size: calc(28px * var(--text-scale, 1)); font-weight: 600; line-height: 1.3; letter-spacing: -.02em; overflow-wrap: anywhere; }
-.grades-heading-list { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid hsl(var(--border)); }
-.grades-heading-list h1 { font-size: calc(32px * var(--text-scale, 1)); }
+.grades-heading-list { display: flex; justify-content: flex-start; align-items: center; gap: 24px; }
 .grades-tab { margin-top: 24px; }
 .grades-toolbar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
 .grades-filter { min-width: 168px; display: flex; flex-direction: column; gap: 8px; }
@@ -50,7 +49,7 @@
 .grades-surface button:focus-visible, .grades-surface summary:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
 @container (max-width: 700px) {
   .grades-heading-list { flex-direction: column; align-items: stretch; gap: 20px; }
-  .grades-heading h1, .grades-heading-list h1 { font-size: calc(24px * var(--text-scale, 1)); }
+  .grades-heading h1 { font-size: calc(24px * var(--text-scale, 1)); }
   .grades-toolbar { gap: 12px; }
   .grades-filter { flex: 1; min-width: min(160px, 100%); }
   .grades-search { flex-basis: 100%; max-width: none; min-width: 0; }

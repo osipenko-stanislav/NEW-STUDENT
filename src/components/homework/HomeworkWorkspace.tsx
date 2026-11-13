@@ -29,8 +29,8 @@ export default function HomeworkWorkspace({ onNavigate }: { onNavigate: (destina
     .sort((a, b) => Number(homeworkFilterStatus(a.status) === 'submitted') - Number(homeworkFilterStatus(b.status) === 'submitted') || a.dueAt.localeCompare(b.dueAt) || a.title.localeCompare(b.title, 'ru'))
   const filtered = filter !== 'all' || course !== 'all'
   function reset() { navigate({ homeworkFilter: 'all', homeworkCourse: 'all' }, true) }
-  return <section className="page-container study-page all-homework-page" aria-labelledby="homework-title">
-    <header className="study-page-header"><div><h1 id="homework-title">Домашки</h1><p>Сроки по Москве</p></div></header>
+  return <section className="page-container study-page all-homework-page" aria-label="Домашки">
+    <p className="study-page-context">Сроки по Москве</p>
     <Card className="homework-list-surface">
       <div className="homework-filters">
         <div className="homework-course-filter"><label htmlFor="homework-course-filter">Курс</label><Select value={course} onValueChange={setCourse}><SelectTrigger id="homework-course-filter"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Все курсы</SelectItem>{course.startsWith('subject:') ? <SelectItem value={course}>{subjectLabels[course.slice(8)]}</SelectItem> : null}{courses.map(item => <SelectItem key={item.id} value={item.id}>{item.title}</SelectItem>)}</SelectContent></Select></div>

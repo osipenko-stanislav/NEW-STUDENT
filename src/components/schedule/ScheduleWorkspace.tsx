@@ -79,8 +79,8 @@ export default function ScheduleWorkspace({ onNavigate }: { onNavigate: (destina
     <Filter label="Все преподаватели" value={state.scheduleTeacher} onChange={scheduleTeacher => navigate({ scheduleTeacher }, true)} options={teachers.map(value => ({ value, label: value }))} /></> : null}
     {filterCount ? <Button variant="ghost" onClick={resetFilters}>Сбросить фильтры</Button> : null}
   </>
-  return <section className="page-container study-page schedule-page" aria-labelledby="schedule-title">
-    <header className="study-page-header"><div><h1 id="schedule-title">Расписание</h1><p>Время московское</p></div></header>
+  return <section className="page-container study-page schedule-page" aria-label="Расписание">
+    <p className="study-page-context">Время московское</p>
     <Card className="schedule-surface">
       <div className="schedule-toolbar">
         <div className="schedule-date-navigation">

@@ -394,7 +394,7 @@ function StudentInterface({ onResetSession, isResetting }: {
           <GhostButton label={menuOpen ? 'Свернуть меню' : 'Развернуть меню'} onClick={toggleSidebar}>
             <Icon name="lucide-panel-left.svg" />
           </GhostButton>
-          {!menuOpen ? <span className="truncate text-sm">{section}</span> : null}
+          <span className="header-section-title">{section}</span>
         </div>
         <div className="header-search">
           <div className="search-container">

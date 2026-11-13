@@ -142,6 +142,7 @@
 .student-page { height: 100dvh; container-type: inline-size; }
 .student-header { display: grid; grid-template-columns: minmax(0, 1fr) 296px minmax(0, 1fr); height: 72px; flex-shrink: 0; align-items: center; gap: 16px; padding: 0 16px; border-bottom: 1px solid hsl(var(--border) / 0.6); background: hsl(var(--background)); }
 .header-breadcrumb { display: flex; min-width: 0; align-items: center; gap: 8px; }
+.header-section-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'PT Root UI', sans-serif; font-size: calc(14px * var(--text-scale, 1)); font-weight: 500; }
 .breadcrumb-separator { display: flex; width: 16px; flex-shrink: 0; justify-content: center; }
 .ghost-icon { width: 32px; height: 32px; flex-shrink: 0; padding: 0; border-radius: 8px; box-shadow: none; }
 .ghost-icon:active { background: hsl(var(--muted)); }
@@ -288,7 +289,8 @@
 
 @container (max-width: 559px) {
   .student-header { --page-gutter: 16px; }
-  .header-breadcrumb > span, .breadcrumb-separator { display: none; }
+  .header-section-title { font-size: calc(13px * var(--text-scale, 1)); }
+  .breadcrumb-separator { display: none; }
   .header-actions { gap: 4px; }
   .late-days-action { width: 36px; }
 }
