@@ -36,25 +36,6 @@
 .course-area-icon { display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 7px; background: hsl(var(--muted)); }
 .course-area-icon svg { width: 16px; height: 16px; }
 .course-tile-title { font-size: calc(15px * var(--text-scale, 1)); line-height: 1.45; font-weight: 500; overflow-wrap: anywhere; }
-
-/* Course entity titles are display copy even where interactive markup uses spans or strong. */
-:is(
-  .course-tile-title,
-  .course-block summary > span:not(.semantic-icon),
-  .course-entity-list button > span:nth-child(2),
-  .course-resource-link strong,
-  .course-homework-row button,
-  .course-class-name,
-  .course-recording-files button > span,
-  .course-lesson-materials strong
-) {
-  font-family: 'Universita', 'PT Root UI', serif;
-  font-weight: 400 !important;
-  font-synthesis: none;
-  -webkit-text-stroke: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 .course-tile-top-actions { position: absolute; right: 12px; top: 14px; display: flex; align-items: center; gap: 2px; }
 .course-tile-menu { width: 28px; height: 28px; color: hsl(var(--muted-foreground)); }
 .course-tile-menu svg { width: 16px; height: 16px; }

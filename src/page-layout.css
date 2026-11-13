@@ -16,7 +16,7 @@
 }
 
 /* Semantic headings share one display face across pages, dialogs and chat. */
-.student-app :is(h1, h2, h3, h4, h5, h6) {
+.student-app :is(h1, h2, h3) {
   font-family: 'Universita', 'PT Root UI', serif !important;
   font-weight: 400 !important;
   font-synthesis: none;
