@@ -59,7 +59,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   }
   if (selectedTask && selectedTask.courseId === courseId) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><CourseHomework key={selectedTask.id} task={selectedTask} /></div></div>
   return <div className={`course-workspace ${programOpen && lesson ? 'has-program' : ''}`}><div ref={scrollRef} className="course-surface" aria-label="Учебная область">
-    {!course ? <CourseCatalog onOpen={openCourse} /> : <div className={`course-page course-layout ${lesson ? 'course-lesson-layout' : ''}`}>
+    {!course ? <CourseCatalog onOpen={openCourse} /> : <div className={`page-container course-page course-layout ${lesson ? 'course-lesson-layout' : ''}`}>
       <Tabs value={tab} onValueChange={setTab} className="course-main-column">
         <header className="course-heading-island course-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button>{lesson ? <ChevronRight aria-hidden="true" /> : null}
           {lesson ? <><button type="button" onClick={program}>{course.title}</button><ChevronRight aria-hidden="true" /><button type="button" onClick={() => openBlock(originBlockId)}>Блок {blocks.findIndex(block => block.id === originBlockId) + 1}</button></> : null}</nav>

@@ -29,7 +29,7 @@ export default function HomeworkWorkspace({ onNavigate }: { onNavigate: (destina
     .sort((a, b) => Number(homeworkFilterStatus(a.status) === 'submitted') - Number(homeworkFilterStatus(b.status) === 'submitted') || a.dueAt.localeCompare(b.dueAt) || a.title.localeCompare(b.title, 'ru'))
   const filtered = filter !== 'all' || course !== 'all'
   function reset() { navigate({ homeworkFilter: 'all', homeworkCourse: 'all' }, true) }
-  return <section className="study-page all-homework-page" aria-labelledby="homework-title">
+  return <section className="page-container study-page all-homework-page" aria-labelledby="homework-title">
     <header className="study-page-header"><div><h1 id="homework-title">Домашки</h1><p>Сроки по Москве</p></div></header>
     <Card className="homework-list-surface">
       <div className="homework-filters">

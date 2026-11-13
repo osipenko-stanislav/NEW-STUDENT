@@ -19,7 +19,7 @@
 .course-surface { height: 100%; min-height: 0; overflow: auto; overscroll-behavior: contain; container-type: inline-size; background: hsl(var(--background)); }
 .course-surface button, .course-surface a { -webkit-tap-highlight-color: transparent; }
 .course-surface button:focus-visible, .course-surface a:focus-visible, .course-surface summary:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
-.course-catalog { width: 100%; max-width: 1440px; margin: 0 auto; padding: 32px; }
+.course-catalog { min-width: 0; }
 .course-catalog-header { padding: 0 0 24px; border-bottom: 1px solid hsl(var(--border)); }
 .course-catalog-heading, .course-title-row { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 16px; }
 .course-catalog h1 { font-size: calc(32px * var(--text-scale, 1)); line-height: 1.25; font-weight: 600; letter-spacing: -.025em; }
@@ -51,12 +51,12 @@
 .course-tile[data-drop="before"]::before { left: -7px; }
 .course-tile[data-drop="after"]::before { right: -7px; }
 .course-storage-error { margin-top: 20px; font-size: calc(13px * var(--text-scale, 1)); color: var(--color-red-text); }
-.course-page { width: 100%; max-width: 1440px; padding: 32px; margin-inline: auto; }
+.course-page { min-width: 0; }
 .course-layout { display: grid; grid-template-columns: minmax(0, 1fr) 288px; gap: 24px; align-items: start; }
 .course-main-column { min-width: 0; }
 .course-island { border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); color: hsl(var(--card-foreground)); box-shadow: 0 1px 2px 0 rgb(0 0 0 / .05); }
 .course-heading-island { padding: 0 0 24px; margin-bottom: 24px; border: 0; border-bottom: 1px solid hsl(var(--border)); border-radius: 0; background: transparent; box-shadow: none; }
-.course-breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 20px; font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
+.course-breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: var(--page-navigation-gap); font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
 .course-breadcrumbs button { min-height: 24px; border-radius: 4px; text-align: left; }
 .course-breadcrumbs button:hover { color: hsl(var(--foreground)); text-decoration: underline; text-underline-offset: 4px; }
 .course-breadcrumbs svg { width: 12px; height: 12px; flex-shrink: 0; }
@@ -232,7 +232,6 @@
 .course-other-overview p { font-size: calc(14px * var(--text-scale, 1)); line-height: 24px; color: hsl(var(--muted-foreground)); }
 @container (max-width: 1000px) {
   .course-layout { grid-template-columns: minmax(0, 1fr) 256px; gap: 16px; }
-  .course-page, .course-catalog { padding: 24px; }
   .course-heading-island, .course-catalog-header { padding: 0 0 24px; }
   .course-reader { padding: 28px 24px; }
   .course-recording-filters { grid-template-columns: 1fr; }
@@ -253,7 +252,6 @@
   .course-recording-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @container (max-width: 500px) {
-  .course-page, .course-catalog { padding: 16px; }
   .course-catalog-header, .course-heading-island { padding: 0 0 20px; }
   .course-catalog h1 { font-size: calc(28px * var(--text-scale, 1)); }
   .course-filter-list { gap: 6px; margin-top: 20px; }
@@ -317,8 +315,8 @@
 .course-diagram-green { --diagram-soft: var(--color-green-soft); --diagram-text: var(--color-green-text); }
 .course-learning-diagram .course-diagram-arrows { stroke: hsl(var(--muted-foreground)); }
 .course-lesson-materials strong { overflow-wrap: anywhere; }
-.course-tab-list { max-width: 100%; overflow-x: auto; justify-content: flex-start; height: auto; }
-.course-tab-list [role="tab"] { min-height: 36px; flex-shrink: 0; }
+.course-tab-list { width: fit-content; max-width: 100%; justify-content: flex-start; height: auto; }
+.course-tab-list [role="tab"] { min-height: 36px; }
 .course-section-toolbar { margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .course-homework-row { display: flex; align-items: center; gap: 16px; padding-block: 16px; }
 .course-homework-row > [class*="semantic-badge"] { flex-shrink: 0; }
@@ -326,7 +324,6 @@
 @container (max-width: 600px) { .course-homework-row { flex-wrap: wrap; gap: 10px; } .course-homework-row > :first-child { flex-basis: 100%; } .course-homework-row > :last-child { margin-left: auto; } }
 .course-catalog-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .course-material-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-.course-tab-list [role="tab"][data-state="inactive"] { color: hsl(var(--foreground) / .8); }
 @container (max-width: 600px) {
   .course-catalog-heading { flex-wrap: wrap; }
   .course-lesson-materials li { flex-wrap: wrap; }
@@ -335,7 +332,7 @@
 }
 
 /* Assignment structure uses the shared shadcn tokens and components. */
-.homework-page { display: grid; grid-template-columns: minmax(0, 1fr) 280px; grid-template-rows: auto 1fr; gap: 24px; max-width: 1160px; margin: 0 auto; padding: 32px; }
+.homework-page { display: grid; grid-template-columns: minmax(0, 1fr) 280px; grid-template-rows: auto 1fr; gap: 24px; }
 .homework-heading { grid-column: 1; min-width: 0; overflow-wrap: anywhere; }
 .homework-sidebar { grid-column: 2; grid-row: 1 / span 2; display: flex; flex-direction: column; gap: 16px; align-self: start; position: sticky; top: 24px; }
 .homework-content { grid-column: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
@@ -347,9 +344,9 @@
 .homework-timer-track { height: 4px; border-radius: 4px; overflow: hidden; background: hsl(var(--muted)); }
 .homework-timer-track span { display: block; height: 100%; background: hsl(var(--primary)); }
 .homework-history { border-left: 1px solid hsl(var(--border)); padding-left: 20px; display: flex; flex-direction: column; gap: 24px; }
-@media (max-width: 1100px) { .homework-page { grid-template-columns: minmax(0, 1fr) 240px; padding: 24px; gap: 20px; } }
-@media (max-width: 767px) {
-  .homework-page { display: flex; flex-direction: column; padding: 20px 16px; gap: 20px; }
+@container (max-width: 1000px) { .homework-page { grid-template-columns: minmax(0, 1fr) 240px; gap: 20px; } }
+@container (max-width: 800px) {
+  .homework-page { display: flex; flex-direction: column; gap: 20px; }
   .homework-sidebar { position: static; width: 100%; }
   .homework-content { width: 100%; }
   .homework-heading h1 { font-size: 22px; }

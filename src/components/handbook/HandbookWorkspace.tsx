@@ -120,8 +120,8 @@ export default function HandbookWorkspace() {
   return <section className="handbook-workspace" aria-label="Хэндбук студента">
     <aside className="handbook-sidebar">{tree}</aside>
     <div ref={scrollRef} className="handbook-reading-area">
-      <div className="handbook-toolbar"><Button type="button" variant="outline" className="handbook-mobile-tree" onClick={() => setMobileOpen(true)}><ListTree aria-hidden="true" />Содержание</Button></div>
-      {!page ? <div className="handbook-empty"><h1>Страница не найдена</h1><p>Открой нужный раздел в содержании хэндбука.</p><Button variant="outline" onClick={() => openPage(handbookRootId)}>На главную хэндбука</Button></div> : <div className="handbook-document-layout">
+      {!page ? <div className="handbook-empty"><h1>Страница не найдена</h1><p>Открой нужный раздел в содержании хэндбука.</p><Button variant="outline" onClick={() => openPage(handbookRootId)}>На главную хэндбука</Button></div> : <div className="page-container handbook-document-layout">
+        <div className="handbook-toolbar"><Button type="button" variant="outline" className="handbook-mobile-tree" onClick={() => setMobileOpen(true)}><ListTree aria-hidden="true" />Содержание</Button></div>
         <article className="handbook-page">
           <header className="handbook-page-header"><h1 ref={titleRef} tabIndex={-1}>{page.title}</h1><Button type="button" variant="ghost" size="icon" aria-label={copied ? 'Ссылка скопирована' : 'Скопировать ссылку на страницу'} onClick={() => void copyLink()}>{copied ? <Check aria-hidden="true" /> : <Link aria-hidden="true" />}</Button></header>
           {copied || copyError ? <div className="handbook-copy-status" role="status">{copyError ? 'Не удалось скопировать ссылку. Скопируй адрес из строки браузера.' : copied ? 'Ссылка скопирована' : ''}</div> : null}

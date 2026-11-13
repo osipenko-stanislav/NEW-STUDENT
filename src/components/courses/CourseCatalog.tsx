@@ -47,7 +47,7 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void
     const bounds = event.currentTarget.getBoundingClientRect()
     setDrop({ id, after: event.clientX > bounds.x + bounds.width / 2 })
   }
-  return <section className="course-catalog" aria-labelledby="course-catalog-title">
+  return <section className="page-container course-catalog" aria-labelledby="course-catalog-title">
     <header className="course-catalog-header"><div className="course-catalog-heading"><div><h1 id="course-catalog-title" tabIndex={-1} data-course-route-heading>Мои курсы</h1></div><div className="course-catalog-actions"><DownloadPackButton /></div></div>
       <div className="course-filter-list" role="group" aria-label="Категории курсов">{courseFilters.map(item => <Button key={item.id} type="button" variant={filter === item.id ? 'default' : 'outline'}
         aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</Button>)}</div>

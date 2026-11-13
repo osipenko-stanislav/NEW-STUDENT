@@ -1,0 +1,59 @@
+/* Content width excludes the outer gutters and includes any supporting rail. */
+:root {
+  --page-width: 1056px;
+  --page-top: 32px;
+  --content-gutter: 32px;
+  --page-navigation-gap: 16px;
+}
+
+.workspace:has(> .study-page) { container-type: inline-size; }
+
+.page-container {
+  width: min(var(--page-width), calc(100% - 2 * var(--content-gutter)));
+  min-width: 0;
+  margin-inline: auto;
+  padding-block: var(--page-top) 48px;
+}
+
+/* Scope titles to pages: dialogs, article subheadings and chat keep their type. */
+.workspace:not(.workspace-chat) h1 {
+  font-family: 'Universita', 'PT Root UI', serif;
+  font-weight: 400;
+  font-synthesis: none;
+  -webkit-text-stroke: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.workspace:not(.workspace-chat) h1[tabindex="-1"]:focus { outline: none; }
+
+/* Separate outline buttons, with the same selected state as course categories. */
+.tabs-list-buttons > [role='tab'] {
+  min-height: 36px;
+  min-width: 0;
+  padding: 8px 16px;
+  border: 1px solid hsl(var(--input));
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  white-space: normal;
+  text-align: center;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .05);
+  transition: background-color 150ms, color 150ms;
+}
+.tabs-list-buttons > [role='tab']:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+.tabs-list-buttons > [role='tab'][data-state='active'] {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+.tabs-list-buttons > [role='tab'][data-state='active']:hover {
+  background: hsl(var(--primary) / .9);
+}
+
+/* Container queries also respond when local sidebars reduce the reading area. */
+@container (max-width: 700px) {
+  .page-container { --page-top: 24px; --content-gutter: 16px; }
+}

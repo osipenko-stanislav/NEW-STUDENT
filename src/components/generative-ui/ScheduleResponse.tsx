@@ -54,7 +54,7 @@ export default function ScheduleResponse({ part, onNavigate }: { part: ScheduleP
   return <section className="gen-ui" aria-label={isWeek ? 'Недельное расписание' : 'Расписание дня'}>
     <div className="gen-header"><h3 className="gen-heading"><SemanticIcon icon={CalendarDays} tone="blue" />{isWeek ? 'Моя неделя' : 'Расписание'}</h3><p>9–15 ноября 2026</p></div>
     {isWeek ? <Tabs value={day} onValueChange={setDay} className="min-w-0">
-      <TabsList className="gen-days" aria-label="Дни недели">
+      <TabsList variant="segmented" className="gen-days" aria-label="Дни недели">
         {part.days.map(item => <TabsTrigger key={item.date} value={item.date} className="gen-day-tab" aria-label={`${item.short}, ${item.label}`}>
           <span>{item.short}</span><span>{item.label.split(' ')[0]}</span>
         </TabsTrigger>)}

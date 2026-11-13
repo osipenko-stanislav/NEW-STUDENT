@@ -106,7 +106,7 @@ export default function GradesWorkspace({ onOpenCourse }: { onOpenCourse: (id: s
   function reset() { setSemester('all'); setFormat('all') }
   function toggle(key: SortKey) { setSort(current => ({ key, descending: current?.key === key ? !current.descending : false })) }
   function grade(item: GradeStatement) { return item.formula?.length ? calculateGrade(item.formula).rounded : item.grade }
-  return <TooltipProvider delayDuration={200}><div className="grades-surface" ref={scrollRef}><section className="grades-page" aria-labelledby="grades-title">
+  return <TooltipProvider delayDuration={200}><div className="grades-surface" ref={scrollRef}><section className="page-container grades-page" aria-labelledby="grades-title">
     {statement ? <>
       <header className="grades-heading"><Button variant="ghost" className="page-back-button" onClick={() => { setArchived(statement.archived ? 'archive' : 'current'); setScope(statement.semester === null ? 'outside' : 'semester'); setSelectedId(null) }}>Все ведомости</Button><h1 id="grades-title" tabIndex={-1}>{statement.title}</h1></header>
       <Tabs value={detailTab} onValueChange={setDetailTab}><TabsList aria-label="Разделы ведомости"><TabsTrigger value="formula">Формула оценки</TabsTrigger><TabsTrigger value="earned">Набранные баллы</TabsTrigger></TabsList><TabsContent value="formula" className="grades-tab"><Formula statement={statement} /></TabsContent><TabsContent value="earned" className="grades-tab"><Earned key={statement.id} statement={statement} /></TabsContent></Tabs>

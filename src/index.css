@@ -156,9 +156,8 @@
 .global-search-input { min-width: 0; height: 36px; font-size: calc(16px * var(--text-scale, 1)); }
 .global-search-tabs-root { display: flex; min-height: 0; flex: 1; flex-direction: column; }
 .global-search-categories { flex-shrink: 0; overflow-x: auto; scrollbar-width: thin; padding: 0 16px 12px; border-bottom: 1px solid hsl(var(--border)); }
-.global-search-tabs { display: flex; width: max-content; height: auto; justify-content: flex-start; gap: 4px; padding: 0; border-radius: 0; background: transparent; }
+.global-search-tabs { display: flex; width: fit-content; height: auto; justify-content: flex-start; gap: 8px; padding: 0; border-radius: 0; background: transparent; }
 .global-search-tabs [role="tab"] { height: 36px; padding: 8px 12px; font-size: calc(13px * var(--text-scale, 1)); }
-.global-search-tabs [role="tab"][data-state="active"] { background: var(--color-violet-soft); color: var(--color-violet-text); box-shadow: none; }
 .global-search-panel { display: flex; min-height: 0; flex: 1; flex-direction: column; margin: 0; }
 .global-search-results { max-height: 360px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 8px; }
 .global-search-group-title { padding: 8px 12px 6px; color: hsl(var(--muted-foreground)); font-size: calc(12px * var(--text-scale, 1)); font-weight: 500; line-height: calc(16px * var(--text-scale, 1)); }
@@ -444,8 +443,8 @@ input, textarea { caret-color: hsl(var(--foreground)); }
 }
 
 /* Return navigation follows breadcrumbs and precedes the page title. */
-.page-back-button { display: flex; width: fit-content; min-height: 36px; margin: 0 0 16px; padding-inline: 8px; color: hsl(var(--muted-foreground)); }
-.page-breadcrumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
+.page-back-button { display: flex; width: fit-content; min-height: 36px; margin: 0 0 var(--page-navigation-gap); padding-inline: 8px; color: hsl(var(--muted-foreground)); }
+.page-breadcrumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: var(--page-navigation-gap); font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
 .page-breadcrumbs button { min-height: 24px; border-radius: 4px; }
 .page-breadcrumbs button:hover { color: hsl(var(--foreground)); text-decoration: underline; text-underline-offset: 4px; }
 .page-breadcrumbs svg { width: 12px; height: 12px; flex-shrink: 0; }

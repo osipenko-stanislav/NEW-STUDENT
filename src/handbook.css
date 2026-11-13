@@ -1,5 +1,5 @@
 .workspace-handbook { overflow: hidden; }
-.handbook-workspace { display: flex; height: 100%; min-height: 0; container-type: inline-size; }
+.handbook-workspace { display: flex; height: 100%; min-height: 0; container: handbook-workspace / inline-size; }
 .handbook-sidebar { flex: 0 0 320px; border-right: 1px solid hsl(var(--border)); overflow: auto; padding: 20px 12px; background: hsl(var(--background)); }
 .handbook-tree ul { list-style: none; margin: 0; padding: 0; }
 .handbook-tree-row { display: flex; align-items: center; border-radius: var(--radius); margin-block: 0; min-height: 30px; }
@@ -11,11 +11,12 @@
 .handbook-tree-file { width: 14px; height: 14px; margin: 6px 7px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
 .handbook-tree-home { display: flex; gap: 9px; align-items: center; padding: 6px 10px; border-radius: var(--radius); font-size: calc(13px * var(--text-scale, 1)); margin-bottom: 8px; }
 .handbook-tree-home svg { width: 16px; height: 16px; flex-shrink: 0; }
-.handbook-reading-area { flex: 1; min-width: 0; overflow: auto; scrollbar-gutter: stable; }
-.handbook-toolbar { display: none; align-items: center; gap: 12px; padding: 22px 32px; border-bottom: 1px solid hsl(var(--border)); }
+.handbook-reading-area { flex: 1; min-width: 0; overflow: auto; scrollbar-gutter: stable; container: handbook-reading / inline-size; }
+.handbook-toolbar { display: none; align-items: center; grid-column: 1 / -1; gap: 12px; }
 .handbook-mobile-tree { display: none; }
-.handbook-document-layout { display: flex; align-items: flex-start; max-width: 1160px; margin-inline: auto; }
-.handbook-page { flex: 1; min-width: 0; padding: 32px clamp(24px, 3vw, 48px) 64px; max-width: 860px; }
+.handbook-document-layout { display: grid; grid-template-columns: minmax(0, 1fr) 184px; column-gap: 24px; row-gap: var(--page-navigation-gap); align-items: start; }
+.handbook-document-layout:not(:has(.handbook-outline)) { grid-template-columns: minmax(0, 1fr); }
+.handbook-page { min-width: 0; }
 .handbook-page-header { margin-bottom: 24px; display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
 .handbook-page h1, .handbook-search-results > h1 { font-size: calc(30px * var(--text-scale, 1)); line-height: 1.25; letter-spacing: -.025em; font-weight: 600; overflow-wrap: anywhere; text-wrap: balance; }
 .handbook-page-header button { flex-shrink: 0; }
@@ -67,7 +68,7 @@
 .handbook-child-pages a:hover { background: hsl(var(--accent)); }
 .handbook-child-pages svg { width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
 .handbook-child-pages span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.handbook-outline { flex: 0 0 184px; padding: 36px 16px 24px 0; position: sticky; top: 0; max-height: 100%; }
+.handbook-outline { min-width: 0; position: sticky; top: var(--page-top); }
 .handbook-outline nav { max-height: calc(100svh - 180px); overflow: auto; font-size: calc(12px * var(--text-scale, 1)); }
 .handbook-outline p { font-weight: 500; padding: 0 0 12px 12px; }
 .handbook-outline a { display: block; border-left: 1px solid hsl(var(--border)); padding-block: 7px; color: hsl(var(--muted-foreground)); line-height: 1.5; }
@@ -82,20 +83,19 @@
 .handbook-mobile-sheet .handbook-tree-row { min-height: 44px; }
 .handbook-mobile-sheet .handbook-tree-row > a { padding-block: 12px; }
 .handbook-mobile-sheet .handbook-tree-toggle { height: 44px; width: 36px; }
-@container (max-width: 1050px) { .handbook-outline { display: none; } .handbook-page { max-width: 860px; margin-inline: auto; } }
-@container (max-width: 760px) {
+@container handbook-reading (max-width: 800px) { .handbook-outline { display: none; } .handbook-document-layout { grid-template-columns: minmax(0, 1fr); } }
+@container handbook-workspace (max-width: 760px) {
   .handbook-sidebar { display: none; }
   .handbook-mobile-tree { display: inline-flex; flex-shrink: 0; height: 44px; }
-  .handbook-toolbar { display: flex; padding: 12px 20px; }
+  .handbook-toolbar { display: flex; }
   .handbook-search input { height: 44px; }
   .handbook-search kbd { display: none; }
   .handbook-search input { padding-inline-end: 38px; }
 }
-@container (max-width: 500px) {
-  .handbook-toolbar { flex-wrap: wrap; padding: 16px; gap: 12px; }
+@container handbook-workspace (max-width: 500px) {
+  .handbook-toolbar { flex-wrap: wrap; gap: 12px; }
   .handbook-search { width: 100%; }
   .handbook-search input { font-size: 16px; }
-  .handbook-page, .handbook-search-results { padding: 24px 20px 48px; }
   .handbook-page h1, .handbook-search-results > h1 { font-size: calc(26px * var(--text-scale, 1)); }
   .handbook-prose { font-size: calc(15px * var(--text-scale, 1)); }
   .handbook-columns { flex-direction: column; gap: 4px; }
@@ -111,4 +111,4 @@
 .handbook-inline-outline nav { display: grid; gap: 4px; padding-bottom: 16px; }
 .handbook-inline-outline a { display: block; padding: 8px 12px; color: hsl(var(--muted-foreground)); border-radius: var(--radius); }
 .handbook-inline-outline a:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
-@container (max-width: 1050px) { .handbook-inline-outline { display: block; } }
+@container handbook-reading (max-width: 800px) { .handbook-inline-outline { display: block; } }

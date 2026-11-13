@@ -164,11 +164,12 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
 </span>
       </Button>)}</nav>
     </aside>
-    <div className="settings-mobile-category"><label>Категория настроек</label>
-      <SettingsSelect label="Категория настроек" value={category} onChange={value => changeCategory(value as Category)} options={categories.map(item => [item.id, item.title])} />
-    </div>
+
     <section ref={paneRef} className="settings-detail" aria-labelledby="settings-category-title" tabIndex={-1}>
-      <div className="settings-detail-inner">
+      <div className="page-container settings-detail-inner">
+        <div className="settings-mobile-category"><label>Категория настроек</label>
+          <SettingsSelect label="Категория настроек" value={category} onChange={value => changeCategory(value as Category)} options={categories.map(item => [item.id, item.title])} />
+        </div>
         <header className="settings-detail-heading"><active.icon aria-hidden="true" /><div>
           <h1 id="settings-category-title">{active.title}</h1>
         </div></header>

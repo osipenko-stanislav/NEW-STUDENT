@@ -106,7 +106,7 @@ export default function CourseHomework({ task }: { task: AcademicTask }) {
     if (store(current => ({ ...current, comments: [...current.comments, homeworkEvent(comment.trim())] }))) setComment('')
   }
   const program = () => navigate({ taskId: null, lessonId: null, courseTab: 'homework' })
-  return <div className="homework-page">
+  return <div className="page-container homework-page">
     <header className="homework-heading">
       <PageBackButton />
       <div className="flex flex-wrap items-center gap-2 mb-3"><Badge variant={taskStatusVariants[status]}>{expired && !finished ? 'Время вышло' : taskStatusLabels[status]}</Badge><HomeworkModeBadge minutes={task.timeLimitMinutes} /></div>

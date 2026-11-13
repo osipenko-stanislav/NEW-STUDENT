@@ -79,7 +79,7 @@ export default function ScheduleWorkspace({ onNavigate }: { onNavigate: (destina
     <Filter label="Все преподаватели" value={state.scheduleTeacher} onChange={scheduleTeacher => navigate({ scheduleTeacher }, true)} options={teachers.map(value => ({ value, label: value }))} /></> : null}
     {filterCount ? <Button variant="ghost" onClick={resetFilters}>Сбросить фильтры</Button> : null}
   </>
-  return <section className="study-page schedule-page" aria-labelledby="schedule-title">
+  return <section className="page-container study-page schedule-page" aria-labelledby="schedule-title">
     <header className="study-page-header"><div><h1 id="schedule-title">Расписание</h1><p>Время московское</p></div></header>
     <Card className="schedule-surface">
       <div className="schedule-toolbar">
@@ -91,7 +91,7 @@ export default function ScheduleWorkspace({ onNavigate }: { onNavigate: (destina
         </div>
         <Select value={view} onValueChange={value => navigate({ scheduleView: value as ScheduleView }, true)}><SelectTrigger className="schedule-view-select" aria-label="Вид расписания"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="week">Неделя</SelectItem><SelectItem value="day">День</SelectItem><SelectItem value="two-days">Два дня</SelectItem><SelectItem value="list">Список за месяц</SelectItem></SelectContent></Select>
       </div>
-      <div className="schedule-controls"><div className="schedule-event-kinds" role="group" aria-label="События расписания">{([['all', 'Все'], ['classes', 'Занятия'], ['deadlines', 'Дедлайны']] as const).map(([kind, label]) => <Button key={kind} variant={state.scheduleKind === kind ? 'secondary' : 'ghost'} aria-pressed={state.scheduleKind === kind} onClick={() => navigate({ scheduleKind: kind }, true)}>{label}</Button>)}</div>
+      <div className="schedule-controls"><div className="schedule-event-kinds" role="group" aria-label="События расписания">{([['all', 'Все'], ['classes', 'Занятия'], ['deadlines', 'Дедлайны']] as const).map(([kind, label]) => <Button key={kind} variant={state.scheduleKind === kind ? 'default' : 'outline'} aria-pressed={state.scheduleKind === kind} onClick={() => navigate({ scheduleKind: kind }, true)}>{label}</Button>)}</div>
         <Button variant="outline" className="schedule-mobile-filter" onClick={() => setFiltersOpen(true)}><ListFilter aria-hidden="true" />Фильтры{filterCount ? <Badge variant="neutral">{filterCount}</Badge> : null}</Button>
         <p className="sr-only" role="status">Событий: {events.length}</p>
       </div>
