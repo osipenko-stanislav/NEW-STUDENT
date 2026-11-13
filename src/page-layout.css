@@ -15,17 +15,17 @@
   padding-block: var(--page-top) 48px;
 }
 
-/* Scope titles to pages: dialogs, article subheadings and chat keep their type. */
-.workspace:not(.workspace-chat) h1 {
-  font-family: 'Universita', 'PT Root UI', serif;
-  font-weight: 400;
+/* Semantic headings share one display face across pages, dialogs and chat. */
+.student-app :is(h1, h2, h3, h4, h5, h6) {
+  font-family: 'Universita', 'PT Root UI', serif !important;
+  font-weight: 400 !important;
   font-synthesis: none;
   -webkit-text-stroke: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.workspace:not(.workspace-chat) h1[tabindex="-1"]:focus { outline: none; }
+.workspace h1[tabindex="-1"]:focus { outline: none; }
 
 /* Separate outline buttons, with the same selected state as course categories. */
 .tabs-list-buttons > [role='tab'] {
