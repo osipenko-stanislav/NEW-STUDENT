@@ -21,7 +21,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-50 bg-black/35 dark:bg-black/60 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-50 bg-black/35 dark:bg-black/60 [transition-duration:calc(200ms*var(--motion-scale))] [animation-duration:calc(200ms*var(--motion-scale))] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
     )}
     {...props}
@@ -31,7 +31,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-  "fixed z-50 gap-4 overflow-y-auto bg-background p-6 shadow-lg transition ease-out data-[state=closed]:duration-200 data-[state=closed]:ease-in data-[state=open]:duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out",
+  "fixed z-50 gap-4 overflow-y-auto bg-background p-6 shadow-lg transition [transition-timing-function:var(--ease-enter)] [animation-timing-function:var(--ease-enter)] data-[state=closed]:[transition-duration:calc(200ms*var(--motion-scale))] data-[state=closed]:[animation-duration:calc(200ms*var(--motion-scale))] data-[state=closed]:[transition-timing-function:var(--ease-exit)] data-[state=closed]:[animation-timing-function:var(--ease-exit)] data-[state=open]:[transition-duration:calc(300ms*var(--motion-scale))] data-[state=open]:[animation-duration:calc(300ms*var(--motion-scale))] data-[state=open]:animate-in data-[state=closed]:animate-out",
   {
     variants: {
       side: {

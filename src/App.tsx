@@ -437,7 +437,7 @@ function StudentInterface({ onResetSession, isResetting }: {
           aria-labelledby={isConversation ? 'conversation-title' : 'navigator-title'}>
           <AnimatePresence initial={false} mode="popLayout">{activeConversation ? <m.div key="conversation" className="navigator-state navigator-state-conversation"
             initial={spatialMotion ? { opacity: 0, y: 8 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
-            <ConversationMessages onNavigatorHome={() => selectSection('Навигатор')} conversation={activeConversation} materials={materials} generation={activeGeneration}
+            <ConversationMessages key={activeConversation.id} onNavigatorHome={() => selectSection('Навигатор')} conversation={activeConversation} materials={materials} generation={activeGeneration}
             onNavigate={selectSection} onFollowUp={value => { setPromptCommand(null); setPrompt(value); requestAnimationFrame(() => promptRef.current?.focus()) }}
             onOpenMaterial={id => { setMaterialPicker(false); setMaterialInfoId(id); setMaterialsOpen(true) }} /></m.div> : <m.div key="empty" className="navigator-state navigator-state-empty"
               initial={spatialMotion ? { opacity: 0, y: -6 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>

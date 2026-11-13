@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import FileIcon from '@/components/FileIcon'
 import { Button } from '@/components/ui/button'
@@ -27,14 +27,10 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
   const scrollRef = useRef<HTMLDivElement>(null)
   const { spatialMotion, transition } = useAppMotion()
   const followBottom = useRef(true)
-  const conversationRef = useRef(conversation.id)
-  const seenMessages = useRef(new Set(conversation.messages.map(message => message.id)))
-  if (conversationRef.current !== conversation.id) {
-    conversationRef.current = conversation.id
-    seenMessages.current = new Set(conversation.messages.map(message => message.id))
-  }
-  const newMessageIds = new Set(conversation.messages.filter(message => !seenMessages.current.has(message.id)).map(message => message.id))
-  conversation.messages.forEach(message => seenMessages.current.add(message.id))
+  // Keep the opening history stable through StrictMode renders and streamed updates.
+  // New responses retain their entrance animation until their delayed UI mounts.
+  const [initialMessageIds] = useState(() => new Set(conversation.messages
+    .filter(message => message.id !== generation?.messageId).map(message => message.id)))
   const lastAssistant = [...conversation.messages].reverse().find(message => message.role === 'assistant')?.id
 
   useLayoutEffect(() => {
@@ -57,7 +53,7 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
       <h1 id="conversation-title">{conversation.title}</h1>
     </header>
     {conversation.messages.map(message => <m.article key={message.id} className={`chat-message chat-message-${message.role}`}
-      initial={newMessageIds.has(message.id) ? spatialMotion ? { opacity: 0, y: 8 } : { opacity: 0 } : false}
+      initial={!initialMessageIds.has(message.id) ? spatialMotion ? { opacity: 0, y: 8 } : { opacity: 0 } : false}
       animate={{ opacity: 1, y: 0 }} transition={transition}
       aria-label={message.role === 'user' ? 'Сообщение пользователя' : 'Сообщение ассистента'}>
       <div className="message-author">{message.role === 'user' ? 'Ты' : 'Ассистент'}</div>
@@ -81,7 +77,7 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
         {generation?.messageId === message.id && generation.phase === 'thinking' ? <div className="gen-thinking" role="status">
           <span className="gen-thinking-dots" aria-hidden="true"><i /><i /><i /></span>Готовлю ответ…
         </div> : <>
-          {message.content.map((part, index) => <MessageContent key={index} part={part} onNavigate={onNavigate} animate={newMessageIds.has(message.id)}
+          {message.content.map((part, index) => <MessageContent key={index} part={part} onNavigate={onNavigate} animate={!initialMessageIds.has(message.id)}
             visibleCharacters={generation?.messageId === message.id ? generation.visibleCharacters : undefined} />)}
           {generation?.messageId === message.id ? <span className="sr-only" role="status">Ассистент печатает</span> : null}
         </>}

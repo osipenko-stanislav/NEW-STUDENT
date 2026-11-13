@@ -13,7 +13,7 @@ export default function GenerativeContent({ part, onNavigate, animate = false }:
     : part.type === 'assignments' ? <AssignmentsResponse part={part} onNavigate={onNavigate} />
       : <MaterialsResponse part={part} onNavigate={onNavigate} />
   return <m.div initial={animate ? spatialMotion ? { opacity: 0, y: effectiveIntensity === 'expressive' ? 12 : 6 } : { opacity: 0 } : false}
-    animate={{ opacity: 1, y: 0 }} transition={{ ...transition, delay: animate && effectiveIntensity !== 'minimal' ? 0.04 : 0 }}>
+    animate={{ opacity: 1, y: 0 }} transition={{ ...transition, delay: animate && effectiveIntensity !== 'minimal' ? 0.06 : 0 }}>
     {content}
   </m.div>
 }
