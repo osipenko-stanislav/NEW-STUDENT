@@ -11,7 +11,6 @@ import { addDays, weekDays, moscowDate, minutesAt, classTone, scheduleRangeLabel
 import { useDisplayFormats } from '@/components/SettingsProvider'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -81,7 +80,7 @@ export default function ScheduleWorkspace({ onNavigate }: { onNavigate: (destina
   </>
   return <section className="page-container study-page schedule-page" aria-label="Расписание">
     <p className="study-page-context">Время московское</p>
-    <Card className="schedule-surface">
+    <section className="schedule-surface">
       <div className="schedule-toolbar">
         <div className="schedule-date-navigation">
           <Button variant="outline" size="icon" aria-label="Предыдущий период" onClick={() => move(-1)}><ChevronLeft aria-hidden="true" /></Button>
@@ -103,7 +102,7 @@ export default function ScheduleWorkspace({ onNavigate }: { onNavigate: (destina
         {dates.map(day => <div key={day} className="schedule-day-column" style={{ height: (endHour - startHour) * 76 }}>{layoutCalendarEntries(gridEvents.filter(event => event.date === day)).map(({ entry, lane, lanes }) => <button key={entry.id} className="schedule-class-event" data-tone={entry.tone} style={{ top: Math.min((minutesAt(entry.startsAt) - startHour * 60) / 60 * 76, (endHour - startHour) * 76 - (entry.taskId ? 68 : 52)), height: entry.taskId ? 64 : Math.max(52, (minutesAt(entry.endsAt) - minutesAt(entry.startsAt)) / 60 * 76 - 4), left: `calc(${lane / lanes * 100}% + 3px)`, width: `calc(${100 / lanes}% - 6px)` }} onClick={() => open(entry)} aria-label={`${entry.taskId ? 'Дедлайн. ' : ''}${entry.title}, ${entry.meta}, ${formatTime(entry.startsAt)}${entry.slot ? `–${formatTime(entry.endsAt)}` : ''}`}><time>{entry.taskId ? 'Дедлайн · ' : ''}{formatTime(entry.startsAt)}{entry.slot ? `–${formatTime(entry.endsAt)}` : ''}</time><strong>{entry.title}</strong><span>{entry.meta}</span>{entry.slot ? <span>{entry.slot.teacher}</span> : null}</button>)}</div>)}
       </div></div>}
       <footer className="schedule-legend">{['Лекция', 'Семинар', 'Практика'].map(format => <span key={format}><i data-tone={classTone(format)} />{format}</span>)}<span><i data-tone="red" />Дедлайн</span></footer>
-    </Card>
+    </section>
     <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}><SheetContent className="schedule-filter-sheet"><SheetHeader><SheetTitle>Фильтры расписания</SheetTitle><SheetDescription>{state.scheduleKind === 'deadlines' ? 'Выбери курс.' : 'Выбери курс и параметры занятия.'}</SheetDescription></SheetHeader><div className="schedule-filter-sheet-fields">{filters}</div><Button onClick={() => setFiltersOpen(false)}>Показать расписание</Button></SheetContent></Sheet>
     <Sheet open={Boolean(eventGroup.length)} onOpenChange={open => { if (!open) setEventGroup([]) }}><SheetContent className="schedule-details"><SheetHeader><SheetTitle>Дедлайны в одно время</SheetTitle><SheetDescription>{eventGroup[0] ? `${formatDate(eventGroup[0].date)} · ${formatTime(eventGroup[0].startsAt)} МСК` : ''}</SheetDescription></SheetHeader><ul className="schedule-group-list">{eventGroup.map(event => <li key={event.id}><button className="schedule-agenda-event" onClick={() => { setEventGroup([]); onNavigate(`Курсы/${event.courseId}/${event.taskId}`) }}><strong>{event.title}</strong><span>{event.meta}</span></button></li>)}</ul></SheetContent></Sheet>
     <Sheet open={Boolean(slot)} onOpenChange={open => { if (!open) setSlot(null) }}><SheetContent className="schedule-details"><SheetHeader><SheetTitle>{slot?.course}</SheetTitle><SheetDescription>{slot?.format}</SheetDescription></SheetHeader>{slot ? <><p className="schedule-detail-topic">{slot.topic}</p><dl><div><dt><CalendarDays aria-hidden="true" />Дата</dt><dd>{formatDate(slot.date)} · {dayName(slot.date)}</dd></div><div><dt><Clock3 aria-hidden="true" />Время</dt><dd>{formatTime(slot.startsAt)}–{formatTime(slot.endsAt)} МСК</dd></div><div><dt><MapPin aria-hidden="true" />Аудитория</dt><dd>{slot.room}</dd></div><div><dt><UserRound aria-hidden="true" />Преподаватель</dt><dd>{slot.teacher}</dd></div></dl><Button onClick={() => { setSlot(null); onNavigate(`Курсы/${slot.courseId}`) }}><BookOpen aria-hidden="true" />Открыть курс</Button></> : null}</SheetContent></Sheet>

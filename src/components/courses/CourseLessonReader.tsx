@@ -14,7 +14,7 @@ export default function CourseLessonReader({ courseId, lesson, lessons, activeSe
     <div className="course-lesson-meta"><Badge variant="active">{lesson.format}</Badge><span><Clock3 aria-hidden="true" />{lesson.readingMinutes} минут чтения</span></div>
     <Button variant="outline" type="button" id="course-mobile-program-trigger" className="course-mobile-program-trigger" onClick={onProgram} aria-controls="course-program-panel" aria-expanded={false}><BookOpen aria-hidden="true" />Программа курса</Button>
     <MobileLessonToc active={activeSection} onAnchor={onAnchor} />
-    <article className="course-reader course-island"><div className="course-reader-body">
+    <article className="course-reader"><div className="course-reader-body">
       <section><h2 id="lesson-overview" tabIndex={-1}>Содержание занятия</h2><p>{text.explanation}</p><h3 id="lesson-loss" tabIndex={-1}>Разбор примера</h3><p>{text.example}</p></section>
       <section><h2 id="lesson-practice" tabIndex={-1}>Практика</h2><p>{text.exercise}</p><ol><li>Запишите исходные данные и требуемый результат.</li><li>Обоснуйте каждый шаг решения.</li><li>Проверьте ответ и сформулируйте вывод.</li></ol></section>
       <section><h2 id="lesson-materials" tabIndex={-1}>Дополнительные материалы</h2><CourseResources courseId={courseId} /></section>

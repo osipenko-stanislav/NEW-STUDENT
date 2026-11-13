@@ -61,7 +61,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   return <div className={`course-workspace ${programOpen && lesson ? 'has-program' : ''}`}><div ref={scrollRef} className="course-surface" aria-label="Учебная область">
     {!course ? <CourseCatalog onOpen={openCourse} /> : <div className={`page-container course-page course-layout ${lesson ? 'course-lesson-layout' : ''}`}>
       <Tabs value={tab} onValueChange={setTab} className="course-main-column">
-        <header className="course-heading-island course-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button>{lesson ? <ChevronRight aria-hidden="true" /> : null}
+        <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button>{lesson ? <ChevronRight aria-hidden="true" /> : null}
           {lesson ? <><button type="button" onClick={program}>{course.title}</button><ChevronRight aria-hidden="true" /><button type="button" onClick={() => openBlock(originBlockId)}>Блок {blocks.findIndex(block => block.id === originBlockId) + 1}</button></> : null}</nav>
           <div className="course-title-row"><h1 tabIndex={-1} data-course-route-heading>{lesson ? lesson.title : course.title}</h1>{!lesson ? <CourseLevels course={course} /> : null}</div>
           {lesson ? <p className="course-heading-subtitle">{originBlock?.title}</p> : <p className="course-heading-subtitle">{areaLabels[course.area]} · {courseFilters.find(item => item.id === course.category)!.label}</p>}
@@ -74,10 +74,10 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
             const task = tasksForCourse(course.id).find(task => task.topic.includes(lesson.title) && task.grade === null) ?? tasksForCourse(course.id).find(task => task.topic.includes(lesson.title))
             setTaskId(task?.id ?? null)
           }} /> : <>
-            <TabsContent value="course" className="m-0"><section className="course-blocks course-island" aria-label="Программа курса">
+            <TabsContent value="course" className="m-0"><section className="course-blocks" aria-label="Программа курса">
               <div className="course-section-heading"><h2>Программа курса</h2></div>
               <CourseProgram blocks={blocks} openBlocks={openBlocks} onToggle={id => setOpenBlocks(current => current.includes(id) ? current.filter(item => item !== id) : [...current, id])} onSelect={selectEntity} />
-            </section></TabsContent><TabsContent value="recordings" className="m-0">{course.id === featuredCourseId ? <CourseRecordings onOpen={setRecording} /> : <section className="course-island p-6"><h2 className="text-base font-semibold">Видеозаписи</h2><p className="mt-2 text-sm text-muted-foreground">Записи занятий пока не опубликованы.</p></section>}</TabsContent>
+            </section></TabsContent><TabsContent value="recordings" className="m-0">{course.id === featuredCourseId ? <CourseRecordings onOpen={setRecording} /> : <section className="course-section"><h2 className="text-base font-semibold">Видеозаписи</h2><p className="mt-2 text-sm text-muted-foreground">Записи занятий пока не опубликованы.</p></section>}</TabsContent>
           </>}
 
         {!lesson ? <><TabsContent value="homework" className="m-0"><CourseHomeworks courseId={course.id} onOpen={setTaskId} /></TabsContent><TabsContent value="materials" className="m-0"><CourseResources courseId={course.id} /></TabsContent><TabsContent value="grades" className="m-0"><CourseGradeSummary courseId={course.id} onOpen={() => onOpenGrades(course.id)} /></TabsContent></> : null}

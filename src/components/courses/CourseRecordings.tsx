@@ -17,7 +17,7 @@ export default function CourseRecordings({ onOpen }: { onOpen: (recording: Cours
   const filtered = courseClasses.filter(item => (date === 'all' || item.date === date) && (teacher === 'all' || item.teachers.includes(teacher)) && (type === 'all' || item.type === type))
   const active = date !== 'all' || teacher !== 'all' || type !== 'all'
   function reset() { setDate('all'); setTeacher('all'); setType('all') }
-  return <section className="course-recordings course-island" aria-label="Видеозаписи курса">
+  return <section className="course-recordings course-section" aria-label="Видеозаписи курса">
     <div className="course-recording-filters"><Filter label="Дата занятия" value={date} onChange={setDate} options={[["all", "Все даты"], ...[...new Set(courseClasses.map(item => item.date))].sort().map(value => [value, formatDate(value, true)] as const)]} />
       <Filter label="Преподаватель" value={teacher} onChange={setTeacher} options={[["all", "Все преподаватели"], ...courseTeachers.map(item => [item.id, item.name] as const)]} />
       <Filter label="Тип занятия" value={type} onChange={setType} options={types} /></div>

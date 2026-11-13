@@ -51,7 +51,7 @@ export default function CourseLongread({ lesson, activeSection, onAnchor, onLess
     <div className="course-lesson-meta"><Badge variant="active">{lesson.format}</Badge><span><Clock3 aria-hidden="true" />{lesson.readingMinutes} минут чтения</span></div>
     <Button type="button" variant="outline" id="course-mobile-program-trigger" className="course-mobile-program-trigger" aria-controls="course-program-panel" aria-expanded={false} onClick={onProgram}><BookOpen aria-hidden="true" />Программа курса</Button>
     <MobileLessonToc active={activeSection} onAnchor={onAnchor} />
-    <article className="course-reader course-island">
+    <article className="course-reader">
       <div className="course-reader-body">
         <section><h2 id="lesson-overview" tabIndex={-1}>Содержание занятия</h2>
           <p>{lesson.summary}</p>

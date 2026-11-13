@@ -22,8 +22,8 @@
 .settings-group-heading { margin-bottom: 12px; }
 .settings-group-heading h3 { font-size: calc(14px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); font-weight: 600; }
 .settings-group-heading p { margin-top: 4px; max-width: 64ch; font-size: calc(13px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
-.settings-group-card { overflow: hidden; border-radius: 12px; box-shadow: none; }
-.settings-row { display: flex; align-items: center; gap: 12px; padding: 18px 20px; min-width: 0; }
+.settings-group-card { overflow: hidden; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.settings-row { display: flex; align-items: center; gap: 12px; padding: 18px 0; min-width: 0; }
 .settings-row-icon { width: 18px; height: 18px; flex-shrink: 0; color: hsl(var(--muted-foreground)); align-self: flex-start; margin-top: 2px; }
 .settings-row-copy { min-width: 0; flex: 1; }
 .settings-row-title { font-size: calc(14px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); font-weight: 500; overflow-wrap: anywhere; }
@@ -43,7 +43,7 @@
 .settings-feedback.text-destructive { color: hsl(var(--destructive)); }
 .settings-info-note { display: flex; align-items: flex-start; gap: 12px; padding: 16px; margin-bottom: 24px; border-radius: 10px; background: var(--color-slate-soft); color: var(--color-slate-text); font-size: calc(14px * var(--text-scale, 1)); line-height: calc(22px * var(--text-scale, 1)); }
 .settings-info-note > svg { width: 20px; height: 20px; flex-shrink: 0; }
-.settings-about-card { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 24px; margin-bottom: 28px; box-shadow: none; }
+.settings-about-card { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 0 0 24px; margin-bottom: 28px; border: 0; border-bottom: 1px solid hsl(var(--border)); border-radius: 0; background: transparent; box-shadow: none; }
 .settings-about-card h2 { font-size: calc(20px * var(--text-scale, 1)); line-height: calc(28px * var(--text-scale, 1)); font-weight: 600; }
 .settings-about-card p { margin-top: 4px; font-size: calc(13px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
 .settings-mobile-category { display: none; }

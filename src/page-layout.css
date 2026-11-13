@@ -29,7 +29,8 @@
 .student-app :is(
   [data-slot='card'],
   .widget-popover,
-  .course-island:not(.course-reader):not(.course-heading-island),
+  .course-blocks,
+  .course-section,
   .course-widgets,
   .course-block-unpublished,
   .course-assignment-card,
