@@ -1,0 +1,123 @@
+/* Palette values live here; components consume roles through shared variants. */
+:root {
+  --color-violet: #7C4DDB;
+  --color-violet-text: #6938C0;
+  --color-violet-soft: #F1EAFE;
+  --color-green: #15966B;
+  --color-green-text: #147D59;
+  --color-green-soft: #E4F7EE;
+  --color-blue: #3679E4;
+  --color-blue-text: #2666C2;
+  --color-blue-soft: #EAF2FF;
+  --color-amber: #D39525;
+  --color-amber-text: #95610C;
+  --color-amber-soft: #FFF3D9;
+  --color-red: #D84B5B;
+  --color-red-text: #B63346;
+  --color-red-soft: #FDECEF;
+  --color-pink: #C65B9A;
+  --color-pink-text: #A34480;
+  --color-pink-soft: #FCEBF5;
+  --color-slate: #748195;
+  --color-slate-text: #59677B;
+  --color-slate-soft: #EFF2F6;
+  --color-ai-foreground: #FFFFFF;
+  --color-danger-foreground: #FFFFFF;
+  --file-pdf: #CF4A55;
+  --file-pdf-soft: #FDE9EB;
+  --file-document: #3478D7;
+  --file-document-soft: #E8F1FF;
+  --file-spreadsheet: #208960;
+  --file-spreadsheet-soft: #E2F6EC;
+  --file-presentation: #D16D32;
+  --file-presentation-soft: #FFF0E4;
+  --file-markdown: #8150C8;
+  --file-markdown-soft: #F0E8FF;
+  --file-text: #64748B;
+  --file-text-soft: #EDF1F6;
+  --file-image: #C35A9B;
+  --file-image-soft: #FBE8F3;
+  --file-video: #8760DB;
+  --file-video-soft: #EFE9FF;
+  --file-audio: #1591A4;
+  --file-audio-soft: #E0F6F8;
+}
+
+.dark {
+  --color-violet: #B99AFF;
+  --color-violet-text: #B99AFF;
+  --color-violet-soft: #302345;
+  --color-green: #55D6A2;
+  --color-green-text: #55D6A2;
+  --color-green-soft: #173C30;
+  --color-blue: #83B5FF;
+  --color-blue-text: #83B5FF;
+  --color-blue-soft: #1D3453;
+  --color-amber: #F5C56B;
+  --color-amber-text: #F5C56B;
+  --color-amber-soft: #48361D;
+  --color-red: #FF8492;
+  --color-red-text: #FF8492;
+  --color-red-soft: #4C2530;
+  --color-pink: #F49BC9;
+  --color-pink-text: #F49BC9;
+  --color-pink-soft: #47263E;
+  --color-slate: #A8B3C3;
+  --color-slate-text: #A8B3C3;
+  --color-slate-soft: #30353E;
+  --color-ai-foreground: #201629;
+  --color-danger-foreground: #29151A;
+  --file-pdf: var(--color-red);
+  --file-pdf-soft: var(--color-red-soft);
+  --file-document: var(--color-blue);
+  --file-document-soft: var(--color-blue-soft);
+  --file-spreadsheet: var(--color-green);
+  --file-spreadsheet-soft: var(--color-green-soft);
+  --file-presentation: var(--color-amber);
+  --file-presentation-soft: var(--color-amber-soft);
+  --file-markdown: var(--color-violet);
+  --file-markdown-soft: var(--color-violet-soft);
+  --file-text: var(--color-slate);
+  --file-text-soft: var(--color-slate-soft);
+  --file-image: var(--color-pink);
+  --file-image-soft: var(--color-pink-soft);
+  --file-video: var(--color-violet);
+  --file-video-soft: var(--color-violet-soft);
+  --file-audio: var(--color-blue);
+  --file-audio-soft: var(--color-blue-soft);
+}
+
+.tone-violet, [data-tone="violet"] { --tone: var(--color-violet); --tone-text: var(--color-violet-text); --tone-soft: var(--color-violet-soft); }
+.tone-green, [data-tone="green"] { --tone: var(--color-green); --tone-text: var(--color-green-text); --tone-soft: var(--color-green-soft); }
+.tone-blue, [data-tone="blue"] { --tone: var(--color-blue); --tone-text: var(--color-blue-text); --tone-soft: var(--color-blue-soft); }
+.tone-amber, [data-tone="amber"] { --tone: var(--color-amber); --tone-text: var(--color-amber-text); --tone-soft: var(--color-amber-soft); }
+.tone-red, [data-tone="red"] { --tone: var(--color-red); --tone-text: var(--color-red-text); --tone-soft: var(--color-red-soft); }
+.tone-pink, [data-tone="pink"] { --tone: var(--color-pink); --tone-text: var(--color-pink-text); --tone-soft: var(--color-pink-soft); }
+.tone-slate, [data-tone="slate"] { --tone: var(--color-slate); --tone-text: var(--color-slate-text); --tone-soft: var(--color-slate-soft); }
+
+.semantic-badge { gap: 4px; border-color: transparent; background: var(--tone-soft); color: var(--tone-text); font-weight: 500; }
+.semantic-badge > svg { width: 12px; height: 12px; flex-shrink: 0; }
+.semantic-icon { display: inline-flex; width: 36px; height: 36px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 8px; background: var(--tone-soft); color: var(--tone-text); }
+.semantic-icon[data-size] > svg { width: 18px; height: 18px; }
+.semantic-icon[data-size="compact"] { width: 24px; height: 24px; border-radius: 6px; }
+.semantic-icon[data-size="compact"] > svg { width: 14px; height: 14px; }
+.file-icon[data-file-kind="pdf"] { --tone-text: var(--file-pdf); --tone-soft: var(--file-pdf-soft); }
+.file-icon[data-file-kind="document"] { --tone-text: var(--file-document); --tone-soft: var(--file-document-soft); }
+.file-icon[data-file-kind="spreadsheet"] { --tone-text: var(--file-spreadsheet); --tone-soft: var(--file-spreadsheet-soft); }
+.file-icon[data-file-kind="presentation"] { --tone-text: var(--file-presentation); --tone-soft: var(--file-presentation-soft); }
+.file-icon[data-file-kind="markdown"] { --tone-text: var(--file-markdown); --tone-soft: var(--file-markdown-soft); }
+.file-icon[data-file-kind="text"] { --tone-text: var(--file-text); --tone-soft: var(--file-text-soft); }
+.file-icon[data-file-kind="image"] { --tone-text: var(--file-image); --tone-soft: var(--file-image-soft); }
+.file-icon[data-file-kind="video"] { --tone-text: var(--file-video); --tone-soft: var(--file-video-soft); }
+.file-icon[data-file-kind="audio"] { --tone-text: var(--file-audio); --tone-soft: var(--file-audio-soft); }
+.file-icon[data-file-kind="code"] { --tone-text: var(--color-violet-text); --tone-soft: var(--color-violet-soft); }
+.deadline-label { display: inline-flex; align-items: flex-start; gap: 5px; color: var(--tone-text); font-size: calc(12px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); font-variant-numeric: tabular-nums; }
+.deadline-label > svg { margin-top: 3px; }
+.button-ai { background: var(--color-violet); color: var(--color-ai-foreground); }
+.button-ai:hover { background: var(--color-violet-text); }
+.button-ai-outline { border: 1px solid var(--color-violet); background: hsl(var(--background)); color: var(--color-violet-text); }
+.button-ai-outline:hover { background: var(--color-violet-soft); }
+.button-danger { background: var(--color-red-text); color: var(--color-danger-foreground); }
+.button-danger:hover { background: var(--color-red-text); filter: brightness(0.92); }
+.menu-danger { color: var(--color-red-text); }
+.menu-danger:focus { background: var(--color-red-soft); color: var(--color-red-text); }

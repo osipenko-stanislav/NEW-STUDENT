@@ -91,3 +91,12 @@ test('deduplicates selections per conversation and drops references to absent fi
     { scopeId: 'first', materialId: material.id }, { scopeId: 'second', materialId: material.id },
   ])
 })
+
+test('retains academic provenance across reload for deduplication without storing file bytes', () => {
+  const imported = { ...material, sourceAcademicId: 'databases-notes', blob: 'must not persist' }
+  saveMaterialMetadata({ draftId: 'draft:academic', materials: [imported], attachments: [{ scopeId: 'draft:academic', materialId: imported.id }] })
+  const restored = loadMaterialMetadata()
+  assert.equal(restored.materials[0].sourceAcademicId, 'databases-notes')
+  assert.equal('blob' in restored.materials[0], false)
+  assert.deepEqual(restored.attachments, [{ scopeId: 'draft:academic', materialId: imported.id }])
+})

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
-import { CornerDownLeft, Search } from 'lucide-react'
+import { BookOpen, BookOpenCheck, Compass, CornerDownLeft, Search } from 'lucide-react'
+import FileIcon from '@/components/FileIcon'
+import { SemanticIcon } from '@/components/ui/semantic-icon'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -11,13 +12,15 @@ import type { SearchCategory, SearchItem } from '@/types/search'
 
 const categories: { value: SearchCategory; label: string }[] = [
   { value: 'all', label: 'Все' }, { value: 'courses', label: 'Курсы' },
-  { value: 'materials', label: 'Материалы' }, { value: 'homework', label: 'Домашки' },
-  { value: 'sections', label: 'Разделы' },
+  { value: 'materials', label: 'Материалы' }, { value: 'homework', label: 'Задания' },
+  { value: 'lessons', label: 'Уроки' }, { value: 'grades', label: 'Ведомости' },
+  { value: 'handbook', label: 'Хэндбук' }, { value: 'sections', label: 'Разделы' },
 ]
 
-type GlobalSearchProps = { disabled?: boolean; onNavigate: (section: string) => void; onAskNavigator: (query: string) => void }
+type GlobalSearchProps = { disabled?: boolean; onNavigate: (item: SearchItem) => void; onAskNavigator: (query: string) => void }
 
 export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = false }: GlobalSearchProps) {
+  const [handbookContent, setHandbookContent] = useState<Record<string, string>>({})
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<SearchCategory>('all')
@@ -73,8 +76,28 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
     return () => window.removeEventListener('keydown', shortcut)
   }, [open, changeOpen, disabled])
 
-  const matches = filterSearchItems(searchItems, query, category)
-  const recent = recentIds.map(recentId => sectionSearchItems.find(item => item.id === recentId))
+  useEffect(() => {
+    function requested(event: Event) {
+      if (disabled) return
+      const detail = (event as CustomEvent<{ query: string; category: SearchCategory }>).detail
+      changeOpen(true); setQuery(detail.query); setCategory(detail.category)
+    }
+    window.addEventListener('student:search', requested)
+    return () => window.removeEventListener('student:search', requested)
+  }, [changeOpen, disabled])
+  useEffect(() => {
+    if (!open || Object.keys(handbookContent).length) return
+    let active = true
+    fetch(`${import.meta.env.BASE_URL}handbook/search.json`).then(response => {
+      if (!response.ok) throw new Error('Search index unavailable')
+      return response.json() as Promise<{ id: string; text: string }[]>
+    }).then(items => { if (active) setHandbookContent(Object.fromEntries(items.map(item => [item.id, item.text]))) }).catch(() => {})
+    return () => { active = false }
+  }, [open, handbookContent])
+  const indexedItems = searchItems.map(item => item.handbookPageId && handbookContent[item.handbookPageId]
+    ? { ...item, content: handbookContent[item.handbookPageId] } : item)
+  const matches = filterSearchItems(indexedItems, query, category)
+  const recent = recentIds.map(recentId => searchItems.find(item => item.id === recentId))
     .filter((item): item is SearchItem => !!item)
   const quick = quickSearchSections.map(title => sectionSearchItems.find(item => item.section === title))
     .filter((item): item is SearchItem => !!item && !recentIds.includes(item.id)).slice(0, 4)
@@ -90,13 +113,10 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
   }, [open, selected?.id, listId])
 
   function navigate(item: SearchItem) {
-    // Demo objects open a real navigation section, never a fabricated detail page.
-    const destination = sectionSearchItems.find(section => section.section === item.section)
-    if (!destination) return
-    const next = [destination.id, ...recentIds.filter(recentId => recentId !== destination.id)].slice(0, 6)
+    const next = [item.id, ...recentIds.filter(recentId => recentId !== item.id)].slice(0, 6)
     setRecentIds(next)
     saveRecentSearches(next)
-    afterCloseRef.current = () => onNavigate(destination.section)
+    afterCloseRef.current = () => onNavigate(item)
     setOpen(false)
   }
 
@@ -151,7 +171,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
       }}>
       <DialogTitle className="sr-only">Поиск по LMS</DialogTitle>
       <DialogDescription className="sr-only">
-        Ищите по названию и пути объекта. Стрелки вверх и вниз выбирают результат, Enter открывает раздел, Escape закрывает поиск.
+        Ищи по названию и пути объекта. Стрелки вверх и вниз выбирают результат, Enter открывает результат, Escape закрывает поиск.
       </DialogDescription>
       <div className="global-search-input-row">
         <Search aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
@@ -176,27 +196,28 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
                 <h3 id={`${id}-group-${groupIndex}`} className="global-search-group-title">{group.label}</h3>
                 {group.items.map(item => <button key={item.id} id={`${listId}-${item.id}`} type="button" role="option"
                   tabIndex={-1} aria-selected={item.id === selected?.id} className="global-search-result"
-                  aria-label={`${item.title}. ${item.path}${item.demo ? `. Демо. Открыть раздел «${item.section}»` : ''}`}
+                  aria-label={`${item.title}. ${item.path}`}
                   onPointerMove={() => setSelectedId(item.id)} onPointerDown={event => event.preventDefault()}
                   onClick={() => navigate(item)}>
-                  <span className="global-search-result-icon"><img
-                    src={`${import.meta.env.BASE_URL}assets/figma/${item.icon}`} alt="" aria-hidden="true" className="design-icon" /></span>
+                  {item.category === 'materials' ? <FileIcon name={`${item.title}.${item.fileType ?? ''}`} />
+                    : item.category === 'courses' ? <SemanticIcon icon={BookOpen} tone="blue" />
+                      : item.category === 'homework' ? <SemanticIcon icon={BookOpenCheck} tone="violet" />
+                        : item.section === 'Навигатор' ? <SemanticIcon icon={Compass} tone="violet" />
+                          : <span className="global-search-result-icon"><img
+                            src={`${import.meta.env.BASE_URL}assets/figma/${item.icon}`} alt="" aria-hidden="true" className="design-icon" /></span>}
                   <span className="global-search-result-copy">
                     <span className="global-search-result-title">{item.title}</span>
                     <span className="global-search-path">{item.path}</span>
-                    {item.demo ? <span className="global-search-destination">Перейти в раздел «{item.section}»</span> : null}
                   </span>
-                  {item.demo ? <Badge variant="outline" className="global-search-demo">Демо</Badge>
-                    : <CornerDownLeft aria-hidden="true" className="global-search-enter" />}
+                  <CornerDownLeft aria-hidden="true" className="global-search-enter" />
                 </button>)}
               </div>)}
             </div>
-            {isStart && !recent.length ? <p className="global-search-recent-hint">Недавних переходов пока нет</p> : null}
             {!visibleItems.length ? <div className="global-search-empty">
               <Search aria-hidden="true" className="mx-auto size-7 text-muted-foreground" />
               <h3>Ничего не нашлось</h3>
-              <p>Попробуйте другое название или передайте запрос Навигатору.</p>
-              <Button type="button" variant="outline" onClick={askNavigator}>Спросить Навигатор</Button>
+              <p>Попробуй другое название или передай запрос Навигатору.</p>
+              <Button type="button" variant="ai-outline" onClick={askNavigator}>Спросить Навигатора</Button>
               <p className="global-search-empty-hint">Запрос появится в поле ввода.</p>
             </div> : null}
           </div>
@@ -204,10 +225,10 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
       </Tabs>
       <div className="global-search-footer" aria-hidden="true">
         <span><kbd>↑↓</kbd> Выбор</span>
-        <span><kbd>↵</kbd> {selected ? 'Открыть раздел' : 'В Навигатор'}</span>
+        <span><kbd>↵</kbd> {selected ? 'Открыть' : 'В Навигатор'}</span>
         <span><kbd>Esc</kbd> Закрыть</span>
       </div>
-      <span className="sr-only" role="status">{isStart ? 'Быстрые переходы и недавние разделы' : `Найдено: ${visibleItems.length}`}</span>
+      <span className="sr-only" role="status">{isStart ? 'Быстрые переходы и недавние объекты' : `Найдено: ${visibleItems.length}`}</span>
     </DialogContent>
   </Dialog>
 }

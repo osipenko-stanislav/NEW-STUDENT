@@ -5,12 +5,12 @@ import type { SearchItem } from '../src/types/search.ts'
 
 const items: SearchItem[] = [
   { id: 'material', title: 'Матрицы и определители', path: 'Обучение / Курсы / Линейная алгебра',
-    category: 'materials', section: 'Курсы', icon: 'file.svg', demo: true },
+    category: 'materials', section: 'Курсы', icon: 'file.svg' },
   { id: 'course', title: 'Линейная алгебра', path: 'Обучение / Курсы',
-    category: 'courses', section: 'Курсы', icon: 'book.svg', demo: true },
+    category: 'courses', section: 'Курсы', icon: 'book.svg' },
   { id: 'record', title: 'Зачетка', path: 'Обучение', category: 'sections', section: 'Зачетка', icon: 'book.svg' },
   { id: 'homework', title: 'Функции', path: 'Обучение / Домашки / Программирование на Python',
-    category: 'homework', section: 'Домашки', icon: 'file.svg', demo: true },
+    category: 'homework', section: 'Домашки', icon: 'file.svg' },
 ]
 
 test('matches both object titles and paths with all query terms', () => {
@@ -79,4 +79,14 @@ test('search remains available when browser storage is blocked', () => {
   assert.deepEqual(loadRecentSearches(), [])
   assert.doesNotThrow(() => saveRecentSearches(['schedule']))
   assert.equal(filterSearchItems(items, 'зачетка', 'all').length, 1)
+})
+
+
+test('finds handbook body text and material formats', () => {
+  const documents: SearchItem[] = [
+    { ...items[0], fileType: 'PDF' },
+    { ...items[1], id: 'wiki', category: 'handbook', content: 'Оформи академический отпуск' },
+  ]
+  assert.equal(filterSearchItems(documents, 'pdf', 'materials')[0]?.id, 'material')
+  assert.equal(filterSearchItems(documents, 'академический отпуск', 'handbook')[0]?.id, 'wiki')
 })

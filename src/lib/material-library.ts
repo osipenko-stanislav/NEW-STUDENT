@@ -1,11 +1,11 @@
-import { deleteMaterialFiles, getMaterialFile, putMaterialFiles } from './material-files.ts'
+import { clearMaterialFiles, deleteMaterialFiles, getMaterialFile, putMaterialFiles } from './material-files.ts'
 import { loadMaterialMetadata, newMaterialDraftId, saveMaterialMetadata } from './material-metadata.ts'
 import { resetSessionStorage } from './session-reset.ts'
 import type { ConversationMaterial, MaterialSnapshot } from '@/types/material'
 
 function storageError(error: unknown, fallback: string): string {
   return error instanceof DOMException && error.name === 'QuotaExceededError'
-    ? 'Не хватает места для файла. Удалите ненужные материалы или выберите файл меньшего размера.'
+    ? 'Не хватает места для файла. Удали ненужные материалы или выбери файл меньшего размера.'
     : fallback
 }
 
@@ -37,12 +37,12 @@ export class MaterialLibrary {
     return operation
   }
 
-  add(files: File[], scopeId: string): Promise<ConversationMaterial[]> {
+  add(files: File[], scopeId: string, sourceAcademicId?: string): Promise<ConversationMaterial[]> {
     if (this.resetting) return Promise.resolve([])
     return this.run(async () => {
       if (this.resetting || !files.length) return []
       const added = files.map(file => ({ id: crypto.randomUUID(), originId: scopeId, name: file.name,
-        type: file.type, size: file.size, addedAt: Date.now() }))
+        type: file.type, size: file.size, addedAt: Date.now(), ...(sourceAcademicId ? { sourceAcademicId } : {}) }))
       await putMaterialFiles(added.map((material, index) => ({ id: material.id, blob: files[index] })))
       if (this.resetting) { await deleteMaterialFiles(added.map(file => file.id)); return [] }
       const materials = [...this.snapshot.materials, ...added]
@@ -53,7 +53,7 @@ export class MaterialLibrary {
       catch (error) { await deleteMaterialFiles(added.map(file => file.id)); throw error }
       this.update({ materials, attachments })
       return added
-    }, [], 'Не удалось сохранить файл. Разрешите хранение данных в браузере и попробуйте еще раз.')
+    }, [], 'Не удалось сохранить файл. Разреши хранение данных в браузере и попробуй еще раз.')
   }
 
   private async removeWhere(predicate: (material: ConversationMaterial) => boolean) {
@@ -79,13 +79,32 @@ export class MaterialLibrary {
 
   remove(id: string): Promise<boolean> {
     return this.run(async () => { await this.removeWhere(material => material.id === id); return true },
-      false, 'Не удалось удалить файл. Проверьте доступ к хранилищу браузера и попробуйте еще раз.')
+      false, 'Не удалось удалить файл. Проверь доступ к хранилищу браузера и попробуй еще раз.')
+  }
+
+  clear(): Promise<boolean> {
+    return this.run(async () => {
+      const previous = this.snapshot
+      const next = { ...previous, materials: [], attachments: [] }
+      saveMaterialMetadata(next)
+      try { await clearMaterialFiles() }
+      catch (error) { saveMaterialMetadata(previous); throw error }
+      this.update({ materials: [], attachments: [] })
+      return true
+    }, false, 'Не удалось очистить библиотеку. Проверь доступ к хранилищу браузера.')
+  }
+
+  forgetConversationSelections(ids: string[]): boolean {
+    const removed = new Set(ids)
+    const saved = this.saveSelection(this.snapshot.attachments.filter(item => !removed.has(item.scopeId)))
+    if (saved) for (const id of ids) this.closedScopes.add(id)
+    return saved
   }
 
   private saveSelection(attachments: MaterialSnapshot['attachments']): boolean {
     try { saveMaterialMetadata({ ...this.snapshot, attachments }) }
     catch {
-      this.reportError('Не удалось сохранить вложения. Проверьте доступ к хранилищу браузера.')
+      this.reportError('Не удалось сохранить вложения. Проверь доступ к хранилищу браузера.')
       return false
     }
     this.update({ attachments, error: null })
@@ -118,7 +137,7 @@ export class MaterialLibrary {
     const next = { ...this.snapshot, draftId: newMaterialDraftId(),
       attachments: this.snapshot.attachments.filter(item => item.scopeId !== previousDraft) }
     try { saveMaterialMetadata(next) }
-    catch { this.reportError('Не удалось сохранить новый черновик. Проверьте доступ к хранилищу браузера.') }
+    catch { this.reportError('Не удалось сохранить новый черновик. Проверь доступ к хранилищу браузера.') }
     this.update({ draftId: next.draftId, attachments: next.attachments })
   }
 
@@ -129,7 +148,7 @@ export class MaterialLibrary {
     const draftId = scopeId === this.snapshot.draftId ? newMaterialDraftId() : this.snapshot.draftId
     try { saveMaterialMetadata({ ...this.snapshot, draftId, materials, attachments }) }
     catch {
-      this.reportError('Не удалось сохранить связи файлов с разговором. Проверьте доступ к хранилищу браузера.')
+      this.reportError('Не удалось сохранить связи файлов с разговором. Проверь доступ к хранилищу браузера.')
       return false
     }
     if (scopeId.startsWith('draft:')) this.closedScopes.add(scopeId)
@@ -145,7 +164,7 @@ export class MaterialLibrary {
       catch (error) { this.resetting = false; throw error }
       this.update({ draftId: newMaterialDraftId(), materials: [], attachments: [] })
       return true
-    }, false, 'Не удалось полностью сбросить сессию. Проверьте доступ к хранилищу браузера и повторите сброс.')
+    }, false, 'Не удалось полностью сбросить сессию. Проверь доступ к хранилищу браузера и повтори сброс.')
   }
 
   async read(id: string): Promise<Blob | null> {
@@ -155,7 +174,7 @@ export class MaterialLibrary {
       if (!blob) throw new Error('Missing local file')
       return blob
     } catch {
-      this.reportError('Не удалось открыть файл. Проверьте доступ к хранилищу браузера и попробуйте еще раз.')
+      this.reportError('Не удалось открыть файл. Проверь доступ к хранилищу браузера и попробуй еще раз.')
       return null
     }
   }

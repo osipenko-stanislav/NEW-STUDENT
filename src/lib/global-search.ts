@@ -9,7 +9,7 @@ export function filterSearchItems(items: readonly SearchItem[], query: string, c
   const terms = normalized.split(' ').filter(Boolean)
   return items.filter(item => {
     if (category !== 'all' && item.category !== category) return false
-    const text = normalize(`${item.title} ${item.path}`)
+    const text = normalize(`${item.title} ${item.path} ${item.fileType ?? ''} ${item.content ?? ''}`)
     return terms.every(term => text.includes(term))
   }).sort((a, b) => score(a.title, normalized) - score(b.title, normalized))
 }
@@ -44,4 +44,9 @@ export function saveRecentSearches(ids: string[]): void {
   } catch {
     // Recent shortcuts are optional; search keeps working without browser storage.
   }
+}
+
+
+export function openGlobalSearch(query = '', category: SearchCategory = 'all') {
+  window.dispatchEvent(new CustomEvent('student:search', { detail: { query, category } }))
 }

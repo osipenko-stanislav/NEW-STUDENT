@@ -1,32 +1,49 @@
-import { useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-type Theme = 'light' | 'dark'
+export type Theme = 'system' | 'light' | 'dark'
 const storageKey = 'student-theme:v1'
 
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(() => {
     try {
-      return localStorage.getItem(storageKey) === 'dark' ? 'dark' : 'light'
+      const value = localStorage.getItem(storageKey)
+      return value === 'dark' || value === 'light' ? value : 'system'
     } catch {
-      return 'light'
+      return 'system'
     }
   })
 
+  const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const [error, setError] = useState<string | null>(null)
+  const resolvedTheme = theme === 'system' ? systemDark ? 'dark' : 'light' : theme
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    const update = () => setSystemDark(media.matches)
+    media.addEventListener('change', update)
+    update()
+    return () => media.removeEventListener('change', update)
+  }, [])
   useLayoutEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
+    document.documentElement.classList.toggle('dark', resolvedTheme === 'dark')
+    document.documentElement.dataset.theme = theme
+  }, [resolvedTheme, theme])
+  function changeTheme(next: Theme) {
     try {
-      localStorage.setItem(storageKey, theme)
+      localStorage.setItem(storageKey, next)
+      setTheme(next)
+      setError(null)
     } catch {
-      // Theme switching remains available when browser storage is disabled.
+      setTheme(next)
+      setError('Тема изменена, но сохранить ее не удалось. Проверь доступ к хранилищу браузера.')
     }
-  }, [theme])
+  }
 
-  return [theme, setTheme] as const
+  return [theme, changeTheme, resolvedTheme, error] as const
 }
 
-export default function ThemeSwitcher({ theme, onChange }: { theme: Theme; onChange: (theme: Theme) => void }) {
+export default function ThemeSwitcher({ theme, onChange }: { theme: 'light' | 'dark'; onChange: (theme: Theme) => void }) {
   return <div className="theme-switcher" role="group" aria-label="Тема интерфейса">
       <Button type="button" variant="ghost" size="sm" className="theme-option"
         aria-label="Светлая" aria-pressed={theme === 'light'} onClick={() => onChange('light')}>

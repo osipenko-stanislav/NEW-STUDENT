@@ -10,6 +10,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function isMaterial(value: unknown): value is ConversationMaterial {
   if (!isRecord(value)) return false
   return ['id', 'originId', 'name'].every(key => typeof value[key] === 'string' && (value[key] as string).length > 0)
+    && (value.sourceAcademicId === undefined || typeof value.sourceAcademicId === 'string')
     && typeof value.type === 'string' && typeof value.size === 'number' && Number.isSafeInteger(value.size) && value.size >= 0
     && typeof value.addedAt === 'number' && Number.isFinite(value.addedAt) && value.addedAt >= 0 && !Number.isNaN(new Date(value.addedAt).getTime())
 }
@@ -39,9 +40,9 @@ export function loadMaterialMetadata(): MaterialSnapshot {
     const ids = new Set(materials.map(item => item.id))
     const unique = new Map(attachments.filter(item => ids.has(item.materialId))
       .map(item => [JSON.stringify([item.scopeId, item.materialId]), item]))
-    return { ...empty, draftId: data.draftId, materials: materials.map(({ id, originId, name, type, size, addedAt }) => ({ id, originId, name, type, size, addedAt })), attachments: [...unique.values()] }
+    return { ...empty, draftId: data.draftId, materials: materials.map(({ id, originId, name, type, size, addedAt, sourceAcademicId }) => ({ id, originId, name, type, size, addedAt, ...(sourceAcademicId ? { sourceAcademicId } : {}) })), attachments: [...unique.values()] }
   } catch {
-    return { ...empty, error: 'Не удалось восстановить список материалов. Проверьте доступ к хранилищу браузера.' }
+    return { ...empty, error: 'Не удалось восстановить список материалов. Проверь доступ к хранилищу браузера.' }
   }
 }
 
@@ -49,7 +50,7 @@ export function saveMaterialMetadata(snapshot: Pick<MaterialSnapshot, 'draftId' 
   localStorage.setItem(storageKey, JSON.stringify({
     version: 2, draftId: snapshot.draftId,
     // Explicit allowlist: file contents and File/Blob objects never enter localStorage.
-    materials: snapshot.materials.map(({ id, originId, name, type, size, addedAt }) => ({ id, originId, name, type, size, addedAt })),
+    materials: snapshot.materials.map(({ id, originId, name, type, size, addedAt, sourceAcademicId }) => ({ id, originId, name, type, size, addedAt, ...(sourceAcademicId ? { sourceAcademicId } : {}) })),
     attachments: snapshot.attachments.map(({ scopeId, materialId }) => ({ scopeId, materialId })),
   }))
 }

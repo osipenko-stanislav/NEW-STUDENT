@@ -12,6 +12,8 @@ npm run dev
 ```
 
 Проверка сборки: `npm run build`.
+Все тесты: `npm test`.
+Документация импорта хендбука: [docs/handbook/README.md](docs/handbook/README.md).
 Для TypeScript-конфига Vite используется встроенный загрузчик `runner`, без предварительного бандлинга конфига.
 Проверка хранения разговоров: `npm run test:storage` (Node.js 22.6+).
 Проверка автоматических названий: `npm run test:titles`.

@@ -1,4 +1,5 @@
 import { demoAssignments, demoClasses, demoDays, demoMaterials, demoToday, demoTomorrow } from '../data/study-demo.ts'
+import { courses } from '../data/course-catalog.ts'
 import type { AssignmentsPart, CourseFilter, MockContext, SchedulePart } from '../types/assistant.ts'
 import type { ChatMessage, ConversationDraft, MessagePart } from '../types/conversation.ts'
 
@@ -32,48 +33,51 @@ function schedule(mode: 'day' | 'week', day: string, view: SchedulePart['view'] 
   const date = demoDays.find(item => item.date === day)!
   const classes = demoClasses.filter(item => subject === 'all' || item.subject === subject)
   const assignments = demoAssignments.filter(item => subject === 'all' || item.subject === subject)
+  const selectedClasses = classes.filter(item => mode === 'week' || item.date === day)
+  const selectedAssignments = assignments.filter(item => mode === 'week' || item.dueAt.startsWith(day))
   const text = mode === 'week'
-    ? view === 'deadlines'
-      ? 'Оставил только дедлайны этой недели. Можно переключать дни и открывать условия заданий.'
-      : 'На неделе 10 занятий и 4 дедлайна. Ближайшая несданная работа — по линейной алгебре, 11 ноября до 23:59. Занятия и сдачи собраны по дням.'
-    : day === demoToday
-      ? 'Сегодня две пары: математический анализ и теория вероятностей. Первая начинается в 09:00, между занятиями — 10 минут. Вечером дедлайн по линейной алгебре.'
-      : `Завтра, ${date.label}, две пары: практика по Python в 12:00 и семинар по линейной алгебре в 14:00. До 18:00 нужно сдать работу по функциям и строкам.`
+    ? `На неделе занятий: ${selectedClasses.length}, дедлайнов: ${selectedAssignments.length}. Занятия и задания собраны по дням.`
+    : `${date.label}. Занятий: ${selectedClasses.length}. ${selectedClasses.map(item => `${item.course} — ${item.startsAt}`).join('; ')}. Дедлайнов: ${selectedAssignments.length}.`
   return { content: [{ type: 'text', text }, { type: 'schedule', version: 1, mode, days: demoDays, selectedDay: day, view, classes, assignments }],
     mockContext: contextFor(mode === 'week' ? 'week' : 'schedule', day, subject),
     suggestions: mode === 'week' ? ['А что у меня завтра?', 'Покажи только домашки', 'Какая ближайшая сдача?']
       : day === demoToday ? ['А что у меня завтра?', 'Моя неделя', 'Какая ближайшая сдача?'] : ['Расписание сегодня', 'Моя неделя', 'Покажи только домашки'] }
 }
-function assignments(filter: AssignmentsPart['filter'] = 'all', subject: CourseFilter = 'all', nearest = false, day?: string): MockResponse {
-  let items = demoAssignments.filter(item => (subject === 'all' || item.subject === subject) && (!day || item.dueAt.startsWith(day)))
+function assignments(filter: AssignmentsPart['filter'] = 'all', subject: CourseFilter = 'all', nearest = false, day?: string, courseId?: string): MockResponse {
+  let items = demoAssignments.filter(item => (!courseId || item.courseId === courseId) && (subject === 'all' || item.subject === subject) && (!day || item.dueAt.startsWith(day)))
   if (nearest) items = items.filter(item => item.status !== 'submitted').slice(0, 1)
   const closest = items[0]
+  const visible = items.filter(item => filter === 'all' || (filter === 'active' ? item.status !== 'submitted' : item.status === filter))
   const text = nearest
-    ? closest ? `Ближайшая несданная работа — «${closest.title}». Срок — ${closest.dueLabel} МСК. В карточке можно раскрыть условие задания.`
-      : 'Несданных работ с такими условиями нет.'
-    : day ? items.length ? 'Завтра до 18:00 нужно сдать работу по Python. Ниже — условие и текущий статус.' : 'На завтра заданий по выбранным курсам нет.'
-      : subject !== 'all' ? `Выбрал задания по ${subject === 'math' ? 'математическим курсам' : 'Python'}. Фильтр статуса поможет отделить сданные работы от оставшихся.`
-        : filter === 'submitted' ? 'Работа по условной вероятности уже отправлена на проверку. Она остается в списке со статусом «Сдано».'
-          : filter === 'active' ? 'Еще не сданы три работы. Ближайший срок — сегодня, 23:59, по линейной алгебре.'
-            : 'На неделе четыре работы: две новые, одна в процессе и одна сдана. Ближайший срок — сегодня, 23:59, по линейной алгебре.'
+    ? closest ? `Ближайшая несданная работа — «${closest.title}». Срок — ${closest.dueLabel} МСК. В карточке можно раскрыть условие задания.` : 'Несданных работ с такими условиями нет.'
+    : !visible.length ? 'Заданий с выбранными условиями нет.' : `Заданий: ${visible.length}. Открой задание, чтобы посмотреть условие и отправить решение.`
   return { content: [{ type: 'text', text }, { type: 'assignments', version: 1, items, filter, subject }],
-    mockContext: contextFor('assignments', day ?? demoToday, subject),
+    mockContext: { ...contextFor('assignments', day ?? demoToday, subject), ...(courseId ? { courseId } : {}) },
     suggestions: ['Покажи несданные', 'Какая ближайшая сдача?', 'Покажи сданные'] }
 }
-function materials(subject: CourseFilter = 'all', pdf = false): MockResponse {
-  return { content: [{ type: 'text', text: pdf && subject === 'python' ? 'По Python в демонстрационной подборке есть только ноутбук. PDF не найдены; можно изменить фильтр типа файла.' : subject === 'math'
-    ? 'По математике есть три материала: матрицы, пределы и условная вероятность. Можно уточнить название или отфильтровать тип файла.'
-    : subject === 'python' ? 'Для Python подготовлен ноутбук с примерами функций. Он относится к той же теме, что и ближайшая домашка.'
-      : pdf ? 'Оставил три PDF по математическим курсам. Ноутбук по Python скрыт фильтром.'
-        : 'Нашел четыре учебных материала по текущим темам. Ищите по названию, курсу или расположению; фильтры работают прямо в ответе.' },
-    { type: 'materials', version: 1, items: demoMaterials, query: '', subject, fileType: pdf ? 'PDF' : 'all' }],
-    mockContext: contextFor('materials', demoToday, subject),
+function materials(subject: CourseFilter = 'all', pdf = false, courseId?: string): MockResponse {
+  const count = demoMaterials.filter(item => (!courseId || item.courseId === courseId) && (subject === 'all' || item.subject === subject) && (!pdf || item.fileType === 'PDF')).length
+  return { content: [{ type: 'text', text: count ? `Найдено материалов: ${count}. Выбери файл, чтобы открыть его.` : 'Материалы с такими условиями не найдены. Попробуй другой курс или тип файла.' },
+    { type: 'materials', version: 1, items: demoMaterials, query: '', subject, ...(courseId ? { courseId } : {}), fileType: pdf ? 'PDF' : 'all' }],
+    mockContext: { ...contextFor('materials', demoToday, subject), ...(courseId ? { courseId } : {}) },
     suggestions: ['Найди материалы по математике', 'Найди материалы по Python', 'Покажи только PDF'] }
 }
+const queryAliases: Record<string, string[]> = {
+  'machine-learning': ['машинному обучению', 'машинное обучение', 'machine learning', 'ml'],
+  'python-basic': ['python', 'питону'], statistics: ['статистике'], algorithms: ['алгоритмам'],
+  'discrete-math': ['дискретной математике'], probability: ['теории вероятностей'], calculus: ['математическому анализу'],
+}
+function queryCourse(text: string) {
+  return courses.find(course => [course.title, ...(queryAliases[course.id] ?? [])].some(alias => {
+    const name = normalizeMockQuery(alias)
+    return text === name || text.endsWith(` ${name}`)
+  }))
+}
+
 function unsupported(context?: MockContext, hasFiles = false): MockResponse {
   return { content: [{ type: 'text', text: hasFiles
-    ? 'Файлы прикреплены к сообщению, но анализировать их содержимое этот прототип пока не умеет. Доступны демонстрационные расписание, домашки и учебные материалы.'
-    : 'Для этого запроса сценарий пока не подготовлен. В прототипе можно посмотреть расписание, неделю, домашки и учебные материалы.' }],
+    ? 'Файлы прикреплены к сообщению. Не удалось разобрать их содержимое. Попробуй задать вопрос по расписанию, домашкам или учебным материалам.'
+    : 'Не удалось найти ответ. Попробуй уточнить запрос: я могу помочь с расписанием, домашками и учебными материалами.' }],
     ...(context ? { mockContext: context } : {}), suggestions: ['Расписание сегодня', 'Домашки', 'Материалы'] }
 }
 export function createMockResponse(draft: ConversationDraft, messages: ChatMessage[] = []): MockResponse {
@@ -83,23 +87,28 @@ export function createMockResponse(draft: ConversationDraft, messages: ChatMessa
   const intent = text ? intents.get(text) : command
   const context = command === 'week' ? contextFor('week') : command === 'today' ? contextFor('schedule')
     : command === 'assignments' ? contextFor('assignments') : command === 'materials' ? contextFor('materials') : previous
+  const course = queryCourse(text)
+  if (course && (!intent || intent === 'pythonMaterials' || intent === 'python')) {
+    if (text.includes('домаш') || text.includes('задани') || context?.scenario === 'assignments' && !text.includes('материал')) return assignments('all', 'all', false, undefined, course.id)
+    return materials('all', false, course.id)
+  }
   switch (intent) {
     case 'today': return schedule('day', demoToday)
     case 'week': return schedule('week', demoToday)
     case 'assignments': return assignments()
     case 'materials': return materials()
     case 'tomorrow':
-      if (context?.scenario === 'assignments') return assignments('all', context.subject, false, demoTomorrow)
+      if (context?.scenario === 'assignments') return assignments('all', context.subject, false, demoTomorrow, context.courseId)
       return schedule('day', demoTomorrow)
     case 'deadlines': return context?.scenario === 'week' ? schedule('week', context.day, 'deadlines', context.subject) : assignments('active')
-    case 'nearest': return assignments('active', context?.scenario === 'assignments' ? context.subject : 'all', true)
-    case 'active': return assignments('active', context?.scenario === 'assignments' ? context.subject : 'all')
-    case 'submitted': return assignments('submitted', context?.scenario === 'assignments' ? context.subject : 'all')
+    case 'nearest': return assignments('active', context?.scenario === 'assignments' ? context.subject : 'all', true, undefined, context?.courseId)
+    case 'active': return assignments('active', context?.scenario === 'assignments' ? context.subject : 'all', false, undefined, context?.courseId)
+    case 'submitted': return assignments('submitted', context?.scenario === 'assignments' ? context.subject : 'all', false, undefined, context?.courseId)
     case 'mathMaterials': return materials('math')
     case 'pythonMaterials': return materials('python')
     case 'math': return context?.scenario === 'assignments' ? assignments('all', 'math') : materials('math')
     case 'python': return context?.scenario === 'assignments' ? assignments('all', 'python') : materials('python')
-    case 'pdf': return materials(context?.scenario === 'materials' ? context.subject : 'all', true)
+    case 'pdf': return materials(context?.scenario === 'materials' ? context.subject : 'all', true, context?.courseId)
     default: return unsupported(previous, !!draft.attachments?.length)
   }
 }

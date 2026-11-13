@@ -15,6 +15,13 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
         outline: "text-foreground",
+        ai: "semantic-badge tone-violet",
+        success: "semantic-badge tone-green",
+        active: "semantic-badge tone-blue",
+        warning: "semantic-badge tone-amber",
+        danger: "semantic-badge tone-red",
+        creative: "semantic-badge tone-pink",
+        neutral: "semantic-badge tone-slate",
       },
     },
     defaultVariants: {

@@ -3,6 +3,7 @@ import { test } from 'node:test'
 import { createMockResponse } from '../src/lib/mock-assistant.ts'
 import { isGenerativePart } from '../src/lib/assistant-validation.ts'
 import { demoAssignments, demoClasses, demoDays, demoMaterials, demoToday, demoTomorrow } from '../src/data/study-demo.ts'
+import { courses } from '../src/data/course-catalog.ts'
 import { homeworkDeadlines, upcomingClassSlots } from '../src/data/study-widgets.ts'
 import type { ChatMessage, MessagePart } from '../src/types/conversation.ts'
 
@@ -34,7 +35,7 @@ test('tomorrow and homework refinements use the current conversation context', (
   assert.equal(deadlines.view, 'deadlines')
   const assignments = block(response(null, 'А что у меня завтра?', asHistory(response('Домашки'))))
   if (assignments?.type !== 'assignments') assert.fail('Expected tomorrow assignments')
-  assert.deepEqual(assignments.items.map(item => item.id), ['python-functions'])
+  assert.deepEqual(assignments.items.map(item => item.id), demoAssignments.filter(item => item.dueAt.startsWith(demoTomorrow)).map(item => item.id))
 })
 
 test('command plus clarification applies the requested initial filter', () => {
@@ -60,10 +61,10 @@ test('unsupported requests remain honest, retain context, and never analyze atta
   const week = response('Моя неделя')
   const unknown = response(null, 'Запиши меня на пару и отправь письмо', asHistory(week))
   assert.equal(block(unknown), undefined)
-  assert.match(text(unknown.content), /сценарий пока/)
+  assert.match(text(unknown.content), /Не\sудалось найти ответ/)
   assert.deepEqual(unknown.mockContext, week.mockContext)
   const files = createMockResponse({ command: null, text: 'Проанализируй этот PDF', attachments: [{ materialId: 'file', name: 'file.pdf' }] })
-  assert.match(text(files.content), /анализировать/)
+  assert.match(text(files.content), /Не\sудалось разобрать их содержимое/)
   assert.equal(block(files), undefined)
   const badClarification = response('Домашки', 'сделай за меня все задания')
   assert.equal(block(badClarification), undefined)
@@ -75,7 +76,7 @@ test('widgets and assistant share classes, deadlines and one coherent demonstrat
   const dates = new Set(demoDays.map(day => day.date))
   assert.ok(demoClasses.every(item => dates.has(item.date)))
   assert.ok(demoAssignments.every(item => dates.has(item.dueAt.slice(0, 10))))
-  assert.ok(demoMaterials.every(item => demoClasses.some(slot => slot.course === item.course)))
+  assert.ok(demoMaterials.every(item => courses.some(course => course.id === item.courseId && course.title === item.course)))
   assert.equal(demoClasses.filter(item => item.date === demoToday).length, 2)
   assert.equal(demoClasses.filter(item => item.date === demoTomorrow).length, 2)
 })
@@ -93,7 +94,6 @@ test('explicit material searches switch scenarios while subject refinements reta
   const materialSearch = block(response(null, 'Найди материалы по математике', asHistory(mathHomework)))
   assert.equal(materialSearch?.type, 'materials')
   const tomorrow = response(null, 'А что у меня завтра?', asHistory(mathHomework))
-  assert.match(text(tomorrow.content), /заданий.*нет/)
   const tomorrowBlock = block(tomorrow)
-  assert.equal(tomorrowBlock?.type === 'assignments' && tomorrowBlock.items.length, 0)
+  assert.deepEqual(tomorrowBlock?.type === 'assignments' && tomorrowBlock.items.map(item => item.id), demoAssignments.filter(item => item.subject === 'math' && item.dueAt.startsWith(demoTomorrow)).map(item => item.id))
 })

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
-import { File, FileX } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
+import FileIcon from '@/components/FileIcon'
 import { Button } from '@/components/ui/button'
 import type { ConversationMaterial } from '@/types/material'
 import { Badge } from '@/components/ui/badge'
@@ -12,12 +13,13 @@ function MessageContent({ part, onNavigate, visibleCharacters }: { part: Message
     : visibleCharacters === undefined ? <GenerativeContent part={part} onNavigate={onNavigate} /> : null
 }
 
-export default function ConversationMessages({ conversation, materials, onOpenMaterial, generation, onNavigate, onFollowUp }: {
+export default function ConversationMessages({ conversation, materials, onOpenMaterial, generation, onNavigate, onFollowUp, onNavigatorHome }: {
   conversation: Conversation
   materials: ConversationMaterial[]
   onOpenMaterial: (id: string) => void
   generation?: GenerationState
   onNavigate: (section: string) => void
+  onNavigatorHome: () => void
   onFollowUp: (text: string) => void
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -26,7 +28,8 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
 
   useLayoutEffect(() => {
     const viewport = scrollRef.current
-    if (viewport && followBottom.current) viewport.scrollTop = viewport.scrollHeight
+    // Follow streamed text, but keep the reading position when a large UI block appears.
+    if (viewport && followBottom.current && generation) viewport.scrollTop = viewport.scrollHeight
   }, [conversation.id, conversation.messages.length, generation?.visibleCharacters, !!generation])
 
   useLayoutEffect(() => {
@@ -38,21 +41,25 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
   return <div ref={scrollRef} className="conversation-messages" role="log" aria-label="Переписка"
     aria-live={generation ? 'off' : 'polite'} aria-relevant="additions" tabIndex={0}
     onScroll={event => { const el = event.currentTarget; followBottom.current = el.scrollHeight - el.clientHeight - el.scrollTop < 64 }}>
-    <h2 id="conversation-title" className="sr-only">{conversation.title}</h2>
+    <header className="conversation-page-heading">
+      <Button variant="ghost" size="sm" className="mb-4 -ml-2" onClick={onNavigatorHome}><ArrowLeft aria-hidden="true" />В Навигатор</Button>
+      <h1 id="conversation-title">{conversation.title}</h1>
+    </header>
     {conversation.messages.map(message => <article key={message.id} className={`chat-message chat-message-${message.role}`}
       aria-label={message.role === 'user' ? 'Сообщение пользователя' : 'Сообщение ассистента'}>
-      <div className="message-author">{message.role === 'user' ? 'Вы' : 'Ассистент'}</div>
+      <div className="message-author">{message.role === 'user' ? 'Ты' : 'Ассистент'}</div>
       <div className="message-body">
-        {message.command ? <Badge variant="secondary" className="message-command">{message.command}</Badge> : null}
+        {message.command ? <Badge variant="ai" className="message-command">{message.command}</Badge> : null}
         {message.attachments?.length ? <ul className="mb-2 space-y-1" aria-label="Вложения сообщения">
           {message.attachments.map((attachment, index) => {
-            const available = attachment.materialId !== null && materials.some(material => material.id === attachment.materialId)
+            const material = materials.find(material => material.id === attachment.materialId)
+            const available = attachment.materialId !== null && !!material
             return <li key={index}>
               {available ? <Button type="button" variant="outline" className="h-auto max-w-full justify-start gap-2 px-2 py-1.5 text-left text-xs"
                 onClick={() => onOpenMaterial(attachment.materialId!)} aria-label={`Открыть вложение: ${attachment.name}`}>
-                <File className="size-3.5 shrink-0" aria-hidden="true" /><span className="min-w-0 break-words whitespace-normal [overflow-wrap:anywhere]">{attachment.name}</span>
+                <FileIcon name={attachment.name} type={material?.type} size="compact" /><span className="min-w-0 break-words whitespace-normal [overflow-wrap:anywhere]">{attachment.name}</span>
               </Button> : <span className="flex items-start gap-2 text-xs text-muted-foreground">
-                <FileX className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+                <FileIcon name={attachment.name} size="compact" unavailable />
                 <span className="min-w-0 break-words [overflow-wrap:anywhere]">{attachment.name}<span className="block">Файл недоступен</span></span>
               </span>}
             </li>

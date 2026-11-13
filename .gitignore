@@ -6,3 +6,9 @@ dist
 .env.*
 !.env.example
 *.log
+
+# Local verification output
+artifacts/
+coverage/
+__pycache__/
+*.py[cod]

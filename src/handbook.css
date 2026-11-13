@@ -1,0 +1,114 @@
+.workspace-handbook { overflow: hidden; }
+.handbook-workspace { display: flex; height: 100%; min-height: 0; container-type: inline-size; }
+.handbook-sidebar { flex: 0 0 320px; border-right: 1px solid hsl(var(--border)); overflow: auto; padding: 20px 12px; background: hsl(var(--background)); }
+.handbook-tree ul { list-style: none; margin: 0; padding: 0; }
+.handbook-tree-row { display: flex; align-items: center; border-radius: var(--radius); margin-block: 0; min-height: 30px; }
+.handbook-tree-row:hover, .handbook-tree-home:hover { background: hsl(var(--accent)); }
+.handbook-tree-row[data-active=true], .handbook-tree-home[aria-current=page] { background: hsl(var(--accent)); font-weight: 600; color: hsl(var(--accent-foreground)); }
+.handbook-tree-row > a { display: flex; align-items: center; padding: 4px 8px 4px 2px; min-width: 0; flex: 1; line-height: 1.4; font-size: calc(13px * var(--text-scale, 1)); overflow-wrap: anywhere; }
+.handbook-tree-row .handbook-tree-toggle { width: 28px; height: 28px; flex-shrink: 0; }
+.handbook-tree-toggle svg { width: 14px; height: 14px; }
+.handbook-tree-file { width: 14px; height: 14px; margin: 6px 7px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
+.handbook-tree-home { display: flex; gap: 9px; align-items: center; padding: 6px 10px; border-radius: var(--radius); font-size: calc(13px * var(--text-scale, 1)); margin-bottom: 8px; }
+.handbook-tree-home svg { width: 16px; height: 16px; flex-shrink: 0; }
+.handbook-reading-area { flex: 1; min-width: 0; overflow: auto; scrollbar-gutter: stable; }
+.handbook-toolbar { display: none; align-items: center; gap: 12px; padding: 22px 32px; border-bottom: 1px solid hsl(var(--border)); }
+.handbook-mobile-tree { display: none; }
+.handbook-document-layout { display: flex; align-items: flex-start; max-width: 1160px; margin-inline: auto; }
+.handbook-page { flex: 1; min-width: 0; padding: 32px clamp(24px, 3vw, 48px) 64px; max-width: 860px; }
+.handbook-page-header { margin-bottom: 24px; display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.handbook-page h1, .handbook-search-results > h1 { font-size: calc(30px * var(--text-scale, 1)); line-height: 1.25; letter-spacing: -.025em; font-weight: 600; overflow-wrap: anywhere; text-wrap: balance; }
+.handbook-page-header button { flex-shrink: 0; }
+.handbook-copy-status { min-height: 24px; font-size: calc(12px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); margin-block: 4px 12px; }
+.handbook-prose { font-size: calc(15px * var(--text-scale, 1)); line-height: 1.75; overflow-wrap: anywhere; }
+.handbook-prose p { margin-block: 0 14px; }
+.handbook-prose p:empty { display: none; }
+.handbook-prose h2, .handbook-prose h3, .handbook-prose h4, .handbook-prose h5, .handbook-prose h6 { scroll-margin-top: 24px; text-wrap: balance; line-height: 1.35; font-weight: 600; }
+.handbook-prose h2 { font-size: calc(23px * var(--text-scale, 1)); margin-block: 36px 16px; }
+.handbook-prose h3 { font-size: calc(19px * var(--text-scale, 1)); margin-block: 28px 12px; }
+.handbook-prose h4, .handbook-prose h5, .handbook-prose h6 { font-size: calc(17px * var(--text-scale, 1)); margin-block: 24px 12px; }
+.handbook-prose a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: hsl(var(--muted-foreground) / .5); }
+.handbook-prose a:hover { text-decoration-color: currentColor; }
+.handbook-prose ul, .handbook-prose ol { padding-inline-start: 24px; margin-block: 12px 20px; }
+.handbook-prose ul { list-style: disc; }
+.handbook-prose ol { list-style: decimal; }
+.handbook-prose li { padding-inline-start: 4px; margin-block: 6px; }
+.handbook-prose li > p { margin-block: 0; }
+.handbook-columns { display: flex; gap: 20px; margin-block: 12px; }
+.handbook-column { flex: 1; min-width: 0; }
+.handbook-column:empty { display: none; }
+.handbook-column .handbook-columns { flex-direction: column; gap: 8px; }
+.handbook-callout { border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px 18px; margin-block: 16px; background: hsl(var(--muted) / .3); }
+.handbook-callout > :last-child { margin-bottom: 0; }
+.handbook-column > .handbook-callout { margin-top: 0; }
+.handbook-details { border-block-end: 1px solid hsl(var(--border)); padding-block: 14px; }
+.handbook-details summary { cursor: pointer; font-weight: 500; }
+.handbook-details summary:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 4px; border-radius: 2px; }
+.handbook-details > div { padding: 16px 0 4px 18px; }
+.handbook-prose blockquote { border-inline-start: 3px solid hsl(var(--border)); padding-inline-start: 18px; margin-block: 20px; }
+.handbook-prose code { background: hsl(var(--muted)); border-radius: 4px; padding: 2px 5px; font-size: .9em; }
+.handbook-prose hr { margin-block: 28px; border-color: hsl(var(--border)); }
+.handbook-table-scroll { overflow-x: auto; max-width: 100%; margin-block: 20px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); }
+.handbook-table-scroll table { border-collapse: collapse; width: 100%; font-size: calc(13px * var(--text-scale, 1)); line-height: 1.6; }
+.handbook-table-scroll th, .handbook-table-scroll td { vertical-align: top; padding: 12px; border: 1px solid hsl(var(--border)); min-width: 100px; }
+.handbook-table-scroll th { background: hsl(var(--muted)); text-align: start; font-weight: 500; }
+.handbook-table-scroll p { margin-bottom: 6px; }
+.handbook-image-link { display: block; margin-block: 20px; }
+.handbook-image-link img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid hsl(var(--border)); }
+.handbook-file { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); margin-block: 14px; text-decoration: none !important; }
+.handbook-file span { flex: 1; min-width: 0; }
+.handbook-file svg { width: 18px; height: 18px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
+.handbook-source-tabs { margin-block: 20px; }
+.handbook-source-tabs [role=tablist] { max-width: 100%; height: auto; flex-wrap: wrap; justify-content: flex-start; }
+.handbook-child-pages { margin-top: 40px; padding-top: 24px; border-top: 1px solid hsl(var(--border)); }
+.handbook-child-pages h2 { font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; margin-bottom: 16px; }
+.handbook-child-pages ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.handbook-child-pages a { display: flex; align-items: center; gap: 10px; height: 100%; padding: 14px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); font-size: calc(14px * var(--text-scale, 1)); }
+.handbook-child-pages a:hover { background: hsl(var(--accent)); }
+.handbook-child-pages svg { width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
+.handbook-child-pages span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.handbook-outline { flex: 0 0 184px; padding: 36px 16px 24px 0; position: sticky; top: 0; max-height: 100%; }
+.handbook-outline nav { max-height: calc(100svh - 180px); overflow: auto; font-size: calc(12px * var(--text-scale, 1)); }
+.handbook-outline p { font-weight: 500; padding: 0 0 12px 12px; }
+.handbook-outline a { display: block; border-left: 1px solid hsl(var(--border)); padding-block: 7px; color: hsl(var(--muted-foreground)); line-height: 1.5; }
+.handbook-outline a:hover, .handbook-outline a[aria-current=location] { color: hsl(var(--foreground)); border-color: hsl(var(--foreground)); }
+.handbook-empty { padding: 48px 24px; text-align: center; }
+.handbook-empty > svg { margin: 0 auto 16px; color: hsl(var(--muted-foreground)); }
+.handbook-empty h2 { font-size: 18px; font-weight: 600; }
+.handbook-empty p { margin: 12px 0 20px; color: hsl(var(--muted-foreground)); }
+.handbook-loading { padding-block: 24px; color: hsl(var(--muted-foreground)); }
+.handbook-mobile-sheet { width: min(90vw, 360px); padding: 24px 12px; }
+.handbook-mobile-sheet .handbook-tree { margin-top: 24px; }
+.handbook-mobile-sheet .handbook-tree-row { min-height: 44px; }
+.handbook-mobile-sheet .handbook-tree-row > a { padding-block: 12px; }
+.handbook-mobile-sheet .handbook-tree-toggle { height: 44px; width: 36px; }
+@container (max-width: 1050px) { .handbook-outline { display: none; } .handbook-page { max-width: 860px; margin-inline: auto; } }
+@container (max-width: 760px) {
+  .handbook-sidebar { display: none; }
+  .handbook-mobile-tree { display: inline-flex; flex-shrink: 0; height: 44px; }
+  .handbook-toolbar { display: flex; padding: 12px 20px; }
+  .handbook-search input { height: 44px; }
+  .handbook-search kbd { display: none; }
+  .handbook-search input { padding-inline-end: 38px; }
+}
+@container (max-width: 500px) {
+  .handbook-toolbar { flex-wrap: wrap; padding: 16px; gap: 12px; }
+  .handbook-search { width: 100%; }
+  .handbook-search input { font-size: 16px; }
+  .handbook-page, .handbook-search-results { padding: 24px 20px 48px; }
+  .handbook-page h1, .handbook-search-results > h1 { font-size: calc(26px * var(--text-scale, 1)); }
+  .handbook-prose { font-size: calc(15px * var(--text-scale, 1)); }
+  .handbook-columns { flex-direction: column; gap: 4px; }
+  .handbook-child-pages ul { grid-template-columns: 1fr; }
+  .handbook-page-header button { width: 44px; height: 44px; }
+  .handbook-details summary { padding-block: 6px; }
+  .handbook-back { min-height: 44px; }
+}
+.handbook-page-header h1:focus { outline: none; }
+.handbook-embedded-form iframe { display: block; width: 100%; min-height: 500px; margin-block: 20px 12px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); }
+.handbook-inline-outline { display: none; margin-bottom: 24px; border-block: 1px solid hsl(var(--border)); font-size: calc(13px * var(--text-scale, 1)); }
+.handbook-inline-outline summary { padding-block: 14px; cursor: pointer; font-weight: 500; }
+.handbook-inline-outline nav { display: grid; gap: 4px; padding-bottom: 16px; }
+.handbook-inline-outline a { display: block; padding: 8px 12px; color: hsl(var(--muted-foreground)); border-radius: var(--radius); }
+.handbook-inline-outline a:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+@container (max-width: 1050px) { .handbook-inline-outline { display: block; } }

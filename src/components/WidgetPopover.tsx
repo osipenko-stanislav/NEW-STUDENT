@@ -9,6 +9,7 @@ type WidgetPopoverProps = {
   triggerLabel: string
   triggerAriaLabel?: string
   triggerIcon: string
+  triggerIconNode?: ReactNode
   triggerClassName?: string
   contentClassName: string
   children: ReactNode
@@ -16,7 +17,7 @@ type WidgetPopoverProps = {
 
 export default function WidgetPopover({
   open, onOpenChange, title, triggerLabel, triggerAriaLabel = triggerLabel, triggerIcon,
-  triggerClassName = '', contentClassName, children,
+  triggerClassName = '', triggerIconNode, contentClassName, children,
 }: WidgetPopoverProps) {
   const triggerRef = useRef<HTMLButtonElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -76,7 +77,7 @@ export default function WidgetPopover({
             else requestAnimationFrame(focusContent)
           }
         }}>
-        <img src={`${import.meta.env.BASE_URL}assets/figma/${triggerIcon}`} alt="" aria-hidden="true" className="design-icon" />
+        {triggerIconNode ?? <img src={`${import.meta.env.BASE_URL}assets/figma/${triggerIcon}`} alt="" aria-hidden="true" className="design-icon" />}
         <span>{triggerLabel}</span>
       </Button>
     </PopoverTrigger>

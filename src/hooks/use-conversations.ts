@@ -1,3 +1,4 @@
+import { navigate, useNavigation } from '@/hooks/use-navigation'
 import { useState } from 'react'
 import { loadConversations, saveConversations, sortConversations } from '@/lib/conversation-storage'
 import { createMockResponse } from '@/lib/mock-assistant'
@@ -8,7 +9,8 @@ import type { ChatMessage, Conversation, ConversationDraft } from '@/types/conve
 export function useConversations() {
   const [snapshot, setSnapshot] = useState(loadConversations)
   const generation = useMockGeneration()
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const { conversationId: activeId } = useNavigation()
+  const setActiveId = (conversationId: string | null, replace = false) => navigate({ conversationId }, replace)
   const activeConversation = snapshot.conversations.find(conversation => conversation.id === activeId) ?? null
 
   function sendMessage(draft: ConversationDraft) {
@@ -50,7 +52,7 @@ export function useConversations() {
   function deleteConversation(id: string) {
     generation.cancel(id)
     setSnapshot(current => saveConversations(current.conversations.filter(conversation => conversation.id !== id)))
-    setActiveId(current => current === id ? null : current)
+    if (activeId === id) setActiveId(null, true)
   }
 
   function detachMaterial(materialId: string) {
@@ -60,6 +62,15 @@ export function useConversations() {
         ? { ...message, attachments: message.attachments.map(item => item.materialId === materialId ? { ...item, materialId: null } : item) }
         : message),
     }))))
+  }
+
+  function clearConversations(): boolean {
+    const saved = saveConversations([])
+    if (saved.storageError) { setSnapshot(current => ({ ...current, storageError: saved.storageError })); return false }
+    for (const conversation of snapshot.conversations) generation.cancel(conversation.id)
+    setSnapshot(saved)
+    setActiveId(null)
+    return true
   }
 
   function renameConversation(id: string, title: string) {
@@ -85,6 +96,7 @@ export function useConversations() {
     openConversation,
     deleteConversation,
     detachMaterial,
+    clearConversations,
     renameConversation,
     toggleConversationPin,
     startNewConversation: () => setActiveId(null),

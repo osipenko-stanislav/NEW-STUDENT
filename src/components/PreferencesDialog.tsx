@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import {
   Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
@@ -36,8 +37,8 @@ export default function PreferencesDialog({
       <div className="navigator-preferences">
         {options.map(option => <label key={option.value}>
           <span>{option.label}</span>
-          <input type="checkbox" checked={!hiddenValues.includes(option.value)}
-            onChange={event => onVisibilityChange(option.value, event.target.checked)} />
+          <Switch checked={!hiddenValues.includes(option.value)}
+            onCheckedChange={checked => onVisibilityChange(option.value, checked)} />
         </label>)}
       </div>
       <DialogFooter>

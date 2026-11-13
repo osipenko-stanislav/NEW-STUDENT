@@ -21,10 +21,11 @@ type ConversationHistoryProps = {
   onDelete: (id: string) => void
   onRename: (id: string, title: string) => void
   onTogglePin: (id: string) => void
+  confirmDeletion?: boolean
 }
 
 export default function ConversationHistory({
-  visible, open, onOpenChange, conversations, activeId, onSelect, onDelete, onRename, onTogglePin,
+  visible, open, onOpenChange, conversations, activeId, onSelect, onDelete, onRename, onTogglePin, confirmDeletion = true,
 }: ConversationHistoryProps) {
   const triggerRef = useRef<HTMLButtonElement>(null)
   const menuTriggers = useRef(new Map<string, HTMLButtonElement>())
@@ -93,7 +94,10 @@ export default function ConversationHistory({
                 {conversation.pinned ? 'Открепить' : 'Закрепить'}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onSelect={() => showDialog('delete', conversation)}>
+              <DropdownMenuItem variant="destructive" onSelect={() => {
+                if (confirmDeletion) showDialog('delete', conversation)
+                else { onDelete(conversation.id); requestAnimationFrame(() => triggerRef.current?.focus()) }
+              }}>
                 <Trash2 aria-hidden="true" />Удалить
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -119,7 +123,7 @@ export default function ConversationHistory({
         {dialog?.action === 'rename' ? <form onSubmit={rename} className="grid gap-4">
           <DialogHeader className="pr-6 text-left">
             <DialogTitle>Переименовать разговор</DialogTitle>
-            <DialogDescription>Введите название разговора.</DialogDescription>
+            <DialogDescription>Введи название разговора.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-2">
             <label htmlFor="conversation-name" className="text-sm font-medium">Название</label>
@@ -139,7 +143,7 @@ export default function ConversationHistory({
           </DialogHeader>
           <DialogFooter className="gap-2 sm:space-x-0">
             <DialogClose asChild><Button ref={cancelRef} type="button" variant="outline">Отмена</Button></DialogClose>
-            <Button type="button" variant="destructive" className="bg-red-600 hover:bg-red-700" onClick={() => {
+            <Button type="button" variant="destructive" onClick={() => {
               if (dialogConversation) onDelete(dialogConversation.id)
               setDialogOpen(false)
             }}>Удалить</Button>
