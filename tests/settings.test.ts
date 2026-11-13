@@ -24,10 +24,10 @@ test('defaults do not create storage or share mutable arrays', () => {
   assert.deepEqual(normalizeSettings(null).hiddenWidgets, [])
 })
 test('validates preferences independently and strips unknown fields', () => {
-  assert.deepEqual(normalizeSettings({timeFormat:'12',dateFormat:'junk',spellcheck:false,orbAnimation:'false',hiddenWidgets:['weather','weather'],hiddenSuggestions:[12],password:'secret'}), {...defaultSettings,timeFormat:'12',spellcheck:false,hiddenWidgets:['weather']})
+  assert.deepEqual(normalizeSettings({timeFormat:'12',dateFormat:'junk',spellcheck:false,interfaceAnimations:'false',orbAnimation:'false',hiddenWidgets:['weather','weather'],hiddenSuggestions:[12],password:'secret'}), {...defaultSettings,timeFormat:'12',spellcheck:false,hiddenWidgets:['weather']})
 })
 test('persists all working preferences across reload', () => {
-  const settings=normalizeSettings({timeFormat:'12',dateFormat:'iso',density:'compact',textSize:'large',sendShortcut:'modifier-enter',spellcheck:false,orbAnimation:false,historyMode:'hidden',confirmConversationDeletion:false,hiddenSuggestions:['Домашки']})
+  const settings=normalizeSettings({timeFormat:'12',dateFormat:'iso',density:'compact',textSize:'large',sendShortcut:'modifier-enter',spellcheck:false,interfaceAnimations:false,orbAnimation:false,historyMode:'hidden',confirmConversationDeletion:false,hiddenSuggestions:['Домашки']})
   saveSettings(settings)
   assert.deepEqual(loadSettings(),{settings,error:null})
 })

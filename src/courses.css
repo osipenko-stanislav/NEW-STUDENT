@@ -168,6 +168,16 @@
 .course-reader { padding-block: 8px 32px; }
 .course-reader-body { max-width: 70ch; margin-inline: auto; font-size: calc(16px * var(--text-scale, 1)); line-height: 1.75; overflow-wrap: anywhere; }
 .course-reader-body > section + section { margin-top: 40px; }
+.course-reader-reveal .course-reader-body > section { animation: course-material-enter var(--motion-slow) var(--ease-enter) both; }
+.course-reader-reveal .course-reader-body > section:nth-child(2) { animation-delay: 45ms; }
+.course-reader-reveal .course-reader-body > section:nth-child(3) { animation-delay: 90ms; }
+.course-reader-reveal .course-reader-body > section:nth-child(4) { animation-delay: 135ms; }
+.course-reader-reveal .course-reader-body > section:nth-child(5) { animation-delay: 180ms; }
+.course-reader-reveal .course-reader-body > section:nth-child(6) { animation-delay: 225ms; }
+@keyframes course-material-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .course-reader h2 { margin-bottom: 16px; font-size: calc(24px * var(--text-scale, 1)); line-height: 1.35; letter-spacing: -.015em; font-weight: 600; }
 .course-reader h3 { margin-top: 28px; margin-bottom: 12px; font-size: calc(20px * var(--text-scale, 1)); line-height: 1.4; font-weight: 500; }
 .course-reader h4 { margin-top: 24px; margin-bottom: 12px; font-size: calc(16px * var(--text-scale, 1)); line-height: 1.5; font-weight: 600; }

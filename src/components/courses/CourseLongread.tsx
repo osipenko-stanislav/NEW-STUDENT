@@ -36,7 +36,8 @@ export function useActiveLessonSection(scrollRef: RefObject<HTMLDivElement | nul
     const node = scrollRef.current?.querySelector<HTMLElement>(`#${id}`)
     if (!node) return
     setActive(id)
-    node.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' })
+    const motionDisabled = document.documentElement.dataset.motion === 'off' || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    node.scrollIntoView({ behavior: motionDisabled ? 'instant' : 'smooth', block: 'start' })
     node.focus({ preventScroll: true })
   }] as const
 }
@@ -51,7 +52,7 @@ export default function CourseLongread({ lesson, activeSection, onAnchor, onLess
     <div className="course-lesson-meta"><Badge variant="active">{lesson.format}</Badge><span><Clock3 aria-hidden="true" />{lesson.readingMinutes} минут чтения</span></div>
     <Button type="button" variant="outline" id="course-mobile-program-trigger" className="course-mobile-program-trigger" aria-controls="course-program-panel" aria-expanded={false} onClick={onProgram}><BookOpen aria-hidden="true" />Программа курса</Button>
     <MobileLessonToc active={activeSection} onAnchor={onAnchor} />
-    <article className="course-reader">
+    <article key={lesson.id} className="course-reader course-reader-reveal">
       <div className="course-reader-body">
         <section><h2 id="lesson-overview" tabIndex={-1}>Содержание занятия</h2>
           <p>{lesson.summary}</p>

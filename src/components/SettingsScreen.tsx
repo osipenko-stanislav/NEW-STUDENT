@@ -116,7 +116,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
   function setPreference<K extends keyof UserSettings>(key: K, value: UserSettings[K]) {
     if (updateSettings({ [key]: value })) setNotice('Настройка сохранена')
   }
-  function toggle(key: 'orbAnimation' | 'spellcheck' | 'confirmConversationDeletion', label: string) {
+  function toggle(key: 'interfaceAnimations' | 'orbAnimation' | 'spellcheck' | 'confirmConversationDeletion', label: string) {
     return <Switch aria-label={label} checked={settings[key]} onCheckedChange={value => setPreference(key, value)} />
   }
   async function confirm() {
@@ -209,8 +209,11 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
                 onChange={value => setPreference('textSize', value as UserSettings['textSize'])} />
             </SettingRow>
           </SettingsGroup>
-          <SettingsGroup title="Навигатор">
-            <SettingRow title="Анимация Orb" description="Движение сферы на экране нового чата. Системное уменьшение движения имеет приоритет." icon={Sparkles}>
+          <SettingsGroup title="Анимация">
+            <SettingRow title="Анимации интерфейса" description="Плавное появление экранов, учебных блоков, меню и других элементов." icon={Sparkles}>
+              {toggle('interfaceAnimations', 'Анимации интерфейса')}
+            </SettingRow>
+            <SettingRow title="Анимация Orb" description="Движение сферы на экране нового чата. Системное уменьшение движения имеет приоритет.">
               {toggle('orbAnimation', 'Анимация Orb')}
             </SettingRow>
           </SettingsGroup>

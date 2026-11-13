@@ -7,6 +7,7 @@ export type UserSettings = {
   dateFormat: 'long' | 'numeric' | 'iso'
   density: 'comfortable' | 'compact'
   textSize: 'small' | 'default' | 'large'
+  interfaceAnimations: boolean
   orbAnimation: boolean
   sendShortcut: 'enter' | 'modifier-enter'
   spellcheck: boolean
@@ -18,7 +19,7 @@ export type UserSettings = {
 export const defaultSettings: UserSettings = {
   downloadFolder: '', downloadAutoSync: true, downloadInterval: 30,
   timeFormat: '24', dateFormat: 'long', density: 'comfortable', textSize: 'default',
-  orbAnimation: true, sendShortcut: 'enter', spellcheck: true, confirmConversationDeletion: true,
+  interfaceAnimations: true, orbAnimation: true, sendShortcut: 'enter', spellcheck: true, confirmConversationDeletion: true,
   historyMode: 'collapsed', hiddenWidgets: [], hiddenSuggestions: [],
 }
 
@@ -33,7 +34,7 @@ export function normalizeSettings(value: unknown): UserSettings {
   for (const key of Object.keys(options) as (keyof typeof options)[]) {
     if ((options[key] as readonly unknown[]).includes(record[key])) Object.assign(result, { [key]: record[key] })
   }
-  for (const key of ['orbAnimation', 'spellcheck', 'confirmConversationDeletion', 'downloadAutoSync'] as const) {
+  for (const key of ['interfaceAnimations', 'orbAnimation', 'spellcheck', 'confirmConversationDeletion', 'downloadAutoSync'] as const) {
     if (typeof record[key] === 'boolean') result[key] = record[key]
   }
   for (const key of ['hiddenWidgets', 'hiddenSuggestions'] as const) {

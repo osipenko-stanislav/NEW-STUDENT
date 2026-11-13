@@ -453,7 +453,7 @@ function StudentInterface({ onResetSession, isResetting }: {
             <div className="navigator-visual" aria-hidden="true">
               <Orb
                 active={isTyping}
-                paused={!settings.orbAnimation}
+                paused={!settings.interfaceAnimations || !settings.orbAnimation}
                 layers={navigatorOrbs}
                 maxFps={30}
                 colors={['#9c43fe', '#4cc2e9', '#101499']}

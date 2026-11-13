@@ -17,8 +17,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   useLayoutEffect(() => {
     document.documentElement.dataset.density = snapshot.settings.density
     document.documentElement.dataset.textSize = snapshot.settings.textSize
+    document.documentElement.dataset.motion = snapshot.settings.interfaceAnimations ? 'on' : 'off'
     document.documentElement.style.setProperty('--text-scale', { small: '0.93', default: '1', large: '1.12' }[snapshot.settings.textSize])
-  }, [snapshot.settings.density, snapshot.settings.textSize])
+  }, [snapshot.settings.density, snapshot.settings.interfaceAnimations, snapshot.settings.textSize])
   function updateSettings(patch: Partial<UserSettings>) {
     const settings = normalizeSettings({ ...current.current, ...patch })
     try { saveSettings(settings) }
