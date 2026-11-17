@@ -43,7 +43,7 @@
 .schedule-mobile-filter { display: inline-flex; }
 .schedule-week-strip { display: none; border-radius: 12px; background: hsl(var(--muted)); border-bottom: 0; }
 .schedule-date-popover { display: grid; gap: 12px; }
-.schedule-grid-scroll { min-width: 0; max-width: 100%; overflow: auto; border-radius: 0; }
+.schedule-grid-scroll { min-width: 0; max-width: 100%; overflow: auto; padding-bottom: 12px; border-radius: 0; }
 .schedule-grid { display: grid; grid-template-columns: 72px repeat(var(--schedule-days), minmax(0, 1fr)); min-width: 840px; }
 .schedule-grid-day, .schedule-grid-corner { min-height: 40px; padding: 10px 4px; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--muted) / .5); color: hsl(var(--muted-foreground)); font-size: 13px; font-weight: 500; }
 .schedule-grid-corner { position: sticky; left: 0; z-index: 2; font-size: 11px; }

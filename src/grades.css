@@ -1,5 +1,6 @@
 /* grades: feature composition. */
 .workspace-grades { overflow: hidden; }
+.workspace-grades > .motion-page { height: 100%; min-height: 0; }
 .grades-surface { height: 100%; overflow: auto; overscroll-behavior: contain; container-type: inline-size; background: hsl(var(--background)); }
 .grades-page { min-width: 0; }
 .grades-heading { margin-bottom: var(--component-gap); }
@@ -96,3 +97,15 @@
 /* Keep the entity name visible while scrolling wide assessment tables. */
 .grades-table-shell table :is(th, td):first-child { position: sticky; left: 0; z-index: 1; background: hsl(var(--background)); }
 .grades-table-shell table th:first-child { z-index: 2; background: color-mix(in srgb, hsl(var(--muted)) 50%, hsl(var(--background))); }
+
+/* A completed session is one functional island; its table has no second shell. */
+.gradebook-page { display: grid; align-content: start; gap: 24px; min-width: 0; }
+.gradebook-actions { display: flex; justify-content: flex-end; }
+.gradebook-session { min-width: 0; }
+.gradebook-session [data-slot="card-header"] h2 { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; }
+.gradebook-session [data-slot="card-header"] h2 svg { width: 20px; height: 20px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
+.gradebook-table { min-width: 540px; }
+.gradebook-table th:first-child { width: 60%; }
+.gradebook-table :is(th, td):last-child { text-align: end; font-variant-numeric: tabular-nums; }
+.gradebook-table td { overflow-wrap: anywhere; }
+@media (max-width: 500px) { .gradebook-page { gap: 16px; } }

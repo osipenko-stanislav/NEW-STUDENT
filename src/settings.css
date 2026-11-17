@@ -1,6 +1,7 @@
 /* settings: feature composition. */
 /* Settings extend the existing LMS shell. */
 .workspace-settings { overflow: hidden; container: settings-workspace / inline-size; }
+.workspace-settings > .motion-page { height: 100%; min-height: 0; }
 .settings-page, .settings-layout { height: 100%; min-height: 0; min-width: 0; }
 .settings-layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); }
 .settings-categories { min-height: 0; overflow-y: auto; border-right: 1px solid hsl(var(--border)); padding: 24px 12px; }

@@ -61,6 +61,7 @@ const asset = (name: string) => `${import.meta.env.BASE_URL}assets/figma/${name}
 const HandbookWorkspace = lazy(() => import('@/components/handbook/HandbookWorkspace'))
 const HomeworkWorkspace = lazy(() => import('@/components/homework/HomeworkWorkspace'))
 const ScheduleWorkspace = lazy(() => import('@/components/schedule/ScheduleWorkspace'))
+const GradebookWorkspace = lazy(() => import('@/components/grades/GradebookWorkspace'))
 const GradesWorkspace = lazy(() => import('@/components/grades/GradesWorkspace'))
 const CoursesWorkspace = lazy(() => import('@/components/courses/CoursesWorkspace'))
 const NotificationsWorkspace = lazy(() => import('@/components/notifications/NotificationsWorkspace'))
@@ -466,6 +467,7 @@ function StudentInterface({ onResetSession, isResetting }: {
         {section === 'Хэндбук' ? <HandbookWorkspace /> : null}
         {section === 'Расписание' ? <ScheduleWorkspace onNavigate={selectSection} /> : null}
         {section === 'Домашки' ? <HomeworkWorkspace onNavigate={selectSection} /> : null}
+        {section === 'Зачетка' ? <GradebookWorkspace /> : null}
         {section === 'Ведомости' ? <GradesWorkspace key={studyTarget} onOpenCourse={(id, enrollmentId) => { selectSection(`Курсы/${id}`); if (enrollmentId) navigate({ courseEnrollmentId: enrollmentId, courseTab: enrollmentId.startsWith('archive-') ? 'homework' : 'course' }, true) }} /> : null}
         {section === 'Курсы' ? <CoursesWorkspace key={studyTarget} onOpenGrades={(id, enrollmentId) => { selectSection(`Ведомости/${id}`); if (enrollmentId) navigate({ statementId: enrollmentId }, true) }} onAskNavigator={askNavigator} /> : null}
         {section === 'Настройки' ? <SettingsScreen theme={theme} onThemeChange={setTheme} themeError={themeError}

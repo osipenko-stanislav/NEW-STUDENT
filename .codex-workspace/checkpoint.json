@@ -1,0 +1,15 @@
+{
+  "evidence": {
+    "files": {
+      "src/components/grades/GradebookWorkspace.tsx": "0cfb26065b23d30e6a4900d7c4b90b263b5f8a2e4753b6ed89c067cc3c68da7e",
+      "src/data/gradebook.ts": "b6f55f4dae6a7109df598ca0f6806dd286009124f0396ea00d24f02262ca0fc5",
+      "src/grades.css": "d09f6ab3ee8fa53355e99c6dcd41036e47e3013946c59dc033ecd5f0dba8bba5",
+      "src/settings.css": "d1b961bdd6f005e5121a6894210c4531b1f6a4a39c30f113337a71c53d255fda",
+      "src/study-pages.css": "55716959efe9a99303f3e1f3b533a656ea6ebcb046b7f42009e570afe5a49230"
+    },
+    "head": "ce4b5251fc79696982f70da94fe278ad19efd7eb",
+    "status": " M src/App.tsx\n M src/grades.css\n M src/settings.css\n M src/study-pages.css\n?? .codex-workspace/AGENTS.before-init\n?? .codex-workspace/DECISIONS.md\n?? .codex-workspace/HANDOFF.md\n?? .codex-workspace/PROJECT.md\n?? .codex-workspace/checkpoint.json\n?? src/components/grades/GradebookWorkspace.tsx\n?? src/data/gradebook.ts"
+  },
+  "handoff_sha256": "df608ec0df4555e0ac747d6eaa6253973ecda721b63ed1190a8e4d9d7629cf80",
+  "version": 1
+}
