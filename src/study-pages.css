@@ -18,7 +18,9 @@
 .study-search > button { position: absolute; right: 0; top: 0; }
 .homework-list-summary { display: flex; justify-content: space-between; gap: 16px; padding: 0 0 16px; font-size: 13px; color: hsl(var(--muted-foreground)); }
 .homework-table-heading, .homework-all-row { display: grid; grid-template-columns: minmax(0, 1fr) 172px 120px 68px; gap: 12px; align-items: center; padding: var(--list-row-padding) 0; }
-.homework-table-heading { padding-block: 8px; background: hsl(var(--muted) / .5); font-size: 13px; color: hsl(var(--muted-foreground)); }
+.homework-table-heading { min-height: 40px; padding: 10px 12px; border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface) var(--radius-surface) 0 0; background: hsl(var(--muted) / .5); font-size: 13px; line-height: 20px; font-weight: 500; color: hsl(var(--muted-foreground)); }
+.homework-all-list { border-inline: 1px solid hsl(var(--border)); border-bottom: 1px solid hsl(var(--border)); border-radius: 0 0 var(--radius-surface) var(--radius-surface); overflow: hidden; }
+.homework-all-row { padding-inline: 12px; }
 .homework-all-row + .homework-all-row { border-top: 1px solid hsl(var(--border)); }
 .homework-all-row:hover { background: hsl(var(--muted) / .2); }
 .homework-all-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
@@ -43,8 +45,8 @@
 .schedule-date-popover { display: grid; gap: 12px; }
 .schedule-grid-scroll { min-width: 0; max-width: 100%; overflow: auto; border-radius: 0; }
 .schedule-grid { display: grid; grid-template-columns: 72px repeat(var(--schedule-days), minmax(0, 1fr)); min-width: 840px; }
-.schedule-grid-day, .schedule-grid-corner { padding: 12px 4px; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 1px solid hsl(var(--border)); font-size: 13px; }
-.schedule-grid-corner { position: sticky; left: 0; z-index: 2; background: hsl(var(--background)); color: hsl(var(--muted-foreground)); font-size: 11px; }
+.schedule-grid-day, .schedule-grid-corner { min-height: 40px; padding: 10px 4px; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--muted) / .5); color: hsl(var(--muted-foreground)); font-size: 13px; font-weight: 500; }
+.schedule-grid-corner { position: sticky; left: 0; z-index: 2; font-size: 11px; }
 .schedule-grid-day { border-left: 1px solid hsl(var(--border)); }
 .schedule-grid-day:hover { background: hsl(var(--accent)); }
 .schedule-grid-day span { color: hsl(var(--muted-foreground)); }
@@ -98,6 +100,7 @@
   .homework-filters .assignment-status-filter > button { width: 100%; }
   .homework-list-summary { padding: 0 16px 16px; flex-wrap: wrap; gap: 6px; }
   .homework-table-heading { display: none; }
+  .homework-all-list { border: 0; border-radius: 0; overflow: visible; }
   .homework-all-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding: var(--surface-padding) 0; border-top: 1px solid hsl(var(--border)); }
   .homework-all-copy { grid-column: 1 / -1; }
   .homework-all-status { grid-column: 1; grid-row: 3; }

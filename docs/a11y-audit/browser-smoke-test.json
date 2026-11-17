@@ -1,0 +1,231 @@
+{
+  "node": "v22.16.0",
+  "chrome": "Chrome/157.0.8103.79",
+  "url": "http://127.0.0.1:5173/",
+  "measurements": [
+    {
+      "i": 0,
+      "selector": "button.peer/menu-button.flex",
+      "text": "Центральный университет — сбросить сессию",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 16,
+        "y": 16,
+        "width": 224,
+        "height": 48
+      }
+    },
+    {
+      "i": 1,
+      "selector": "button.peer/menu-button.flex",
+      "text": "Навигатор",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 16,
+        "y": 112,
+        "width": 224,
+        "height": 40
+      }
+    },
+    {
+      "i": 2,
+      "selector": "button.flex.h-8",
+      "text": "История",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 39,
+        "y": 154,
+        "width": 200,
+        "height": 40
+      }
+    },
+    {
+      "i": 3,
+      "selector": "button.peer/menu-button.flex",
+      "text": "Мои цели",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 16,
+        "y": 204,
+        "width": 224,
+        "height": 40
+      }
+    },
+    {
+      "i": 4,
+      "selector": "button.peer/menu-button.flex",
+      "text": "Обучение",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 16,
+        "y": 246,
+        "width": 224,
+        "height": 40
+      }
+    },
+    {
+      "i": 5,
+      "selector": "button.peer/menu-button.flex",
+      "text": "Карьера",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 16,
+        "y": 288,
+        "width": 224,
+        "height": 40
+      }
+    },
+    {
+      "i": 6,
+      "selector": "button.peer/menu-button.flex",
+      "text": "Расписание",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 16,
+        "y": 330,
+        "width": 224,
+        "height": 40
+      }
+    },
+    {
+      "i": 7,
+      "selector": "button.peer/menu-button.flex",
+      "text": "Хэндбук",
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "rect": {
+        "x": 16,
+        "y": 372,
+        "width": 224,
+        "height": 40
+      }
+    }
+  ],
+  "button": {
+    "x": 128,
+    "y": 40,
+    "selector": "button.peer/menu-button.flex",
+    "text": "Центральный университет — сбросить сессию"
+  },
+  "hover": {
+    "default": {
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "none"
+    },
+    "hover": {
+      "color": "rgb(10, 10, 10)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "none"
+    }
+  },
+  "focus": [
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "aria": "Центральный университет — сбросить сессию",
+      "text": "",
+      "outline": "rgba(0, 0, 0, 0) solid 2px",
+      "outlineColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "rgba(255, 255, 255, 0.082) 0px 0px 0px 0px, rgba(10, 10, 10, 0.082) 0px 0px 0px 0.167492px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "aria": "Навигатор",
+      "text": "Навигатор",
+      "outline": "rgba(0, 0, 0, 0) solid 2px",
+      "outlineColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "aria": "",
+      "text": "История",
+      "outline": "rgba(0, 0, 0, 0) solid 2px",
+      "outlineColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "aria": "Мои цели",
+      "text": "Мои цели",
+      "outline": "rgba(0, 0, 0, 0) solid 2px",
+      "outlineColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "aria": "Обучение",
+      "text": "Обучение",
+      "outline": "rgba(0, 0, 0, 0) solid 2px",
+      "outlineColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "aria": "Карьера",
+      "text": "Карьера",
+      "outline": "rgba(0, 0, 0, 0) solid 2px",
+      "outlineColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "aria": "Расписание",
+      "text": "Расписание",
+      "outline": "rgba(0, 0, 0, 0) solid 2px",
+      "outlineColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    }
+  ],
+  "dark": {
+    "opened": true,
+    "themeControls": [
+      "Системная",
+      "Светлая",
+      "Тёмная",
+      "Учитывать системное уменьшение движения"
+    ],
+    "text": "Разделы\nНавигатор\nИстория\nМои цели\nОбучение\nКарьера\nРасписание\nХэндбук\nСобытия\nСервисы\nНастройки\ncu-lms-app\n2.0.1\nНастройки\nПоиск\n⌘ + K\nМатериалы актуальны\n15\n1\n5\n7\n7\nНепрочитанных: 7\nОбщие\nВнешний вид\nВвод и клавиши\nРазговоры\nПамять\nБиблиотека\nДанные и приватность\nО приложении\nВнешний вид\nТема\nРежим\n\nСистемная тема следует настройкам устройства.\n\nСистемная\nСветлая\nТёмная\nИнтерфейс\nПлотность\n\nРасстояния между строками, элементами списков и навигации.\n\nКомфортная\nРазмер текста\n\nМасштаб текста в интерфейсе и разговорах.\n\nСтандартный\nАнимация\nИнтенсивность\n\nФактически: сбалансированная.\n\nСбалансированная\nУчитывать системное уменьшение движения\n\nПри системной настройке reduce используется минимальная интенсивность.\n\nАнимация Orb\n\nДвижение сферы на экране нового чата. Системное уменьшение движения имеет приоритет.",
+    "html": false,
+    "clicked": true,
+    "theme": "dark",
+    "sample": {
+      "color": "rgb(245, 245, 245)",
+      "backgroundColor": "rgba(0, 0, 0, 0)"
+    }
+  },
+  "axe": {
+    "status": "unavailable",
+    "reason": "axe-core install failed in temporary environment; package was not resolved"
+  }
+}

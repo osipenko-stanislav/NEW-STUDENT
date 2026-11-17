@@ -35,8 +35,7 @@ export default function CourseWidgets({ onDialog, onProgram, programOpen, toc, a
         </Card>
         <Card size="sm" className="course-widget-card course-deadline-widget">
           <CardHeader><h2>Ближайший дедлайн<CalendarClock aria-hidden="true" /></h2></CardHeader>
-          <CardContent><button type="button" className="course-deadline-summary" onClick={() => onDialog('assignment')}><span>{deadline.title}</span><time dateTime={effectiveDeadline(deadline.id) || deadline.dueAt}>{formatDateTime(effectiveDeadline(deadline.id) || deadline.dueAt, true)} МСК</time><Badge variant="neutral">{deadline.status}</Badge></button><DeadlineTransfer taskId={deadline.id} /></CardContent>
-          <CardFooter asChild><button type="button" className="course-widget-footer" onClick={() => onDialog('assignment')}>Открыть задание<ChevronRight aria-hidden="true" /></button></CardFooter>
+          <CardContent><button type="button" className="course-deadline-summary" onClick={() => onDialog('assignment')}><span>{deadline.title}</span><time dateTime={effectiveDeadline(deadline.id) || deadline.dueAt}>{formatDateTime(effectiveDeadline(deadline.id) || deadline.dueAt, true)} МСК</time><Badge variant="neutral">{deadline.status}</Badge><span className="course-deadline-open">Открыть задание<ChevronRight aria-hidden="true" /></span></button><DeadlineTransfer taskId={deadline.id} /></CardContent>
         </Card>
       </>}
     {courseId === featuredCourseId ? <Button type="button" variant="outline" className="course-resource-link" onClick={() => onDialog('chat')}><MessageCircle aria-hidden="true" /><span><small>Общение</small><strong>Чат курса</strong></span><ChevronRight aria-hidden="true" /></Button> : null}

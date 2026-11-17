@@ -1,12 +1,15 @@
 import type { AcademicTask } from '../data/academic-data.ts'
 export type HomeworkFile = { id: string; name: string; size: number; type: string }
 type HomeworkEvent = { id: string; at: number; text: string }
-type HomeworkComment = { id: string; at: number; text: string }
+export type HomeworkCommentAttachment = { id: string; name: string; size: number; type: string }
+export type HomeworkCommentReaction = { emoji: string; count: number; mine?: boolean }
+export type HomeworkComment = { id: string; at: number; text: string; author?: string; replyTo?: { id: string; author: string; text: string }; attachments?: HomeworkCommentAttachment[]; reactions?: HomeworkCommentReaction[]; scheduledAt?: number }
 export type HomeworkRecord = {
   link: string; files: HomeworkFile[]; savedAt?: number; startedAt?: number; submittedAt?: number
   events: HomeworkEvent[]; comments: HomeworkComment[]
 }
 export const homeworkStorageKey = 'student-homework:v1'
+export const homeworkComment = (text: string, extra: Partial<HomeworkComment> = {}): HomeworkComment => ({ id: crypto.randomUUID(), at: Date.now(), text, author: 'Иван', ...extra })
 export const emptyHomework = (): HomeworkRecord => ({ link: '', files: [], events: [], comments: [] })
 export function parseHomeworkRecords(raw: string | null): Record<string, HomeworkRecord> {
   if (!raw) return {}

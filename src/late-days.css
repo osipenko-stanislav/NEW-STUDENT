@@ -94,7 +94,7 @@
 .late-days-confirmation-list li span, .late-days-rescue-result li span { color: hsl(var(--muted-foreground)); }
 .late-days-no-tasks, .late-days-rescue-result { display: flex; flex-direction: column; gap: 16px; font-size: calc(14px * var(--text-scale, 1)); line-height: 1.7; }
 .late-days-rescue-result ul { display: grid; gap: 16px; }
-.homework-filters .late-days-rescue-button { margin-left: auto; }
+.homework-filters .late-days-rescue-button { margin-left: auto; border-radius: 999px; }
 @container (max-width: 767px) {
   .late-days-metrics { gap: 24px 40px; }
   .late-days-columns { gap: 8px; }
@@ -107,3 +107,28 @@
 }
 
 .late-days-archive-selector { width: min(240px, 100%); margin-bottom: 16px; }
+
+/* Warm assistance accent shared by the deadline action and Navigator suggestion. */
+[data-slot="button"].fire-help-action {
+  color: #542508;
+  background: radial-gradient(ellipse at 15% 0%, #fff1c9 0%, transparent 65%), linear-gradient(115deg, #ffdb94, #ffb56c 60%, #ffa97d);
+  border: 1px solid #e9a45e;
+  box-shadow: inset 0 1px 0 #fff5df, 0 3px 8px hsl(var(--shadow-color) / .12);
+  font-weight: 600;
+}
+[data-slot="button"].fire-help-action:hover:not(:disabled) {
+  background: radial-gradient(ellipse at 15% 0%, #fff5da 0%, transparent 65%), linear-gradient(115deg, #ffe0a1, #ffc07e 60%, #ffb58b);
+  color: #542508;
+}
+[data-slot="button"].fire-help-action:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
+[data-slot="button"].fire-help-action:active:not(:disabled) { box-shadow: inset 0 1px 3px #b56b3433; }
+html[data-theme="dark"] [data-slot="button"].fire-help-action {
+  color: #ffebcf;
+  border-color: #a96536;
+  background: radial-gradient(ellipse at 15% 0%, #9f682e 0%, transparent 65%), linear-gradient(115deg, #77451f, #793b20 65%, #623423);
+  box-shadow: inset 0 1px 0 #ffc78733, 0 3px 8px hsl(var(--shadow-color) / .24);
+}
+html[data-theme="dark"] [data-slot="button"].fire-help-action:hover:not(:disabled) {
+  color: #fff2df;
+  background: radial-gradient(ellipse at 15% 0%, #ab7235 0%, transparent 65%), linear-gradient(115deg, #825025, #874526 65%, #703d2a);
+}

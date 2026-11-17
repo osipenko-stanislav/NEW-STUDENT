@@ -50,10 +50,12 @@
 .handbook-prose blockquote { border-inline-start: 3px solid hsl(var(--border)); padding-inline-start: 18px; margin-block: 20px; }
 .handbook-prose code { background: hsl(var(--muted)); border-radius: 4px; padding: 2px 5px; font-size: .9em; }
 .handbook-prose hr { margin-block: 28px; border-color: hsl(var(--border)); }
-.handbook-table-scroll { overflow-x: auto; max-width: 100%; margin-block: 20px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); }
+.handbook-table-scroll { overflow-x: auto; max-width: 100%; margin-block: 20px; border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface); background: hsl(var(--background)); }
 .handbook-table-scroll table { border-collapse: collapse; width: 100%; font-size: calc(13px * var(--text-scale, 1)); line-height: 1.6; }
-.handbook-table-scroll th, .handbook-table-scroll td { vertical-align: top; padding: 12px; border: 1px solid hsl(var(--border)); min-width: 100px; }
-.handbook-table-scroll th { background: hsl(var(--muted)); text-align: start; font-weight: 500; }
+.handbook-table-scroll th, .handbook-table-scroll td { vertical-align: top; padding: 10px 12px; border-bottom: 1px solid hsl(var(--border)); min-width: 100px; }
+.handbook-table-scroll th + th, .handbook-table-scroll td + td { border-inline-start: 1px solid hsl(var(--border)); }
+.handbook-table-scroll th { min-height: 40px; background: hsl(var(--muted) / .5); color: hsl(var(--muted-foreground)); text-align: start; font-weight: 500; line-height: 20px; }
+.handbook-table-scroll tr:last-child td { border-bottom: 0; }
 .handbook-table-scroll p { margin-bottom: 6px; }
 .handbook-image-link { display: block; margin-block: 20px; }
 .handbook-image-link img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid hsl(var(--border)); }

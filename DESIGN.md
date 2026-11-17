@@ -31,6 +31,14 @@ The former `cupertino.css` override layer has been removed. Its component rules 
 
 Use `src/components/ui` before adding a component. Primitives own behavior, accessibility and semantic `data-slot` hooks; shared CSS owns their appearance. Feature classes own composition, not a second implementation of the same control.
 
+### Surface hierarchy
+
+- **Content surface** — открытое рабочее содержимое: статьи, списки, таблицы, заголовки и текстовые ответы.
+- **Functional island** — самостоятельные виджеты, инструменты, панели, формы и интерактивные Generative UI-компоненты. Они сохраняют предусмотренное Cupertino-оформление, если поверхность помогает их назначению.
+- **Overlay surface** — Popover, Dialog, Dropdown, Sheet и контекстные меню.
+
+Граница React-компонента сама по себе не требует визуального контейнера. Не добавляй поверхность вокруг уже самостоятельного острова и не уплощай функциональную поверхность механически: решение принимает композиционная роль объекта.
+
 - **Button/Input/Select/Switch/RadioGroup** retain their semantic variants and accessible names. Customize a control in the primitive or shared stylesheet so every instance receives the change. Button primitives do not supply competing radius/shadow utility defaults: shared Cupertino CSS owns these values, while feature compositions can specify purposeful exceptions. Switch uses a 40×24 px track and 24×16 px capsule thumb, with a 12 px travel; geometry belongs to the shared component rather than settings-only overrides.
 - **TabsList** and **SegmentedControl** use the same segmented surface. Tabs retain Radix tab navigation. Independent filters use actual buttons with `aria-pressed`; theme choices retain RadioGroup semantics. Long groups scroll in one row. Calendar day grids preserve their distinct composition.
 - **Dialog/Sheet/Popover/DropdownMenu/Tooltip** have stable slots and shared elevation/motion. Their portal content must not depend on being a descendant of `.student-app`.

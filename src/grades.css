@@ -17,9 +17,10 @@
 .grades-results-row { display: flex; align-items: center; justify-content: space-between; min-height: 36px; margin-bottom: 8px; gap: 12px; }
 .grades-results { font-size: calc(13px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); margin-bottom: 12px; }
 .grades-results-row .grades-results { margin: 0; }
-.grades-table-shell { border-block: 1px solid hsl(var(--border)); overflow: hidden; border-radius: 12px; min-width: 0; }
+.grades-table-shell { border: 1px solid hsl(var(--border)); overflow-x: auto; overflow-y: hidden; border-radius: var(--radius-surface); min-width: 0; background: hsl(var(--background)); }
 .grades-table-shell table { font-size: calc(14px * var(--text-scale, 1)); }
-.grades-table-shell th {  background: hsl(var(--muted) / .35); }
+.grades-table-shell th { background: color-mix(in srgb, hsl(var(--muted)) 50%, hsl(var(--background))); color: hsl(var(--muted-foreground)); font-weight: 500; text-align: start; }
+.grades-table-shell th > button { color: inherit; font-weight: inherit; }
 .grades-table-shell td {  font-variant-numeric: tabular-nums; }
 .grades-table-shell th > button:not(.grades-help) { padding-inline: 8px; margin-inline: -8px; font-size: inherit; }
 .grades-table-shell th svg { width: 14px; height: 14px; }
@@ -94,4 +95,4 @@
 
 /* Keep the entity name visible while scrolling wide assessment tables. */
 .grades-table-shell table :is(th, td):first-child { position: sticky; left: 0; z-index: 1; background: hsl(var(--background)); }
-.grades-table-shell table th:first-child { z-index: 2; background: hsl(var(--muted)); }
+.grades-table-shell table th:first-child { z-index: 2; background: color-mix(in srgb, hsl(var(--muted)) 50%, hsl(var(--background))); }

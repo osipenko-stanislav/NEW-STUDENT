@@ -90,7 +90,7 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
 .course-block-unpublished h3 { font-size: calc(14px * var(--text-scale, 1)); font-weight: 500; }
 .course-block-unpublished p { margin: 8px 0 12px; font-size: calc(13px * var(--text-scale, 1)); line-height: 22px; color: hsl(var(--muted-foreground)); }
 .course-widgets { position: sticky; top: 24px; display: flex; min-width: 0; flex-direction: column; gap: 12px; }
-.course-resource-link { width: 100%; height: auto; min-height: 60px; justify-content: flex-start; padding: 12px; white-space: normal; text-align: left; }
+.course-resource-link { width: 100%; height: auto; min-height: 60px; justify-content: flex-start; padding: 12px; white-space: normal; text-align: left; border-radius: var(--radius-surface); }
 .course-resource-link > span { flex: 1; min-width: 0; }
 .course-resource-link > svg { color: hsl(var(--muted-foreground)); }
 .course-resource-link small { display: block; margin-bottom: 4px; font-size: calc(12px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); font-weight: 400; }
@@ -115,6 +115,10 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
 .course-deadline-summary { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; margin-block: 0; padding: 0; border-radius: var(--radius); border: 0; background: transparent; text-align: left; }
 .course-deadline-summary > span:first-child { font-size: calc(12px * var(--text-scale, 1)); line-height: 18px; color: hsl(var(--foreground)); }
 .course-deadline-summary > time { color: var(--color-amber-text); font-size: calc(11px * var(--text-scale, 1)); line-height: 16px; }
+.course-deadline-open { display: inline-flex; align-items: center; gap: 4px; margin-top: 2px; color: hsl(var(--muted-foreground)); font-size: calc(12px * var(--text-scale, 1)); line-height: 18px; }
+.course-deadline-open svg { width: 14px; height: 14px; }
+.course-deadline-summary:hover .course-deadline-open { color: hsl(var(--foreground)); }
+.course-program-link, .course-mobile-program-trigger { border-radius: var(--radius-surface); }
 .course-program-link { display: flex; width: 100%; height: auto; min-height: 48px; justify-content: space-between; padding: 12px 16px; }
 .course-program-link svg { width: 16px; height: 16px; flex-shrink: 0; }
 .course-program-link:hover { background: hsl(var(--muted)); }
@@ -251,6 +255,9 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
   .course-mobile-toc a[aria-current="location"] { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
   .course-recording-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+@container course-surface (min-width: 501px) and (max-width: 680px) {
+  .course-widgets { grid-template-columns: minmax(0, 1fr); }
+}
 @container (max-width: 500px) {
   .course-catalog-header { padding: 0 0 var(--component-gap); }
   .course-filter-list { gap: 6px; }
@@ -333,6 +340,10 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
 .homework-content { grid-column: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 .homework-meta-surface { padding: 4px 0 20px; border: 0; border-bottom: 1px solid hsl(var(--border)); border-radius: 0; background: transparent; box-shadow: none; }
 .homework-brief-surface { padding: 4px 0 24px; border: 0; border-bottom: 1px solid hsl(var(--border)); border-radius: 0; background: transparent; box-shadow: none; }
+.homework-comments { padding-top: 8px; }
+.homework-comments-list { display: grid; gap: 16px; margin: 16px 0 20px; }
+.homework-comments-list li { padding-bottom: 16px; border-bottom: 1px solid hsl(var(--border)); }
+.homework-comments-form { display: grid; gap: 12px; }
 .homework-resource { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 8px 12px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); }
 .homework-lecture { display: flex; width: 100%; height: auto; min-height: 48px; padding: 12px; gap: 12px; white-space: normal; text-align: left; justify-content: flex-start; }
 .homework-lecture span { min-width: 0; overflow-wrap: anywhere; }
@@ -353,3 +364,43 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
   }
 .course-deadline-widget [data-slot="card-content"] { display: flex; align-items: center; gap: 8px; }
 .course-deadline-summary { flex: 1; min-width: 0; }
+.homework-solution-surface { padding: 4px 0 24px; border-bottom: 1px solid hsl(var(--border)); }
+.homework-section-header { margin-bottom: 20px; }
+.homework-grade-metric dd { color: hsl(var(--foreground)); }
+.homework-meta-surface { padding-top: 0; }
+.homework-resource { padding-block: 6px; }
+.homework-lecture { border-color: hsl(var(--border)); }
+.discussion { display: grid; gap: 20px; }
+.discussion-messages { display: grid; gap: 24px; }
+.discussion-message, .discussion-compose-row { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; }
+.discussion-avatar { width: 36px; height: 36px; display: block; flex: 0 0 36px; border-radius: 50%; object-fit: cover; }
+.discussion-message-body { min-width: 0; }
+.discussion-message header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 14px; }
+.discussion-message time { font-size: 12px; color: hsl(var(--muted-foreground)); }
+.discussion-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.6; scroll-margin-block: 24px; }
+.discussion-message-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 6px; }
+.discussion-message-actions svg { width: 16px; height: 16px; }
+.discussion-quote { display: grid; gap: 2px; border-left: 2px solid hsl(var(--ring)); padding-left: 10px; margin-block: 8px; min-width: 0; font-size: 12px; }
+.discussion-quote span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: hsl(var(--muted-foreground)); }
+.discussion-reply-draft { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 0 20px; }
+.discussion-composer { min-width: 0; }
+.discussion-composer textarea { min-width: 0; width: 100%; max-height: 200px; resize: none; overflow-y: auto; }
+.discussion-emoji-picker { display: grid; grid-template-columns: repeat(5, 1fr); width: 248px; padding: 8px; }
+.discussion-attachments, .discussion-draft-files { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.discussion-draft-files { padding: 0 16px; }
+.discussion-draft-files > div, .discussion-file { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; font-size: 13px; }
+.discussion-draft-files span, .discussion-file span { min-width: 0; overflow-wrap: anywhere; }
+.discussion-draft-files small, .discussion-file small { display: block; color: hsl(var(--muted-foreground)); }
+.discussion-image { border-radius: 8px; overflow: hidden; }
+.discussion-image img { max-height: 160px; max-width: 200px; object-fit: contain; }
+.discussion-draft-files img { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; }
+.discussion-lightbox { width: 100%; max-height: 70vh; object-fit: contain; }
+.discussion-scheduled { display: grid; gap: 12px; padding-left: 12px; border-left: 2px solid hsl(var(--ring)); }
+@media (max-width: 500px) { .discussion-message, .discussion-compose-row { grid-template-columns: 32px minmax(0, 1fr); gap: 8px; } .discussion-avatar { width: 32px; height: 32px; flex-basis: 32px; } }
+.homework-status-badge { white-space: nowrap; }
+.homework-status-badge .animated-label-reserve { display: none; }
+.homework-grade-metric { display: grid; gap: 4px; padding: 16px; margin-bottom: 16px; border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface); background: hsl(var(--card)); box-shadow: var(--shadow-surface); }
+.homework-grade-metric strong { display: block; }
+.homework-grade-metric dd { color: hsl(var(--foreground)); }
+.homework-results-island { padding: 16px; border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface); background: hsl(var(--card)); box-shadow: var(--shadow-surface); }
+.homework-results-island .homework-grade-metric { padding: 0 0 16px; margin-bottom: 16px; border: 0; border-bottom: 1px solid hsl(var(--border)); border-radius: 0; background: transparent; box-shadow: none; }

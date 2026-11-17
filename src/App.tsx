@@ -594,7 +594,7 @@ function StudentInterface({ onResetSession, isResetting }: {
             </form>
             <div className="suggestions" aria-label="Примеры запросов">
               {suggestions.filter(suggestion => !hiddenSuggestions.includes(suggestion)).map(suggestion => <Button key={suggestion} variant="outline" disabled={voiceBusy} onClick={() => useSuggestion(suggestion)}
-                aria-pressed={promptCommand === suggestion} className="suggestion">{suggestion}</Button>)}
+                aria-pressed={promptCommand === suggestion} className={`suggestion${suggestion === '🔥 Я в огне' ? ' fire-help-action' : ''}`}>{suggestion}</Button>)}
               <PreferencesDialog triggerLabel="Настроить подсказки" triggerClassName="suggestion-settings"
                 triggerIcon="settings04-small-lined.svg" title="Примеры запросов" description="Выбери подсказки под полем ввода."
                 options={suggestionOptions} hiddenValues={hiddenSuggestions}
