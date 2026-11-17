@@ -5,18 +5,9 @@
 .status-widget-deadlines, .status-widget.status-widget-deadlines:hover { background: var(--color-amber-soft); color: var(--color-amber-text); }
 .status-widget-classes:hover, .status-widget-deadlines:hover { box-shadow: inset 0 0 0 1px currentColor; }
 .widget-settings { width: 40px; height: 40px; padding: 12px; border-radius: 32px; background: hsl(var(--muted)); }
-.widget-popover { width: min(346px, calc(100vw - 32px)); max-height: min(calc(100dvh - 32px), var(--radix-popover-content-available-height, 480px)); border: 0; border-radius: 14px; background: hsl(var(--card)); color: hsl(var(--card-foreground)); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
-.weather-popover { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; overscroll-behavior: contain; padding: 16px 0 0; }
-.weather-popover > * { flex-shrink: 0; }
-.study-widget-popover { display: flex; width: min(400px, calc(100vw - 32px)); max-height: min(480px, calc(100svh - 32px), var(--radix-popover-content-available-height, 480px)); flex-direction: column; gap: 12px; overflow: hidden; padding: 16px; }
-.study-widget-header { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; }
-.study-widget-title { font-size: calc(14px * var(--text-scale, 1)); font-weight: 500; line-height: calc(20px * var(--text-scale, 1)); }
-.study-widget-count { min-width: 22px; height: 22px; justify-content: center; padding: 2px 6px; border-radius: 6px; font-size: calc(12px * var(--text-scale, 1)); font-weight: 500; line-height: calc(16px * var(--text-scale, 1)); }
-.study-widget-list { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
-.study-widget-list > li { padding: 12px; border-radius: 8px; transition: background-color calc(150ms * var(--motion-scale)) var(--ease-enter); }
-.study-widget-list > li:hover { background: hsl(var(--muted)); }
-.study-widget-list > li + li { border-top: 1px solid hsl(var(--border)); }
-.study-widget-action { width: 100%; flex-shrink: 0; }
+.weather-popover .preview-popover-body { padding-top: 2px; }
+.weather-popover .preview-popover-body > * + * { margin-top: 6px; }
+.study-widget-list > li + li { border-top: 1px solid hsl(var(--border) / .65); }
 .weather-current { display: flex; align-items: center; gap: 6px; padding: 0 16px; font-size: calc(14px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); }
 .weather-current .design-icon, .weather-forecast .design-icon { width: 20px; height: 20px; }
 .weather-temperature { flex: 1; font-weight: 500; }

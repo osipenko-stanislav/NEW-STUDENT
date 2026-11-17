@@ -32,8 +32,8 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   }, [])
   const value: NotificationsContextValue = {
     events, readIds, unreadCount: events.filter(event => !readIds.has(event.id)).length, storageError,
-    markRead: id => setState(previous => previous.readIds.includes(id) || !events.some(event => event.id === id) ? previous : { ...previous, readIds: [...previous.readIds, id] }),
-    markAllRead: () => setState(previous => events.every(event => previous.readIds.includes(event.id)) ? previous : { ...previous, readIds: events.map(event => event.id) }),
+    markRead: id => { setState(previous => previous.readIds.includes(id) || !events.some(event => event.id === id) ? previous : { ...previous, readIds: [...previous.readIds, id] }) },
+    markAllRead: () => { setState(previous => events.every(event => previous.readIds.includes(event.id)) ? previous : { ...previous, readIds: events.map(event => event.id) }) },
   }
   return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>
 }

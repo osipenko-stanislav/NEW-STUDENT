@@ -1,3 +1,4 @@
+import { actionStatus } from '@/lib/action-status'
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { academicTasks, type AcademicTask } from '@/data/academic-data'
 import { currentLateDaysSemester, type LateDaysState } from '@/data/late-days'
@@ -30,14 +31,15 @@ export function LateDaysProvider({ children }: { children: ReactNode }) {
     let stored: string | null
     let records: ReturnType<typeof parseHomeworkRecords>
     try { stored = localStorage.getItem(lateDaysStorageKey); records = parseHomeworkRecords(localStorage.getItem(homeworkStorageKey)) }
-    catch { return { ok: false, error: 'Не удалось прочитать данные. Проверь доступ к хранилищу браузера.' } }
+    catch { actionStatus.report({ key: `late-days:${batchId}`, label: 'Не удалось прочитать данные переноса' }, false); return { ok: false, error: 'Не удалось прочитать данные. Проверь доступ к хранилищу браузера.' } }
     const base = stored ? parseLateDays(stored) : current.current
     const result = applyLateDaysPlan(base, plan, batchId, records)
-    if (result.error) return { ok: false, error: result.error }
+    if (result.error) { actionStatus.report({ key: `late-days:${batchId}`, label: 'Не удалось перенести дедлайн', detail: result.error }, false); return { ok: false, error: result.error } }
     try { localStorage.setItem(lateDaysStorageKey, JSON.stringify(result.state)) }
-    catch { return { ok: false, error: 'Не удалось сохранить перенос. Дни не списаны. Повтори попытку.' } }
+    catch { actionStatus.report({ key: `late-days:${batchId}`, label: 'Не удалось сохранить перенос', detail: 'Дни не списаны' }, false); return { ok: false, error: 'Не удалось сохранить перенос. Дни не списаны. Повтори попытку.' } }
     current.current = result.state
     setState(result.state)
+    if (result.state !== base) actionStatus.report({ key: `late-days:${batchId}`, label: plan.length === 1 ? 'Дедлайн перенесён' : 'Дедлайны перенесены', detail: plan.length === 1 ? academicTasks.find(task => task.id === plan[0].taskId)?.title : `Заданий: ${plan.length}` })
     return { ok: true }
   }
   return <Context.Provider value={{ state, balance: lateDaysBalance(state, currentLateDaysSemester), deadline: value => {

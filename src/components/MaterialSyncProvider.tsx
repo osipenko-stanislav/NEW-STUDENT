@@ -1,3 +1,4 @@
+import { actionStatus } from '@/lib/action-status'
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { useMaterialLibrary } from '@/components/MaterialLibraryProvider'
 import { useSettings } from '@/components/SettingsProvider'
@@ -40,33 +41,40 @@ export function MaterialSyncProvider({ children }: { children: ReactNode }) {
     void initialize()
     return () => { cancelled = true; alive.current = false }
   }, [library, persist])
-  const synchronize = useCallback(async () => {
+  const synchronize = useCallback(async (announce = true) => {
     if (busy.current || !alive.current) return
     busy.current = true; setSyncing(true); setProgress(0)
+    const operation = announce ? actionStatus.begin({ key: 'material-sync', label: 'Обновляем учебные материалы', progress: 0 }) : null
+    let settled = false
     try {
       // Short, deterministic demo progression; existing files remain usable.
       for (const value of [25, 65, 90]) {
         await new Promise(resolve => setTimeout(resolve, 240))
         if (!alive.current) return
         setProgress(value)
+        if (operation) actionStatus.update(operation, { progress: value / 100 })
       }
       if (!navigator.onLine) throw new Error('offline')
       const saved = await library.synchronizeAcademic(await preparedAcademicFiles(publishedMaterialRevision), publishedMaterialRevision)
       if (!saved || !alive.current) return
       persist({ version: 1, lastSync: Date.now(), error: null })
       setProgress(100)
+      settled = true
+      if (operation) actionStatus.finish(operation, 'Учебные материалы обновлены')
     } catch {
       if (alive.current) {
         const error = navigator.onLine ? 'Не удалось обновить материалы. Повтори попытку. Сохраненные документы доступны.' : 'Нет подключения. Сохраненные материалы доступны, обновление можно повторить позже.'
+        settled = true
+        if (operation) actionStatus.finish(operation, 'Не удалось обновить материалы', false, error)
         const next: SyncRecord = { version: 1, lastSync: record.lastSync, error }
         try { persist(next) } catch { setRecord(next) }
       }
-    } finally { busy.current = false; if (alive.current) setSyncing(false) }
+    } finally { if (operation && !settled) actionStatus.finish(operation, 'Обновление остановлено', false); busy.current = false; if (alive.current) setSyncing(false) }
   }, [library, persist, record.lastSync])
   useEffect(() => {
     if (!ready || !settings.downloadAutoSync) return
     const checkVersion = () => {
-      if (document.visibilityState === 'visible' && navigator.onLine && localMaterialRevision(library.getSnapshot().materials) < publishedMaterialRevision) void synchronize()
+      if (document.visibilityState === 'visible' && navigator.onLine && localMaterialRevision(library.getSnapshot().materials) < publishedMaterialRevision) void synchronize(false)
     }
     checkVersion()
     const timer = setInterval(checkVersion, settings.downloadInterval * 60_000)
@@ -76,11 +84,20 @@ export function MaterialSyncProvider({ children }: { children: ReactNode }) {
   }, [ready, library, settings.downloadAutoSync, settings.downloadInterval, synchronize])
   async function exportMaterial(id: string) {
     const material = library.getSnapshot().materials.find(item => item.sourceAcademicId === id)
-    if (!material) { library.reportError('Материал еще не сохранен. Обнови учебную базу.'); return false }
-    const blob = await library.read(material.id)
-    if (!blob) return false
-    exportBlob(blob, academicFileName(id))
-    return true
+    const operation = actionStatus.begin({ label: 'Подготавливаем материал', detail: material?.name })
+    try {
+      if (!material) throw new Error('missing')
+      const blob = await library.read(material.id)
+      if (!blob) throw new Error('missing')
+      exportBlob(blob, academicFileName(id))
+      actionStatus.finish(operation, 'Материал передан на скачивание', true, material.name)
+      return true
+    } catch {
+      const error = material ? 'Не удалось скачать материал. Повтори попытку.' : 'Материал еще не сохранен. Обнови учебную базу.'
+      library.reportError(error)
+      actionStatus.finish(operation, 'Не удалось скачать материал', false, error)
+      return false
+    }
   }
   return <Context.Provider value={{ status: syncing ? 'syncing' : materialSyncStatus(revision, record.error), progress,
     lastSync: record.lastSync, error: record.error, revision, synchronize, exportMaterial }}>{children}</Context.Provider>

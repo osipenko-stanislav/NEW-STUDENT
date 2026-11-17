@@ -1,9 +1,10 @@
 import { NotificationIndicator } from '@/components/ui/notification-indicator'
 import { AnimatedNumber } from '@/components/ui/animated-number'
 import { useState } from 'react'
-import { Bell, ArrowRight } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Popover, PopoverTrigger } from '@/components/ui/popover'
+import { PreviewPopoverContent } from '@/components/ui/preview-popover'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useNotifications } from '@/components/NotificationsProvider'
 import type { StudentNotification } from '@/data/notifications'
@@ -18,11 +19,11 @@ export default function NotificationsPopover({ onOpen, onHistory }: { onOpen: (e
         <NotificationIndicator count={unreadCount} />{unreadCount ? <span id="notifications-unread" className="sr-only">Непрочитанных: {unreadCount}</span> : null}
       </Button>
     </PopoverTrigger></TooltipTrigger><TooltipContent>Уведомления</TooltipContent></Tooltip>
-    <PopoverContent align="end" sideOffset={10} collisionPadding={16} className="notifications-popover" aria-labelledby="notifications-preview-title">
-      <header className="notifications-preview-heading"><h2 id="notifications-preview-title">Уведомления</h2>{unreadCount ? <span className="notifications-count"><AnimatedNumber value={unreadCount} minDigits={2} /> непрочитанных</span> : null}</header>
+    <PreviewPopoverContent title="Уведомления" className="notifications-popover"
+      meta={unreadCount ? <><AnimatedNumber value={unreadCount} minDigits={2} /> непрочитанных</> : undefined}
+      action={{ label: 'Все уведомления', onClick: () => { setOpen(false); onHistory() } }}>
       {events.length ? <ul className="notifications-preview-list">{events.slice(0, 5).map(event => <NotificationRow key={event.id} event={event} now={now} compact onOpen={item => { setOpen(false); onOpen(item) }} />)}</ul> : <div className="notifications-empty"><Bell aria-hidden="true" /><p>Новых уведомлений пока нет</p></div>}
       {storageError ? <p className="notifications-storage-error" role="status">{storageError}</p> : null}
-      <Button type="button" variant="ghost" className="notifications-history-link" onClick={() => { setOpen(false); onHistory() }}>Все уведомления<ArrowRight aria-hidden="true" /></Button>
-    </PopoverContent>
+    </PreviewPopoverContent>
   </Popover>
 }

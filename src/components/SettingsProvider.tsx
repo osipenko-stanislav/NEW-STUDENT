@@ -1,3 +1,4 @@
+import { actionStatus } from '@/lib/action-status'
 import { createContext, useContext, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { loadSettings, normalizeSettings, saveSettings, settingsStorageKey, type UserSettings } from '@/lib/settings-storage'
 import { displayDate, displayDateTime, displayTime } from '@/lib/display-formats'
@@ -22,14 +23,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   function updateSettings(patch: Partial<UserSettings>) {
     const settings = normalizeSettings({ ...current.current, ...patch })
     try { saveSettings(settings) }
-    catch { setSnapshot(previous => ({ ...previous, error: 'Не удалось сохранить настройки. Проверь доступ к хранилищу браузера.' })); return false }
+    catch { actionStatus.report({ key: 'settings', label: 'Не удалось сохранить настройки' }, false); setSnapshot(previous => ({ ...previous, error: 'Не удалось сохранить настройки. Проверь доступ к хранилищу браузера.' })); return false }
     current.current = settings
     setSnapshot({ settings, error: null })
     return true
   }
   function resetSettings() {
     try { localStorage.removeItem(settingsStorageKey) }
-    catch { setSnapshot(previous => ({ ...previous, error: 'Не удалось сбросить настройки. Проверь доступ к хранилищу браузера.' })); return false }
+    catch { actionStatus.report({ key: 'settings', label: 'Не удалось сбросить настройки' }, false); setSnapshot(previous => ({ ...previous, error: 'Не удалось сбросить настройки. Проверь доступ к хранилищу браузера.' })); return false }
     const settings = normalizeSettings(null)
     current.current = settings
     setSnapshot({ settings, error: null })

@@ -1,3 +1,6 @@
+import { actionStatus } from '@/lib/action-status'
+import { enrollments } from '@/data/academic-data'
+import { navigate, useNavigation } from '@/hooks/use-navigation'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { useRef, useState, type DragEvent } from 'react'
 import { ArrowDown, ArrowUp, ChevronsUp, GripVertical, MoreHorizontal, Code2, Calculator, GraduationCap } from 'lucide-react'
@@ -19,28 +22,27 @@ export function CourseLevels({ course }: { course: Course }) {
   </span></TooltipProvider> : null
 }
 
-export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void }) {
+export default function CourseCatalog({ onOpen }: { onOpen: (id: string, enrollmentId?: string) => void }) {
   const { effectiveIntensity, spatialMotion, transition } = useAppMotion()
   const [snapshot, setSnapshot] = useState(() => loadCourseOrder(ids))
-  const [filter, setFilter] = useState<CourseFilter>('all')
+  const { courseCatalogFilter: filter = 'all' } = useNavigation()
+  const setFilter = (courseCatalogFilter: CourseFilter | 'archive') => navigate({ courseCatalogFilter }, true)
+  const archived = filter === 'archive'
   const [dragged, setDragged] = useState<string | null>(null)
   const [drop, setDrop] = useState<{ id: string; after: boolean } | null>(null)
-  const [notice, setNotice] = useState('')
   const suppressClick = useRef(false)
   const ordered = snapshot.order.map(id => courses.find(course => course.id === id)!).filter(Boolean)
-  const visible = ordered.filter(course => filter === 'all' || course.category === filter)
+  const visible = archived ? enrollments.filter(item => item.archived).map(enrollment => ({ ...courses.find(course => course.id === enrollment.courseId)!, enrollment })) : ordered.filter(course => filter === 'all' || course.category === filter).map(course => ({ ...course, enrollment: undefined }))
 
-  function commit(order: string[], id: string) {
+  function commit(order: string[]) {
     try { saveCourseOrder(order) }
-    catch { setSnapshot(previous => ({ ...previous, error: 'Не удалось сохранить порядок. Проверь доступ к хранилищу браузера.' })); return }
+    catch { actionStatus.report({ key: 'course-order', label: 'Не удалось сохранить порядок курсов' }, false); setSnapshot(previous => ({ ...previous, error: 'Не удалось сохранить порядок. Проверь доступ к хранилищу браузера.' })); return }
     setSnapshot({ order, error: null })
-    const title = courses.find(course => course.id === id)!.title
-    setNotice(`${title}: позиция ${order.indexOf(id) + 1} из ${order.length}. Порядок сохранён.`)
   }
   function move(id: string, direction: 'up' | 'down' | 'first') {
     const index = visible.findIndex(course => course.id === id)
     const target = direction === 'first' ? visible[0] : visible[index + (direction === 'up' ? -1 : 1)]
-    if (target) commit(moveCourse(snapshot.order, id, target.id, direction === 'down'), id)
+    if (target) commit(moveCourse(snapshot.order, id, target.id, direction === 'down'))
   }
   function finishDrag() { setDragged(null); setDrop(null); window.setTimeout(() => { suppressClick.current = false }, 0) }
   function dragOver(event: DragEvent<HTMLElement>, id: string) {
@@ -53,34 +55,33 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string) => void
   return <section className="page-container course-catalog" data-layout="workspace" aria-label="Мои курсы" tabIndex={-1} data-course-route-heading>
     <div className="course-catalog-header"><div className="course-catalog-toolbar">
       <SegmentedControl className="course-filter-list" aria-label="Категории курсов">{courseFilters.map(item => <Button key={item.id} type="button" variant={filter === item.id ? 'default' : 'outline'}
-        aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</Button>)}</SegmentedControl>
+        aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</Button>)}<Button type="button" variant={archived ? 'default' : 'outline'} aria-pressed={archived} onClick={() => setFilter('archive')}>Архивные</Button></SegmentedControl>
 
     </div>
     </div>
     <div className="sr-only"><p id="course-order-help">Перетащи карточку или измени порядок через меню.</p></div>
-    <div className="course-grid" aria-describedby="course-order-help"><AnimatePresence initial={false}>
-      {visible.map((course, index) => <m.div key={course.id} layout={effectiveIntensity !== 'minimal'} className="course-tile-motion"
+    <div className="course-grid" aria-describedby={archived ? undefined : 'course-order-help'}><AnimatePresence initial={false}>
+      {visible.map((course, index) => <m.div key={course.enrollment?.id ?? course.id} layout={effectiveIntensity !== 'minimal'} className="course-tile-motion"
         initial={spatialMotion ? { opacity: 0, y: 8 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
         <Card role="article" className={`course-tile ${dragged === course.id ? 'is-dragging' : ''}`}
-        data-course-id={course.id} data-drop={drop?.id === course.id ? drop.after ? 'after' : 'before' : undefined} draggable
+        data-course-id={course.id} data-enrollment-id={course.enrollment?.id} data-drop={drop?.id === course.id ? drop.after ? 'after' : 'before' : undefined} draggable={!archived}
         onDragStart={event => { if ((event.target as HTMLElement).closest('.course-tile-menu')) { event.preventDefault(); return } suppressClick.current = true; setDragged(course.id); event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', course.id) }}
         onDragOver={event => dragOver(event, course.id)} onDragEnd={finishDrag}
-        onDrop={event => { event.preventDefault(); if (dragged && drop?.id === course.id) commit(moveCourse(snapshot.order, dragged, course.id, drop.after), dragged); finishDrag() }}>
-        <button type="button" className="course-tile-open" onClick={() => { if (!suppressClick.current) onOpen(course.id) }} aria-label={`Открыть курс: ${course.title}`}>
-          <span className="course-tile-area"><span className="course-area-icon">{course.area === 'development' ? <Code2 aria-hidden="true" /> : course.area === 'math' ? <Calculator aria-hidden="true" /> : <GraduationCap aria-hidden="true" />}</span>{areaLabels[course.area]}</span>
+        onDrop={event => { event.preventDefault(); if (dragged && drop?.id === course.id) commit(moveCourse(snapshot.order, dragged, course.id, drop.after)); finishDrag() }}>
+        <button type="button" className="course-tile-open" onClick={() => { if (!suppressClick.current) onOpen(course.id, course.enrollment?.id) }} aria-label={`Открыть курс: ${course.title}`}>
+          <span className="course-tile-area"><span className="course-area-icon">{course.area === 'development' ? <Code2 aria-hidden="true" /> : course.area === 'math' ? <Calculator aria-hidden="true" /> : <GraduationCap aria-hidden="true" />}</span>{areaLabels[course.area]}{course.enrollment?.semester ? ` · ${course.enrollment.semester} семестр` : ''}</span>
           <span className="course-tile-title">{course.title}</span>
         </button>
-        <div className="course-tile-top-actions"><CourseLevels course={course} /><DropdownMenu><DropdownMenuTrigger asChild>
+        {!archived ? <div className="course-tile-top-actions"><CourseLevels course={course} /><DropdownMenu><DropdownMenuTrigger asChild>
           <Button type="button" variant="ghost" size="icon" className="course-tile-menu" aria-label={`Порядок курса: ${course.title}`}><MoreHorizontal aria-hidden="true" /></Button>
         </DropdownMenuTrigger><DropdownMenuContent align="end" collisionPadding={12}>
           <DropdownMenuItem disabled={index === 0} onSelect={() => move(course.id, 'first')}><ChevronsUp aria-hidden="true" />В начало списка</DropdownMenuItem>
           <DropdownMenuItem disabled={index === 0} onSelect={() => move(course.id, 'up')}><ArrowUp aria-hidden="true" />Переместить выше</DropdownMenuItem>
           <DropdownMenuItem disabled={index === visible.length - 1} onSelect={() => move(course.id, 'down')}><ArrowDown aria-hidden="true" />Переместить ниже</DropdownMenuItem>
-        </DropdownMenuContent></DropdownMenu></div>
-        <GripVertical className="course-tile-grip" aria-hidden="true" />
+        </DropdownMenuContent></DropdownMenu></div> : null}
+        {!archived ? <GripVertical className="course-tile-grip" aria-hidden="true" /> : null}
       </Card></m.div>)}
     </AnimatePresence></div>
     {snapshot.error ? <p className="course-storage-error" role="alert">{snapshot.error}</p> : null}
-    <p className="sr-only" role="status">{notice}</p>
   </section>
 }

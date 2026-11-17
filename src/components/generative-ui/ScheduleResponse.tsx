@@ -1,3 +1,4 @@
+import { DeadlineTransfer } from '@/components/late-days/TaskDeadline'
 import { useLateDays } from '@/components/LateDaysProvider'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { navigate } from '@/hooks/use-navigation'
@@ -46,10 +47,10 @@ export default function ScheduleResponse({ part, onNavigate }: { part: ScheduleP
       {events.map(event => 'slot' in event ? <ClassRow key={event.id} slot={event.slot} /> : <li key={event.id} className="gen-event" data-event="deadline"
         data-overdue={isAssignmentOverdue(event.homework.dueAt, event.homework.status)}>
         <div className="gen-event-time"><time dateTime={event.homework.dueAt}>{formatTime(event.time)}</time><span>Сдать до</span></div>
-        <button type="button" className="gen-deadline" onClick={() => onNavigate(`Курсы/${event.homework.courseId}/${event.homework.id}`)} aria-label={`Открыть задание: ${event.homework.title}`}>
+        <div className="gen-deadline"><button type="button" className="gen-deadline-open" onClick={() => onNavigate(`Курсы/${event.homework.courseId}/${event.homework.id}`)} aria-label={`Открыть задание: ${event.homework.title}`}>
           <span className="gen-row-title">{event.homework.title}</span><span className="gen-row-meta">{event.homework.course}</span>
           <span className="gen-deadline-state"><HomeworkModeBadge minutes={academicTasks.find(task => task.id === event.homework.id)?.timeLimitMinutes} /><AssignmentStatusBadge status={event.homework.status} /><DeadlineLabel dueAt={event.homework.dueAt} status={event.homework.status} prefix="Сдать до " timeOnly /></span>
-        </button>
+        </button><DeadlineTransfer taskId={event.homework.id} /></div>
       </li>)}
     </ul> : <p className="gen-empty">{view === 'deadlines' ? 'На этот день дедлайнов нет' : view === 'classes' || !isWeek ? 'На этот день занятий нет' : 'На этот день занятий и дедлайнов нет'}</p>}
   </>
@@ -68,6 +69,6 @@ export default function ScheduleResponse({ part, onNavigate }: { part: ScheduleP
       </SegmentedControl></div>
       <TabsContent value={day} className="m-0">{content}</TabsContent>
     </Tabs> : content}
-    <div className="gen-footer"><Button type="button" variant="outline" onClick={() => { navigate({ scheduleDate: day, scheduleKind: view, scheduleView: 'day' }, true); onNavigate('Расписание') }}>Открыть расписание</Button></div>
+    <div className="gen-footer"><Button type="button" variant="outline" onClick={() => { navigate({ scheduleDate: day, scheduleKind: view, scheduleView: 'day', scheduleCourse: 'all', scheduleFormat: 'all', scheduleRoom: 'all', scheduleTeacher: 'all', scheduleConditions: [] }, true); onNavigate('Расписание') }}>Открыть расписание</Button></div>
   </section>
 }

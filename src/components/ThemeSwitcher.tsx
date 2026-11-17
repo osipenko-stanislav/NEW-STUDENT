@@ -1,3 +1,4 @@
+import { actionStatus } from '@/lib/action-status'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
@@ -36,6 +37,7 @@ export function useTheme() {
       setTheme(next)
       setError(null)
     } catch {
+      actionStatus.report({ key: 'theme', label: 'Не удалось сохранить тему' }, false)
       setTheme(next)
       setError('Тема изменена, но сохранить ее не удалось. Проверь доступ к хранилищу браузера.')
     }

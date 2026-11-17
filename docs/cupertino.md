@@ -32,6 +32,20 @@ Adapted elements:
 - Grouped settings rows, with inset dividers and room for touch controls.
 - Raised chat composer, softly rounded course entities and reading callouts.
 
+Restoration contracts:
+
+- Button defaults do not include Tailwind radius or shadow utilities that override
+  the shared theme. Explicit feature compositions retain their own geometry.
+- General surfaces use 16 px corners, quick previews use 20 px, dialogs use 24 px;
+  dialog and sheet close buttons are circular and have explicit semantic slots.
+- Switches share a 40×24 px track with a 24×16 px capsule thumb and 12 px travel.
+  The thumb retains 2 px horizontal clearance at either endpoint and 4 px vertically.
+  Motion and CSS use this same geometry; settings do not override it locally.
+- Dark elevation uses the dark `--shadow-color`, preserving the correction for
+  light glow in dark mode rather than restoring the original foreground-based bug.
+- The approved working density, unified preview structure, filters, archive tabs,
+  deadline actions and edge-aligned sidebars remain in place.
+
 Global search is composed in `src/global-search.css`: one input above a recent
 destinations rail, a category column and a results column. On phones the category
 column becomes one scrollable row. It retains exact entity destinations, query

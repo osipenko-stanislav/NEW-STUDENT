@@ -12,8 +12,8 @@
   --drawer-width: 384px;
   --drawer-wide-width: 480px;
   --layout-gap: 24px;
-  --page-top: 32px;
-  --content-gutter: 32px;
+  --page-top: 24px;
+  --content-gutter: 24px;
   --page-navigation-gap: 16px;
 }
 
@@ -22,9 +22,9 @@
   width: min(var(--layout-max), calc(100% - 2 * var(--content-gutter)));
   min-width: 0;
   margin-inline: auto;
-  padding-block: var(--page-top) 48px;
+  padding-block: var(--page-top) 32px;
 }
-.page-container[data-layout="reading"] { --layout-max: var(--layout-reading); }
+.page-container[data-layout="reading"] { --layout-max: var(--layout-reading); --page-top: 32px; --content-gutter: 32px; padding-bottom: 48px; }
 .page-container[data-layout="data"] { width: calc(100% - 2 * var(--content-gutter)); }
 .page-container[data-with-rail] {
   width: min(calc(var(--layout-max) + var(--layout-rail, var(--panel-inline-width)) + min(var(--layout-rail, var(--panel-inline-width)), var(--layout-gap))), calc(100% - 2 * var(--content-gutter)));
@@ -34,9 +34,11 @@
 /* Gutters respond to the remaining region, after in-flow panels are subtracted. */
 @container (max-width: 1023px) {
   .page-container, .navigator { --content-gutter: 24px; --page-top: 24px; }
+  .page-container[data-layout="reading"] { --content-gutter: 24px; --page-top: 24px; }
 }
 @container (max-width: 767px) {
   .page-container, .navigator { --content-gutter: 16px; }
+  .page-container[data-layout="reading"] { --content-gutter: 16px; }
 }
 
 /* Non-modal panels retain the existing close/back and focus behavior. */

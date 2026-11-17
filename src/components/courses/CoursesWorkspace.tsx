@@ -10,7 +10,7 @@ import CourseHomeworks from './CourseHomeworks'
 import CourseGradeSummary from './CourseGradeSummary'
 import CourseLessonReader from './CourseLessonReader'
 import { blocksForCourse, lessonsForCourse } from '@/data/course-curricula'
-import { academicTasks, tasksForCourse } from '@/data/academic-data'
+import { academicTasks, tasksForCourse, enrollments } from '@/data/academic-data'
 
 import CourseProgram from './CourseProgram'
 import CourseProgramPanel from './CourseProgramPanel'
@@ -20,8 +20,8 @@ import CourseWidgets from './CourseWidgets'
 import CourseRecordings from './CourseRecordings'
 import CourseLongread, { lessonToc, useActiveLessonSection } from './CourseLongread'
 
-export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onAskNavigator: (query: string) => void; onOpenGrades: (courseId: string) => void }) {
-  const { materialId, courseId, lessonId, taskId, originBlockId, courseTab: tab } = useNavigation()
+export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onAskNavigator: (query: string) => void; onOpenGrades: (courseId: string, enrollmentId?: string) => void }) {
+  const { materialId, courseId, courseEnrollmentId, lessonId, taskId, originBlockId, courseTab: tab } = useNavigation()
   const setTab = (courseTab: string) => navigate({ courseTab }, true)
   const setTaskId = (taskId: string | null) => navigate({ taskId })
   const [openBlocks, setOpenBlocks] = useState<string[]>([])
@@ -37,9 +37,13 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   const lesson = lessons.find(item => item.id === lessonId)
   const originBlock = blocks.find(block => block.id === originBlockId)
   const selectedTask = academicTasks.find(task => task.id === taskId)
+  const enrollment = enrollments.find(item => item.courseId === courseId && item.id === (selectedTask?.enrollmentId ?? courseEnrollmentId ?? `current-${courseId}`))
+  useLayoutEffect(() => {
+    if (selectedTask?.courseId === courseId && selectedTask && courseEnrollmentId !== selectedTask.enrollmentId) navigate({ courseEnrollmentId: selectedTask.enrollmentId }, true)
+  }, [selectedTask, courseId, courseEnrollmentId])
   useLayoutEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = 0 }, [routeKey])
   useLayoutEffect(() => { scrollRef.current?.querySelector<HTMLElement>('[data-course-route-heading]')?.focus({ preventScroll: true }) }, [courseId, lessonId])
-  function openCourse(id: string) { setProgramOpen(false); navigate({ courseId: id, lessonId: null, taskId: null, courseTab: 'course' }); setOpenBlocks([]) }
+  function openCourse(id: string, enrollmentId?: string) { setProgramOpen(false); navigate({ courseId: id, courseEnrollmentId: enrollmentId ?? null, lessonId: null, taskId: null, courseTab: enrollmentId ? 'homework' : 'course' }); setOpenBlocks([]) }
   function catalog() { setProgramOpen(false); navigate({ courseId: null, lessonId: null }) }
   function program() { setProgramOpen(false); navigate({ lessonId: null, courseTab: 'course' }) }
   function openBlock(id: string) {
@@ -51,14 +55,22 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   function selectEntity(entity: CourseEntity, blockId: string) {
     if (entity.lessonId) {
       openLesson(entity.lessonId, blockId)
-      if (window.matchMedia('(max-width: 767px)').matches) setProgramOpen(false)
     } else if (entity.materialId) {
       navigate({ materialId: entity.materialId }, true)
     } else setTaskId(entity.id)
   }
   if (selectedTask && selectedTask.courseId === courseId) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><CourseHomework key={selectedTask.id} task={selectedTask} /><AcademicMaterialDialog id={materialId} onClose={() => navigate({ materialId: null }, true)} /></div></div>
-  return <div className={`course-workspace ${programOpen && lesson ? 'has-program' : ''}`}><div ref={scrollRef} className="course-surface" aria-label="Учебная область">
-    {!course ? <CourseCatalog onOpen={openCourse} /> : <div key={routeKey} data-layout={lesson ? "reading" : "workspace"} data-with-rail={!programOpen || !lesson ? true : undefined} className={`page-container course-page course-layout motion-route-enter ${lesson ? 'course-lesson-layout' : ''}`}>
+  if (course && enrollment?.archived) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><section className="page-container course-archive-page" data-layout="workspace">
+    <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button></nav>
+      <h1 data-typography="accent-title" tabIndex={-1} data-course-route-heading className="text-3xl">{course.title}</h1><p className="course-heading-subtitle">{enrollment.semester} семестр · Архивный курс</p>
+    </header>
+    <Tabs value={tab === 'grades' ? 'grades' : 'homework'} onValueChange={setTab}><TabsList aria-label="Разделы архивного курса"><TabsTrigger value="homework">Домашки</TabsTrigger><TabsTrigger value="grades">Ведомость по курсу</TabsTrigger></TabsList>
+      <TabsContent value="homework"><CourseHomeworks courseId={course.id} enrollmentId={enrollment.id} onOpen={setTaskId} /></TabsContent>
+      <TabsContent value="grades"><CourseGradeSummary courseId={course.id} enrollmentId={enrollment.id} onOpen={() => onOpenGrades(course.id, enrollment.id)} /></TabsContent>
+    </Tabs>
+  </section></div></div>
+  return <div className="course-workspace"><div ref={scrollRef} className="course-surface" aria-label="Учебная область">
+    {!course ? <CourseCatalog onOpen={openCourse} /> : <div key={routeKey} data-layout={lesson ? "reading" : "workspace"} data-with-rail className={`page-container course-page course-layout motion-route-enter ${lesson ? 'course-lesson-layout' : ''}`}>
       <Tabs value={tab} onValueChange={setTab} className="course-main-column">
         <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button>{lesson ? <ChevronRight aria-hidden="true" /> : null}
           {lesson ? <><button type="button" onClick={program}>{course.title}</button><ChevronRight aria-hidden="true" /><button type="button" onClick={() => openBlock(originBlockId)}>Блок {blocks.findIndex(block => block.id === originBlockId) + 1}</button></> : null}</nav>
@@ -84,14 +96,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
       <CourseWidgets courseId={course.id} onOpenGrades={() => onOpenGrades(course.id)} onDialog={value => { if (value === 'assignment') setTaskId(tasksForCourse(course.id).find(task => task.grade === null)?.id ?? null); else setDialog(value) }} onProgram={() => setProgramOpen(true)} programOpen={programOpen} toc={lesson ? lessonToc : undefined} activeSection={activeSection} onAnchor={onAnchor} />
     </div>}
     </div>
-    {programOpen && lesson && course ? <CourseProgramPanel blocks={blocks} lessons={lessons} courseTitle={course.title} activeLessonId={lesson.id} onSelect={selectEntity} onClose={() => {
-      setProgramOpen(false)
-      requestAnimationFrame(() => {
-        const desktopTrigger = document.getElementById('course-program-trigger')
-        const trigger = desktopTrigger?.offsetParent ? desktopTrigger : document.getElementById('course-mobile-program-trigger')
-        trigger?.focus()
-      })
-    }} /> : null}
+    {lesson && course ? <CourseProgramPanel open={programOpen} blocks={blocks} lessons={lessons} courseTitle={course.title} activeLessonId={lesson.id} onSelect={selectEntity} onClose={() => setProgramOpen(false)} /> : null}
     <AcademicMaterialDialog id={materialId} onClose={() => navigate({ materialId: null }, true)} />
     <CourseDialogs dialog={dialog} onClose={() => setDialog(null)} onOpenBlock={openBlock} onAskNavigator={onAskNavigator} />
     <RecordingPreview recording={recording} onClose={() => setRecording(null)} onRecordings={lesson ? recordings : undefined} />

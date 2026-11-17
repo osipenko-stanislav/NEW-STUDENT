@@ -1,3 +1,4 @@
+import { actionStatus } from '@/lib/action-status'
 import StudyDownloadSettings from '@/components/StudyDownloadSettings'
 import { Children, Fragment, useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import {
@@ -90,7 +91,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
   const [category, setCategory] = useState<Category>('general')
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
   const [working, setWorking] = useState(false)
-  const [notice, setNotice] = useState<string | null>(null)
+  const setNotice = (label: string | null) => { if (label) actionStatus.report({ key: 'settings', label }) }
   const [actionError, setActionError] = useState<string | null>(null)
   const [persistent, setPersistent] = useState<boolean | null>(null)
   const [quota, setQuota] = useState<number | null>(null)
@@ -127,10 +128,10 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
     setActionError(null)
     try {
       const success = await (confirmation === 'history' ? onClearHistory() : confirmation === 'library' ? onClearLibrary() : onClearData())
-      if (!success) { setActionError('Не удалось завершить очистку. Проверь доступ к хранилищу браузера и попробуй еще раз.'); return }
-      setNotice(confirmation === 'history' ? 'История очищена. Файлы сохранены в библиотеке.' : confirmation === 'library' ? 'Библиотека очищена. Разговоры и сообщения сохранены.' : 'Локальные данные очищены')
+      if (!success) { actionStatus.report({ key: confirmation === 'history' ? 'history' : confirmation === 'library' ? 'library-clear' : 'session-reset', label: 'Не удалось завершить очистку' }, false); setActionError('Не удалось завершить очистку. Проверь доступ к хранилищу браузера и попробуй еще раз.'); return }
+      actionStatus.report({ key: confirmation === 'history' ? 'history' : confirmation === 'library' ? 'library-clear' : 'session-reset', label: confirmation === 'history' ? 'История очищена' : confirmation === 'library' ? 'Библиотека очищена' : 'Локальные данные очищены', detail: confirmation === 'history' ? 'Файлы сохранены в библиотеке' : confirmation === 'library' ? 'Разговоры и сообщения сохранены' : undefined })
       setConfirmation(null)
-    } catch { setActionError('Не удалось завершить очистку. Попробуй еще раз.') }
+    } catch { actionStatus.report({ key: confirmation === 'history' ? 'history' : confirmation === 'library' ? 'library-clear' : 'session-reset', label: 'Не удалось завершить очистку' }, false); setActionError('Не удалось завершить очистку. Попробуй еще раз.') }
     finally { setWorking(false) }
   }
   async function requestPersistence() {
@@ -139,8 +140,8 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
     try {
       const allowed = await navigator.storage.persist()
       setPersistent(allowed)
-      setNotice(allowed ? 'Браузер разрешил постоянное хранение данных' : 'Браузер не предоставил постоянное хранение. Файлы остаются в локальной библиотеке.')
-    } catch { setActionError('Не удалось запросить постоянное хранение. Проверь настройки браузера.') }
+      actionStatus.report({ key: 'settings', label: allowed ? 'Постоянное хранение разрешено' : 'Браузер не предоставил постоянное хранение', detail: allowed ? undefined : 'Файлы остаются в локальной библиотеке' }, allowed)
+    } catch { actionStatus.report({ key: 'settings', label: 'Не удалось запросить постоянное хранение' }, false); setActionError('Не удалось запросить постоянное хранение. Проверь настройки браузера.') }
     finally { setRequesting(false) }
   }
   function exportHistory() {
@@ -155,7 +156,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
       link.remove()
       setTimeout(() => URL.revokeObjectURL(url), 1000)
       setNotice('История экспортирована в JSON. Содержимое файлов в экспорт не входит.')
-    } catch { setActionError('Не удалось экспортировать историю. Попробуй еще раз.') }
+    } catch { actionStatus.report({ key: 'settings', label: 'Не удалось экспортировать историю' }, false); setActionError('Не удалось экспортировать историю. Попробуй еще раз.') }
   }
 
   return <div className="settings-page"><div className="settings-layout">
@@ -317,7 +318,6 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
           </SettingsGroup>
         </> : null}
         {(error || themeError || storageError || actionError) && !confirmation ? <p className="settings-feedback text-destructive" role="alert">{actionError || error || themeError || storageError}</p> : null}
-        {notice ? <p className="settings-feedback" role="status">{notice}</p> : null}
       </div>
     </section>
     <Dialog open={confirmation !== null} onOpenChange={open => { if (!open && !working) { setConfirmation(null); setActionError(null) } }}>

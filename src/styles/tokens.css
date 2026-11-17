@@ -71,6 +71,7 @@
   --shadow-color: 0 0% 0%;
   --radius-control: 8px;
   --radius-surface: 16px;
+  --radius-preview: 20px;
   --radius-dialog: 24px;
   --shadow-edge: inset 0 0 0 .5px hsl(var(--shadow-color) / .1), inset 0 1px .5px hsl(var(--background) / .8);
   --shadow-control: var(--shadow-edge), 0 2px 5px hsl(var(--shadow-color) / .04);
@@ -85,4 +86,29 @@
   --shadow-surface: var(--shadow-edge), 0 8px 16px hsl(var(--shadow-color) / .25);
   --shadow-popover: var(--shadow-edge), 0 8px 48px hsl(var(--shadow-color) / .65);
   --shadow-dialog: var(--shadow-edge), 0 18px 54px hsl(var(--shadow-color) / .8);
+}
+
+/* Standard working density. Reading typography has its own rhythm. */
+:root {
+  --surface-padding: 16px;
+  --surface-padding-small: 12px;
+  --surface-header-block: 10px;
+  --surface-header-small: 8px;
+  --list-row-padding: 12px;
+  --table-cell-block: 12px;
+  --table-head-block: 6px;
+  --table-cell-inline: 12px;
+  --section-space: 24px;
+  --component-gap: 16px;
+}
+html[data-density="compact"] {
+  --surface-padding: 12px;
+  --surface-padding-small: 10px;
+  --surface-header-block: 8px;
+  --surface-header-small: 6px;
+  --list-row-padding: 8px;
+  --table-cell-block: 8px;
+  --table-head-block: 4px;
+  --section-space: 20px;
+  --component-gap: 12px;
 }

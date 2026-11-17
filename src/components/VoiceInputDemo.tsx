@@ -10,7 +10,9 @@ export default function VoiceInputDemo({ disabled, onBusyChange, onTranscript }:
 }) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [seconds, setSeconds] = useState(0)
-  const [notice, setNotice] = useState('')
+  function cancelRecording() {
+    setPhase('idle')
+  }
   const transcriptRef = useRef(onTranscript)
   transcriptRef.current = onTranscript
   const busy = phase !== 'idle'
@@ -30,7 +32,6 @@ export default function VoiceInputDemo({ disabled, onBusyChange, onTranscript }:
     const timer = setTimeout(() => {
       transcriptRef.current('Найди материалы по Python')
       setPhase('idle')
-      setNotice('Текст добавлен в поле ввода. Его можно изменить перед отправкой.')
     }, 1000)
     return () => clearTimeout(timer)
   }, [phase])
@@ -38,7 +39,7 @@ export default function VoiceInputDemo({ disabled, onBusyChange, onTranscript }:
     if (!busy) return
     const cancel = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && !event.defaultPrevented && !document.querySelector('[role="dialog"][data-state="open"]')) {
-        event.preventDefault(); setPhase('idle'); setNotice('Запись отменена. Текст запроса сохранен.')
+        event.preventDefault(); cancelRecording()
       }
     }
     window.addEventListener('keydown', cancel)
@@ -51,10 +52,8 @@ export default function VoiceInputDemo({ disabled, onBusyChange, onTranscript }:
       <p className="voice-demo-caption">Останови запись, чтобы добавить текст в сообщение.</p>
       <span className="sr-only" role="status">{phase === 'recording' ? 'Запись началась. Останови запись, чтобы добавить текст, или отмени.' : 'Распознаем речь.'}</span>
     </div> : null}
-    <span className="sr-only" role="status">{notice}</span>
-    {busy ? <Button type="button" variant="ghost" size="icon" className="voice-input-button" aria-label="Отменить голосовой ввод" onClick={() => { setPhase('idle'); setNotice('Запись отменена. Текст запроса сохранен.') }}><X aria-hidden="true" /></Button> : null}
+    {busy ? <Button type="button" variant="ghost" size="icon" className="voice-input-button" aria-label="Отменить голосовой ввод" onClick={() => { cancelRecording() }}><X aria-hidden="true" /></Button> : null}
     <Button type="button" variant={phase === 'recording' ? 'secondary' : 'ghost'} size="icon" className="voice-input-button" disabled={disabled || phase === 'transcribing'} aria-label={phase === 'recording' ? 'Остановить запись' : phase === 'transcribing' ? 'Распознавание речи' : 'Голосовой ввод'} aria-controls={busy ? 'voice-demo-panel' : undefined} aria-pressed={phase === 'recording'} onClick={() => {
-      setNotice('')
       if (phase === 'recording') setPhase('transcribing')
       else { setSeconds(0); setPhase('recording') }
     }}><StateIcon state={phase}>{phase === 'recording' ? <Square aria-hidden="true" /> : phase === 'transcribing' ? <LoaderCircle aria-hidden="true" className="voice-demo-spinner" /> : <Mic aria-hidden="true" />}</StateIcon></Button>

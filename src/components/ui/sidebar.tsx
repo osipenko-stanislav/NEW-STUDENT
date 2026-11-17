@@ -175,10 +175,14 @@ const Sidebar = React.forwardRef<
     ref
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const mobileReturnFocus = React.useRef<HTMLElement | null>(null)
 
     if (collapsible === "none") {
       return (
         <div
+          data-slot="sidebar-panel"
+          data-side={side}
+          data-variant={variant}
           className={cn(
             "flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground",
             className
@@ -204,6 +208,13 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
             side={side}
+            onOpenAutoFocus={() => {
+              mobileReturnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+            }}
+            onCloseAutoFocus={event => {
+              event.preventDefault()
+              mobileReturnFocus.current?.focus({ preventScroll: true })
+            }}
           >
             <SheetHeader className="sr-only">
               <SheetTitle>Навигация</SheetTitle>
@@ -226,6 +237,7 @@ const Sidebar = React.forwardRef<
       >
         {/* This is what handles the sidebar gap on desktop */}
         <div
+          data-slot="sidebar-gap"
           className={cn(
             "relative w-[--sidebar-width] bg-transparent ui-motion-layout transition-[width]    ",
             "group-data-[collapsible=offcanvas]:w-0",
@@ -236,6 +248,7 @@ const Sidebar = React.forwardRef<
           )}
         />
         <div
+          data-slot="sidebar-container"
           className={cn(
             "fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] ui-motion-layout transition-[left,right,width] md:flex",
             side === "left"
@@ -243,7 +256,7 @@ const Sidebar = React.forwardRef<
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
             // Adjust the padding for floating and inset variants.
             variant === "floating" || variant === "inset"
-              ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
+              ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
               : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
             className
           )}

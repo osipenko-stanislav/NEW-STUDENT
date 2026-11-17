@@ -1,3 +1,4 @@
+import { actionStatus } from '@/lib/action-status'
 import { StateIcon } from '@/components/ui/state-icon'
 import { recipe, recipeTransition } from '@/lib/motion-recipes'
 import { AsyncButton, useActionFeedback } from '@/components/ui/feedback-button'
@@ -58,9 +59,10 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
   async function download(material: ConversationMaterial) {
     library.clearError()
     setReading(true)
+    const operation = actionStatus.begin({ label: 'Подготавливаем файл', detail: material.name })
     try {
       const blob = await library.read(material.id)
-      if (!blob) return false
+      if (!blob) { actionStatus.finish(operation, 'Не удалось подготовить файл', false, material.name); return false }
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
@@ -69,8 +71,10 @@ export default function MaterialsPanel({ open, onOpenChange, materials, picker, 
       link.click()
       link.remove()
       setTimeout(() => URL.revokeObjectURL(url), 60_000)
+      actionStatus.finish(operation, 'Файл передан на скачивание', true, material.name)
       return true
     } catch {
+      actionStatus.finish(operation, 'Не удалось скачать файл', false, material.name)
       library.reportError('Не удалось скачать файл. Попробуй еще раз.')
       return false
     } finally { setReading(false) }

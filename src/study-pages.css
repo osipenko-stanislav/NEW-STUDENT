@@ -1,6 +1,6 @@
 /* study-pages: feature composition. */
 .study-page { min-width: 0; }
-.study-page-context { margin-bottom: 16px; font-size: 14px; color: hsl(var(--muted-foreground)); text-wrap: pretty; }
+.study-page-context { margin-bottom: 12px; font-size: 14px; color: hsl(var(--muted-foreground)); text-wrap: pretty; }
 .study-empty { padding: 64px 24px; }
 .study-empty > svg { width: 28px; height: 28px; color: hsl(var(--muted-foreground)); }
 .study-empty h2 { font-size: 18px; font-weight: 600; text-wrap: balance; }
@@ -8,7 +8,8 @@
 .assignment-status-filter { display: flex; align-items: center; gap: 12px; min-width: 0; font-size: 14px; }
 .assignment-status-filter > button { width: 176px; }
 .homework-list-surface, .schedule-surface { min-width: 0; border: 0; box-shadow: none; }
-.homework-filters { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 16px; padding: 8px 0 20px; }
+.homework-filters { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 12px; padding: 0 0 var(--component-gap); }
+.homework-filters > .filter-builder { flex: 1 1 320px; }
 .homework-filters .assignment-status-filter, .homework-course-filter { display: flex; flex-direction: column; align-items: stretch; gap: 8px; font-size: 13px; font-weight: 500; }
 .homework-course-filter { width: 260px; }
 .study-search { position: relative; min-width: 200px; flex: 1; }
@@ -16,11 +17,11 @@
 .study-search > input { padding-inline: 36px; }
 .study-search > button { position: absolute; right: 0; top: 0; }
 .homework-list-summary { display: flex; justify-content: space-between; gap: 16px; padding: 0 0 16px; font-size: 13px; color: hsl(var(--muted-foreground)); }
-.homework-table-heading, .homework-all-row { display: grid; grid-template-columns: minmax(0, 1fr) 172px 120px 68px; gap: 20px; align-items: center; padding: 20px 0; }
-.homework-table-heading { padding-block: 12px; background: hsl(var(--muted) / .5); font-size: 13px; color: hsl(var(--muted-foreground)); }
+.homework-table-heading, .homework-all-row { display: grid; grid-template-columns: minmax(0, 1fr) 172px 120px 68px; gap: 12px; align-items: center; padding: var(--list-row-padding) 0; }
+.homework-table-heading { padding-block: 8px; background: hsl(var(--muted) / .5); font-size: 13px; color: hsl(var(--muted-foreground)); }
 .homework-all-row + .homework-all-row { border-top: 1px solid hsl(var(--border)); }
 .homework-all-row:hover { background: hsl(var(--muted) / .2); }
-.homework-all-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
+.homework-all-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
 .homework-task-link { padding: 0; height: auto; white-space: normal; text-align: left; justify-content: flex-start; color: hsl(var(--foreground)); font-size: 14px; line-height: 1.5; }
 .homework-task-link svg { width: 14px; height: 14px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
 .homework-course-link { color: hsl(var(--muted-foreground)); height: auto; padding: 0; white-space: normal; text-align: left; font-size: 12px; line-height: 1.5; }
@@ -28,11 +29,11 @@
 .homework-all-grade { font-size: 16px; text-align: right; font-variant-numeric: tabular-nums; }
 .homework-all-grade small { font-size: 12px; color: hsl(var(--muted-foreground)); }
 .homework-all-deadline { font-size: 13px; }
-.schedule-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 0 16px; }
+.schedule-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 0 12px; }
 .schedule-date-navigation { display: flex; align-items: center; gap: 6px; min-width: 0; flex-wrap: wrap; }
 .schedule-date-picker { text-transform: none; margin-left: 8px; }
 .schedule-view-select { width: 164px; flex-shrink: 0; }
-.schedule-controls { display: flex; align-items: center; gap: 16px; padding: 12px 0; }
+.schedule-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 8px 0; }
 .schedule-event-kinds { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .schedule-event-count { margin-left: auto; font-size: 12px; color: hsl(var(--muted-foreground)); }
 .schedule-filters { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 0 16px; border-bottom: 1px solid hsl(var(--border)); }
@@ -90,14 +91,14 @@
 }
 @container workspace (max-width: 767px) {
   .study-page-context { font-size: 13px; line-height: 1.6; }
-  .homework-filters { gap: 12px; padding: 16px; }
+  .homework-filters { gap: 12px; padding: 0 0 var(--component-gap); }
   .study-search { flex-basis: 100%; }
   .homework-course-filter { min-width: 0; flex: 1; }
   .homework-filters .assignment-status-filter { width: 130px; }
   .homework-filters .assignment-status-filter > button { width: 100%; }
   .homework-list-summary { padding: 0 16px 16px; flex-wrap: wrap; gap: 6px; }
   .homework-table-heading { display: none; }
-  .homework-all-row { grid-template-columns: minmax(0, 1fr) auto; gap: 16px 12px; padding: 20px 16px; border-top: 1px solid hsl(var(--border)); }
+  .homework-all-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding: var(--surface-padding) 0; border-top: 1px solid hsl(var(--border)); }
   .homework-all-copy { grid-column: 1 / -1; }
   .homework-all-status { grid-column: 1; grid-row: 3; }
   .homework-all-grade { grid-column: 2; grid-row: 3; }
@@ -140,3 +141,10 @@
 .study-homework-meta { justify-content: space-between; }
 .schedule-week-strip > [data-slot="button"] { border: 0; border-radius: 8px; background: transparent; color: hsl(var(--foreground)); box-shadow: none; }
 .schedule-week-strip > [aria-pressed="true"] { background: hsl(var(--background)); box-shadow: var(--shadow-control); }
+.schedule-agenda-actions { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.schedule-agenda-actions > .schedule-agenda-event { flex: 1; min-width: 0; }
+.schedule-event-open { display: flex; flex: 1; min-height: 0; flex-direction: column; gap: 4px; overflow: hidden; text-align: left; }
+.schedule-event-open > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+.schedule-class-event:has(.task-deadline-actions) { padding-right: 38px; }
+.schedule-class-event > .task-deadline-actions { position: absolute; right: 2px; top: 2px; }
+.schedule-event-open:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; }

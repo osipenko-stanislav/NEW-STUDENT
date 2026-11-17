@@ -1,3 +1,4 @@
+import { actionStatus } from './action-status.ts'
 import { deleteMaterialFiles, getMaterialFile, putMaterialFiles } from './material-files.ts'
 import { loadMaterialMetadata, newMaterialDraftId, saveMaterialMetadata } from './material-metadata.ts'
 import { resetSessionStorage } from './session-reset.ts'
@@ -50,9 +51,14 @@ export class MaterialLibrary {
     return operation
   }
 
-  private run<T>(action: () => Promise<T>, fallback: T, message: string): Promise<T> {
+  private run<T>(action: () => Promise<T>, fallback: T, message: string, feedback?: { key?: string; running: string; success: string; detail?: string }): Promise<T> {
     this.update({ pending: this.snapshot.pending + 1, error: null })
-    const operation = this.queue.then(action).catch(error => {
+    const taskId = feedback ? actionStatus.begin({ key: feedback.key, label: feedback.running, detail: feedback.detail }) : null
+    const operation = this.queue.then(action).then(result => {
+      if (taskId && feedback) actionStatus.finish(taskId, result === false || Array.isArray(result) && !result.length ? message : feedback.success, result !== false && !(Array.isArray(result) && !result.length), feedback.detail)
+      return result
+    }).catch(error => {
+      if (taskId) actionStatus.finish(taskId, storageError(error, message), false)
       this.update({ error: storageError(error, message) })
       return fallback
     }).finally(() => this.update({ pending: this.snapshot.pending - 1 }))
@@ -61,7 +67,7 @@ export class MaterialLibrary {
   }
 
   add(files: File[], scopeId: string, sourceAcademicId?: string): Promise<ConversationMaterial[]> {
-    if (this.resetting) return Promise.resolve([])
+    if (this.resetting || !files.length) return Promise.resolve([])
     return this.run(async () => {
       if (this.resetting || !files.length) return []
       const added = files.map(file => ({ id: crypto.randomUUID(), originId: scopeId, name: file.name,
@@ -76,7 +82,7 @@ export class MaterialLibrary {
       catch (error) { await deleteMaterialFiles(added.map(file => file.id)); throw error }
       this.update({ materials, attachments })
       return added
-    }, [], 'Не удалось сохранить файл. Разреши хранение данных в браузере и попробуй еще раз.')
+    }, [], 'Не удалось сохранить файл. Разреши хранение данных в браузере и попробуй еще раз.', { running: 'Сохраняем файлы', success: 'Файлы сохранены в библиотеке', detail: files.length === 1 ? files[0].name : `Файлов: ${files.length}` })
   }
 
   private async removeWhere(predicate: (material: ConversationMaterial) => boolean) {
@@ -102,12 +108,12 @@ export class MaterialLibrary {
 
   remove(id: string): Promise<boolean> {
     return this.run(async () => { await this.removeWhere(material => material.id === id); return true },
-      false, 'Не удалось удалить файл. Проверь доступ к хранилищу браузера и попробуй еще раз.')
+      false, 'Не удалось удалить файл. Проверь доступ к хранилищу браузера и попробуй еще раз.', { running: 'Удаляем файл', success: 'Файл удалён', detail: this.snapshot.materials.find(item => item.id === id)?.name })
   }
 
   clear(): Promise<boolean> {
     return this.run(async () => { await this.removeWhere(material => !material.sourceAcademicId); return true },
-      false, 'Не удалось удалить личные файлы. Проверь доступ к хранилищу браузера.')
+      false, 'Не удалось удалить личные файлы. Проверь доступ к хранилищу браузера.', { key: 'library-clear', running: 'Очищаем библиотеку', success: 'Личные файлы удалены' })
   }
 
   forgetConversationSelections(ids: string[]): boolean {
@@ -130,12 +136,14 @@ export class MaterialLibrary {
   attach(materialId: string, scopeId: string): boolean {
     if (this.resetting || this.snapshot.pending > 0 || this.closedScopes.has(scopeId) || !this.snapshot.materials.some(material => material.id === materialId)) return false
     if (this.snapshot.attachments.some(item => item.materialId === materialId && item.scopeId === scopeId)) return true
-    return this.saveSelection([...this.snapshot.attachments, { materialId, scopeId }])
+    const saved = this.saveSelection([...this.snapshot.attachments, { materialId, scopeId }])
+    return saved
   }
 
   detach(materialId: string, scopeId: string): boolean {
     if (this.resetting || this.snapshot.pending > 0) return false
-    return this.saveSelection(this.snapshot.attachments.filter(item => item.materialId !== materialId || item.scopeId !== scopeId))
+    const saved = this.saveSelection(this.snapshot.attachments.filter(item => item.materialId !== materialId || item.scopeId !== scopeId))
+    return saved
   }
 
   removeConversation(scopeId: string): boolean {

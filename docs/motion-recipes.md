@@ -35,7 +35,7 @@ Expressive сохраняет длительности и увеличивает
 | Pin | Outline → fill + импульс .94→1.08→1 | Unpin scale exit .85, outline; никакого bounce строки | 180/120 ms, cubic-bezier(.34,1.25,.64,1), center | Actual pinned state; restored pin не проигрывает enter |
 | Checkbox | Fill/outline, SVG dash 24→0; mixed отдельный штрих | Снятие восстанавливает dash; disabled стандартный | Draw 180/120 ms cubic-bezier(.16,1,.3,1); fill micro, center | Нативный input немедленно принимает Space/клик; соседние строки инертны |
 | Radio | Dot opacity 0→1, scale .6→1, без движения ряда | Unchecked обратный transition; segmented variant общий pill | 160/120 ms cubic-bezier(.22,1,.36,1), center | Radix arrows/roving focus; forceMount даёт обратный transition |
-| Switch | Thumb x0↔16, локальный press scale1.08/.94; цвет track | on/off без асинхронного успеха | Balanced spring stiffness700/damping38/mass.5; Expressive650/29/.5; center | Управляемый или native local state, новая цель прерывает spring |
+| Switch | Thumb x0↔12, локальный press scale1/.94 без сдвига трека; цвет track | on/off без асинхронного успеха | Balanced spring stiffness700/damping38/mass.5; Expressive650/29/.5; center | Управляемый или native local state, новая цель прерывает spring; боковой зазор сохраняется при нажатии |
 | Tabs / segments | Общий indicator следует x/y/width/height активного контрола | Нет искусственного loading; содержимое остаётся существующим | 180/120 ms cubic-bezier(.4,0,.2,1); top-left геометрии | Mutation/ResizeObserver + fonts; только одна цель, cleanup при unmount |
 | Accordion / disclosure | Chevron180°, дерево90°; естественная высота | Close сохраняет DOM до завершения; закрытые ссылки inert | Height220/180 ms cubic-bezier(.25,.1,.25,1); origin center для chevron | Native interpolate-size/allow-discrete; fallback мгновенный в старых браузерах; grid disclosure прерываем |
 | Dropdown / select | Origin-aware surface, item highlight; chevron180°, selected Check | Closed собственный exit, disabled стандартный | Menu160/120 ms cubic-bezier(.16,1,.3,1); Radix transform-origin | Radix сохраняет focus/keyboard/outside; no custom timeout |
@@ -61,3 +61,7 @@ Expressive сохраняет длительности и увеличивает
 ## Проверка
 
 Состояния проверяются в Motion Lab и затем у реальных потребителей. Автоматизированная браузерная матрица покрывает 1366/375 px × light/dark × minimal/balanced/expressive. Отдельный проход — reduced motion, реальные ошибки Clipboard/sync, Gen UI, восстановление и внешнее изменение unread, мобильный календарь и стабильность геометрии. Результаты фиксируются в инвентаризации по завершении прохода.
+
+## Status Island
+
+`statusIslandParameters` — отдельный контракт Kokonut (spring450ms/bounce.18; swap220ms/ease[.23,1,.32,1]) без глобального множителя. Пространственное появление8px/blur4px, смена±6px, peek5px и scale.94/.88. Minimal/reduced применяют состояния мгновенно без перемещения, blur и вращения. Таймер4s относится только к готовому успеху, приостанавливается для чтения и модальных окон. См. [status-island.md](status-island.md).

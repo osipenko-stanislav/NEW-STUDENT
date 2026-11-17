@@ -1,3 +1,4 @@
+import { DeadlineTransfer } from '@/components/late-days/TaskDeadline'
 import { useLateDays } from '@/components/LateDaysProvider'
 import { BookOpen, CalendarDays, CheckCheck, Clock3, FileText } from 'lucide-react'
 import type { StudentNotification } from '@/data/notifications'
@@ -13,7 +14,7 @@ export default function NotificationRow({ event, compact = false, now, onOpen }:
   if (!details) return null
   const unread = !readIds.has(event.id)
   const Icon = icons[event.type]
-  return <li className="notification-item" data-unread={unread} data-notification-id={event.id}>
+  return <li className="notification-item" data-unread={unread} data-notification-id={event.id} data-has-deadline={event.type === 'deadline'}>
     <button type="button" className={`notification-row ${compact ? 'notification-row-compact' : ''}`} onClick={() => onOpen(event)}>
       <span className={`notification-icon notification-icon-${event.type}`}><Icon aria-hidden="true" /></span>
       <span className="notification-copy"><span className="notification-title">{details.title}</span>
@@ -23,6 +24,6 @@ export default function NotificationRow({ event, compact = false, now, onOpen }:
       </span>
       <span className="notification-read-indicator" aria-hidden="true" />
       <span className="sr-only">{unread ? 'Не прочитано' : 'Прочитано'}</span>
-    </button>
+    </button>{event.type === 'deadline' && event.target.kind === 'task' ? <DeadlineTransfer taskId={event.target.id} /> : null}
   </li>
 }

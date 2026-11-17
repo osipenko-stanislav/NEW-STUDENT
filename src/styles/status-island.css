@@ -1,0 +1,27 @@
+/* Cupertino surface, Kokonut Status Island motion (see docs/status-island.md). */
+.status-island-host { position: fixed; z-index: 60; display: flex; justify-content: center; pointer-events: none; }
+.status-island-presence { position: relative; isolation: isolate; width: max-content; max-width: calc(100% - 32px); }
+.status-island, .status-island-peek { border-radius: var(--radius-preview); background: hsl(var(--popover)); box-shadow: var(--shadow-popover); }
+.status-island { position: relative; overflow: hidden; pointer-events: auto; color: hsl(var(--popover-foreground)); border: 1px solid hsl(var(--border)); }
+.status-island[inert] { pointer-events: none; }
+.status-island-peek { position: absolute; inset: 0; border: 1px solid hsl(var(--border)); pointer-events: none; }
+.status-island-pill { display: flex; align-items: center; min-height: 44px; max-width: 100%; padding: 10px 16px; text-align: left; }
+.status-island-summary { display: flex; align-items: center; gap: 10px; min-width: 180px; max-width: 360px; }
+.status-island-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; font-size: calc(13px * var(--text-scale, 1)); line-height: 1.4; }
+.status-island-pill .status-island-copy > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.status-island-detail { color: hsl(var(--muted-foreground)); font-size: calc(12px * var(--text-scale, 1)); overflow-wrap: anywhere; }
+.status-island-icon { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; flex-shrink: 0; }
+.status-island-icon svg { width: 16px; height: 16px; }
+.status-island-icon[data-state="success"] { color: var(--color-green-text); }
+.status-island-icon[data-state="error"] { color: var(--color-red-text); }
+.status-island-icon[data-state="running"] { color: var(--color-violet-text); }
+.status-island-count, .status-island-progress { flex-shrink: 0; color: hsl(var(--muted-foreground)); font-size: calc(12px * var(--text-scale, 1)); }
+.status-island-heading { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding: 4px 8px 4px 16px; border-bottom: 1px solid hsl(var(--border)); font-size: calc(13px * var(--text-scale, 1)); font-weight: 600; }
+.status-island-list { width: 360px; max-width: calc(100dvw - 34px); max-height: min(360px, 55dvh); overflow: auto; overscroll-behavior: contain; outline: none; }
+.status-island-list > li { display: flex; align-items: center; gap: 10px; padding: 10px 8px 10px 16px; }
+.status-island-list > li + li { border-top: 1px solid hsl(var(--border) / .6); }
+.status-island :is(.status-island-heading, .status-island-list) [data-slot="button"] { width: 28px; height: 28px; flex-shrink: 0; }
+.status-island-pill:focus-visible, .status-island-list:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -3px; border-radius: inherit; }
+@media (pointer: coarse) { .status-island :is(.status-island-heading, .status-island-list) [data-slot="button"] { width: 44px; height: 44px; } }
+
+@supports (corner-shape: superellipse(1.1)) { .status-island, .status-island-peek { corner-shape: superellipse(1.1); } }

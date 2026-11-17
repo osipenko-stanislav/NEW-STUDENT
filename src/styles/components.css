@@ -6,7 +6,7 @@
   }
 }
 :where([data-slot="button"]) { border-radius: var(--radius-control); }
-:where([data-slot="button"]:is([data-size="icon"], .ghost-icon, .widget-settings)), :where([data-slot="dialog-content"] > button:last-child) { border-radius: 999px; }
+:where([data-slot="button"]:is([data-size="icon"], .ghost-icon, .widget-settings)), :where([data-slot="dialog-close"], [data-slot="sheet-close"]) { border-radius: 999px; }
 :where([data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"])) {
   box-shadow: var(--shadow-control);
 }
@@ -22,7 +22,16 @@
   outline: 2px solid hsl(var(--ring) / .45);
   outline-offset: 2px;
 }
-[data-slot="card"] { border-radius: var(--radius-surface); }
+[data-slot="switch-thumb"] { width: 24px; height: 16px; }
+[data-slot="card"] { --card-padding: var(--surface-padding); --card-header-block: var(--surface-header-block); border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface); background: hsl(var(--card)); box-shadow: var(--shadow-surface); }
+[data-slot="card"][data-size="sm"] { --card-padding: var(--surface-padding-small); --card-header-block: var(--surface-header-small); }
+[data-slot="card-header"] { display: flex; min-height: 52px; align-items: center; justify-content: space-between; gap: 8px; padding: var(--card-header-block) var(--card-padding); border-bottom: 1px solid hsl(var(--border)); }
+[data-size="sm"] > [data-slot="card-header"] { min-height: 44px; }
+[data-slot="card-content"] { padding: var(--card-padding); }
+[data-slot="card-footer"] { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 8px; padding: var(--card-header-block) var(--card-padding); border-top: 1px solid hsl(var(--border)); }
+[data-slot="table-head"] { height: 40px; padding: var(--table-head-block) var(--table-cell-inline); }
+[data-slot="table-cell"] { padding: var(--table-cell-block) var(--table-cell-inline); }
+@media (pointer: coarse) { [data-slot="card-footer"] { min-height: 44px; } }
 [data-slot="dialog-content"] {
   border-radius: var(--radius-dialog);
   box-shadow: var(--shadow-dialog);
@@ -79,7 +88,7 @@
   box-shadow: var(--shadow-control);
 }
 .segmented-control > [role="tab"]::after { display: none; }
-[data-slot="popover-content"].widget-popover { border-radius: 20px; box-shadow: var(--shadow-popover); }
+
 @media (pointer: coarse) {
   .segmented-control:is([data-slot="tabs-list"], [data-slot="segmented-control"]) > :is([role="tab"], [role="radio"], [aria-pressed]) { min-height: 44px; }
   :where([data-slot="button"]:not([data-size="icon"], .ghost-icon)), :where([data-slot="select-trigger"]) { min-height: 44px; }
@@ -168,3 +177,47 @@
 .calendar-inline { min-width: 0; width: 100%; }
 .calendar-inline .calendar-date-field { margin-block: 8px 12px; }
 .calendar-grid-host { position: relative; overflow: clip; }
+
+/* Quick previews keep Cupertino widget corners and share the notifications composition. */
+[data-slot="popover-content"].preview-popover { border-radius: var(--radius-preview); width: min(var(--drawer-width), calc(100vw - 32px)); max-height: min(680px, var(--radix-popover-content-available-height)); display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+.preview-popover-heading { flex-shrink: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; min-height: 52px; align-content: center; padding: var(--surface-header-block) var(--surface-padding); }
+.preview-popover-heading h2 { font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; overflow-wrap: anywhere; }
+.preview-popover-meta { font-size: calc(12px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
+.preview-popover-body { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.preview-popover-action { flex-shrink: 0; width: 100%; justify-content: space-between; min-height: 44px; height: auto; padding: var(--surface-header-block) var(--surface-padding); border-top: 1px solid hsl(var(--border)); border-radius: 0; font-size: calc(14px * var(--text-scale, 1)); white-space: normal; text-align: left; }
+.preview-popover-action svg { flex-shrink: 0; }
+.preview-popover-row { width: 100%; padding: var(--list-row-padding) var(--surface-padding); text-align: left; overflow-wrap: anywhere; transition: background-color var(--motion-fast) var(--ease-enter); }
+.preview-popover-row:hover { background: hsl(var(--accent)); }
+.preview-popover-row:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; }
+.preview-popover-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 20px; text-align: center; color: hsl(var(--muted-foreground)); font-size: calc(14px * var(--text-scale, 1)); }
+
+/* Shared predicate filters: field → condition → value, applied immediately. */
+.filter-builder { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.filter-chip { display: inline-flex; align-items: stretch; min-width: 0; max-width: 100%; border: 1px solid hsl(var(--border)); border-radius: var(--radius-control); }
+.filter-chip-edit { display: inline-flex; gap: 0; height: auto; min-width: 0; min-height: 34px; max-width: calc(100% - 32px); padding: 0; border-radius: var(--radius-control) 0 0 var(--radius-control); text-align: left; white-space: normal; flex-wrap: wrap; font-size: calc(13px * var(--text-scale, 1)); }
+.filter-chip-edit > span { min-width: 0; padding: 7px 10px; overflow-wrap: anywhere; }
+.filter-chip-operator, .filter-chip-values { border-left: 1px solid hsl(var(--border)); }
+.filter-chip-operator { color: hsl(var(--muted-foreground)); }
+.filter-chip-values { max-width: 36ch; }
+.filter-chip-remove { align-self: stretch; height: auto; min-width: 32px; width: 32px; border-left: 1px solid hsl(var(--border)); border-radius: 0 var(--radius-control) var(--radius-control) 0; }
+.filter-add, .filter-reset { min-height: 36px; height: auto; font-size: calc(13px * var(--text-scale, 1)); }
+[data-slot="popover-content"].filter-builder-popover { display: flex; flex-direction: column; gap: 0; width: min(320px, calc(100vw - 32px)); max-height: min(420px, var(--radix-popover-content-available-height)); padding: 0; overflow: hidden; }
+.filter-builder-path { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; padding: 4px; border-bottom: 1px solid hsl(var(--border)); flex-shrink: 0; }
+.filter-builder-path button { height: auto; min-height: 32px; padding: 6px 8px; white-space: normal; text-align: left; font-size: calc(13px * var(--text-scale, 1)); }
+.filter-builder-path > svg { width: 12px; height: 12px; }
+.filter-builder-search { display: flex; align-items: center; padding-inline: 12px; gap: 8px; border-bottom: 1px solid hsl(var(--border)); flex-shrink: 0; }
+.filter-builder-search > svg { width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
+.filter-builder-search [data-slot="input"] { min-width: 0; height: 40px; border: 0; padding-inline: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.filter-builder-options { padding: 4px; overflow: auto; min-height: 0; overscroll-behavior: contain; }
+.filter-option > button, .filter-option > label { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 36px; gap: 10px; padding: 8px; border-radius: var(--radius-control); font-size: calc(13px * var(--text-scale, 1)); line-height: 1.45; text-align: left; overflow-wrap: anywhere; }
+.filter-option > label { justify-content: flex-start; cursor: pointer; }
+.filter-option > button:hover, .filter-option > label:hover { background: hsl(var(--accent)); }
+.filter-option > button:focus-visible, .filter-option > label:has(:focus-visible) { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; }
+.filter-option > button > svg { width: 14px; height: 14px; flex-shrink: 0; }
+.filter-builder-empty { padding: 16px 8px; text-align: center; font-size: calc(13px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
+@media (pointer: coarse) { .filter-option > button, .filter-option > label, .filter-add, .filter-reset { min-height: 44px; } }
+
+/* Keep deadline navigation and transfer as separate, reachable controls. */
+.deadline-preview-row { display: flex; align-items: center; }
+.deadline-preview-row > .preview-popover-row { flex: 1; min-width: 0; }
+.deadline-preview-row > .task-deadline-actions { flex-shrink: 0; margin-right: var(--surface-padding); }

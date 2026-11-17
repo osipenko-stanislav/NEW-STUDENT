@@ -1,3 +1,4 @@
+import { actionStatus } from '@/lib/action-status'
 import { navigate, useNavigation } from '@/hooks/use-navigation'
 import { useState } from 'react'
 import { loadConversations, saveConversations, sortConversations } from '@/lib/conversation-storage'
@@ -51,7 +52,8 @@ export function useConversations() {
 
   function deleteConversation(id: string) {
     generation.cancel(id)
-    setSnapshot(current => saveConversations(current.conversations.filter(conversation => conversation.id !== id)))
+    const saved = saveConversations(snapshot.conversations.filter(conversation => conversation.id !== id))
+    setSnapshot(saved)
     if (activeId === id) setActiveId(null, true)
   }
 
@@ -70,6 +72,7 @@ export function useConversations() {
     for (const conversation of snapshot.conversations) generation.cancel(conversation.id)
     setSnapshot(saved)
     setActiveId(null)
+    actionStatus.report({ key: 'history', label: 'История разговоров очищена' })
     return true
   }
 
@@ -78,13 +81,15 @@ export function useConversations() {
     if (!name) return
     const conversations = snapshot.conversations.map(conversation => conversation.id === id
       ? { ...conversation, title: name } : conversation)
-    setSnapshot(saveConversations(conversations))
+    const saved = saveConversations(conversations)
+    setSnapshot(saved)
   }
 
   function toggleConversationPin(id: string) {
     const conversations = snapshot.conversations.map(conversation => conversation.id === id
       ? { ...conversation, pinned: !conversation.pinned } : conversation)
-    setSnapshot(saveConversations(sortConversations(conversations)))
+    const saved = saveConversations(sortConversations(conversations))
+    setSnapshot(saved)
   }
 
   return {

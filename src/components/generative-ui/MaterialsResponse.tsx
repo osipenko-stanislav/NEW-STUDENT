@@ -14,7 +14,7 @@ export default function MaterialsResponse({ part, onNavigate }: { part: Material
     && (part.fileType === 'all' || item.fileType === part.fileType) && terms.every(term => normalize(`${item.title} ${item.course} ${item.path}`).includes(term)))
   return <section className="gen-ui" aria-label="Учебные материалы">
     <div className="gen-header"><h3 className="gen-heading"><SemanticIcon icon={Library} tone="violet" />Учебные материалы</h3></div>
-    {items.length ? <ul className="gen-material-list gen-material-list-compact" aria-label="Учебные материалы">{items.slice(0, 5).map(item => <li key={item.id}>
+    {items.length ? <ul className="gen-material-list gen-material-list-compact" aria-label="Учебные материалы">{items.map(item => <li key={item.id}>
       <FileIcon name={`${item.title}.${item.fileType}`} />
       <button className="gen-material-open" onClick={() => { onNavigate(`Курсы/${item.courseId}`); navigate({ courseTab: 'materials', materialId: item.id }, true) }}>
         <span className="gen-row-title">{item.title}</span><span className="gen-row-meta">{item.fileType} · {item.course}</span>

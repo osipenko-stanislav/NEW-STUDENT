@@ -84,7 +84,7 @@ export const academicTasks: AcademicTask[] = enrollments.flatMap(enrollment => e
   }
   return tasks
 }))
-export function tasksForCourse(courseId: string) { return academicTasks.filter(task => task.courseId === courseId && task.enrollmentId === `current-${courseId}`) }
+export function tasksForCourse(courseId: string, enrollmentId = `current-${courseId}`) { return academicTasks.filter(task => task.courseId === courseId && task.enrollmentId === enrollmentId) }
 export const gradeStatements: GradeStatement[] = enrollments.map(enrollment => {
   const course = getCourse(enrollment.courseId)
   const tasks = academicTasks.filter(task => task.enrollmentId === enrollment.id)
@@ -97,7 +97,7 @@ export const gradeStatements: GradeStatement[] = enrollments.map(enrollment => {
     formula, grade: calculateGrade(formula).rounded,
     tasks: tasks.map(task => ({ id: task.id, title: task.title, topic: task.topic, grade: task.grade, activity: task.activity, status: task.status === 'accepted' ? 'Сдано' : task.status === 'rejected' ? 'Отклонено' : task.status === 'submitted' ? 'На проверке' : task.status === 'in-progress' ? 'В процессе' : 'Не начато', materialIds: task.materialIds })) }
 })
-export const statementForCourse = (courseId: string) => gradeStatements.find(statement => statement.courseId === courseId && !statement.archived)!
+export const statementForCourse = (courseId: string, enrollmentId = `current-${courseId}`) => gradeStatements.find(statement => statement.courseId === courseId && statement.id === enrollmentId)!
 export const assistantAssignments: DemoAssignment[] = academicTasks.filter(task => task.enrollmentId.startsWith('current-') && task.status !== 'accepted' && task.status !== 'rejected').map(task => ({
   id: task.id, courseId: task.courseId, title: task.title, course: titleFor(task.courseId), subject: subjectFor(task.courseId), dueAt: task.dueAt,
   dueLabel: new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' }).format(new Date(task.dueAt)),

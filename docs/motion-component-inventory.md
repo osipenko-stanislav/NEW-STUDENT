@@ -11,11 +11,11 @@
 | Settings/Trash/Plus: настройки виджетов, меню файла, вложение | hover/press/open | gear 8°; lid tilt; plus 45° при open | CSS по роли; minimal без поворота | Реализовано | Открыть меню вложений, проверить reset и disabled |
 | Action Button: экспорт, сохранение решения, обновление | idle/loading/success/error/reset | action/icon swap, 160/120 ms; реальная Promise | FeedbackButton/AsyncButton + StateIcon | Реализовано | Экспорт существующего файла и ошибка чтения; ширина не меняется |
 | Dropdown Menu: файлы, разговоры, вложения | closed/open/highlighted/selected/disabled | menu 160/120 ms; локальный акцент пункта | Radix + CSS; minimal статическое состояние | Реализовано | ArrowDown, Enter, Escape, быстрый повтор |
-| Popover: уведомления, Late Days, погода, виджеты | closed/open/close | origin-aware existing overlay; локальные контролы независимы | Radix + CSS/Motion; minimal fade | Реализовано | Клик, outside, повторный клик, Escape |
+| Popover: уведомления, расписание, Late Days, погода, виджеты | closed/open/close | origin-aware existing overlay; PreviewPopoverContent использует fast-профиль уведомлений; локальные контролы независимы | Radix + CSS/Motion; minimal fade | Реализовано | Клик, outside, повторный клик, Escape |
 | Tooltip: иконки, месяцы графика, дедлайны | hidden/open/close | 120/80 ms, 2 px | Radix + CSS; minimal opacity | Реализовано | Hover и focus; не блокирует click |
 | Checkbox: массовый Late Days, Gen UI | unchecked/checked/mixed/disabled | check draw 180 ms, fill 120 ms | Native input + SVG/CSS; minimal итоговая галочка | Реализовано | Space, повтор, indeterminate, родитель не масштабируется |
 | Radio: настройки темы | unchecked/checked/disabled | dot 160 ms, scale .6→1; pill 180 ms | Radix + indicator; minimal мгновенно | Реализовано | Стрелки, быстрый выбор между тремя темами |
-| Switch: настройки, unread filter, предпочтения | off/on/press/disabled | switch spring 700/38/.5; express 650/29/.5 | Radix + Motion; minimal x меняется мгновенно | Реализовано | Space и быстрые повторные переключения |
+| Switch: настройки, unread filter, предпочтения | off/on/press/disabled | switch spring 700/38/.5; express 650/29/.5; x0↔12 для бегунка 24×16 в треке 40×24 | Radix + Motion; minimal x меняется мгновенно | Реализовано | Space и быстрые повторные переключения; зазор 2 px по горизонтали и 4 px по вертикали |
 | Tabs/Segments: курсы, ведомости, файлы, фильтры | inactive/active/focus/disabled | tabs 180 ms geometry-following | Общий SelectionIndicator + CSS | Реализовано | Быстро A→B→C→A, горизонтальная прокрутка, смена ширины |
 | Disclosure: группы навигации и дерево Хэндбука | collapsed/expanded | tree chevron 90°, 180 ms, center | Один стабильный SVG + CSS | Реализовано | Раскрыть и закрыть ту же ветку несколько раз |
 | Accordion: программа курса, записи, темы ведомости, Gen UI | closed/open/close | disclosure 220 ms height, chevron 180° | Native details + interpolate-size; minimal мгновенно | Реализовано | Прервать раскрытие закрытием; соседние строки не проигрывают enter |
@@ -41,6 +41,8 @@
 | Course level/progress controls | level/progress/tooltip | counter/progress, статичная декоративная звезда | AnimatedNumber + CSS | Реализовано | Навести/Tab; не анимировать звёзды как Like |
 | Late Days confirmation | editable/review/invalid/applied | counter/check/action, без full-block enter | Shared planner, transaction unchanged | Реализовано | Недостаток, stale plan, double click, atomic apply |
 | Generative UI | local selection/value/state/result | Те же checkbox/stepper/status/counter | Общие примитивы; корневой блок не переигрывается | Реализовано | Изменить одну галочку и проверить animations только у локальных объектов |
+| Sidebar / боковой Sheet | expanded/collapsed/open/close | прежний выезд и изменение ширины; minimal/reduced без пространственных переходов | Sidebar/Sheet | Реализовано | 1440/900/375, темы, 150% текст, Escape, возврат фокуса |
+| Конструктор фильтров | параметр/условие/значение/edit/remove/reset | существующий Popover; локальный выбор без повторного enter родителя | FilterBuilder, Checkbox, общие motion-токены | Реализовано | Клавиатура, множественный выбор, Escape, mobile, reduced |
 | Support launcher/close | idle/open/close | icon press, close crossing 120 ms | Существующие Button/Popover | Реализовано | Клик, повтор, Escape, mobile |
 
 ## Результаты проверки · 13 ноября 2026
@@ -53,3 +55,7 @@
 - `npm test`: 112/112. `npm run build`: успешно, включая UI architecture guard и TypeScript. Сохраняется предупреждение Vite о размере основного chunk; задача не меняет стратегию bundling. Проверено, что код Motion Lab не входит в production JavaScript.
 
 Для повторной ручной проверки открывай DEV Motion Lab, затем потребителей из строк таблицы. Неиспользуемые в продукте состояния проверяются только в Lab и не добавляют студенту фиктивные действия.
+
+## Status Island
+
+Общий feedback операций студента: running/progress/success/error/expanded/hidden. Контракт `statusIslandParameters` в motion-recipes.ts: spring450/bounce.18, swap220/ease[.23,1,.32,1], y8/blur4, swap±6, peek5/scale.94/.88. Minimal/reduced без пространственного движения, blur и вращения. Появление не забирает фокус; hover/click/tap/Enter/Space раскрывают очередь, Escape возвращает фокус, ошибки закрываются отдельно, running не удаляется. Успех4s с паузой при чтении и модальном окне, защита ревизией от устаревшего таймера. Подробности: [status-island.md](status-island.md).

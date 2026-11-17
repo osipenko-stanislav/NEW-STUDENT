@@ -1,6 +1,13 @@
 import { useSyncExternalStore } from 'react'
+import type { CourseFilter } from '@/data/course-catalog'
+import type { FilterCondition } from '@/lib/filters'
 
 export type NavigationState = {
+  homeworkScope?: 'current' | 'archive'
+  courseCatalogFilter?: CourseFilter | 'archive'
+  courseEnrollmentId?: string | null
+  homeworkConditions?: FilterCondition[]
+  scheduleConditions?: FilterCondition[]
   section: string
   handbookPageId: string | null
   handbookAnchor: string | null
@@ -26,6 +33,7 @@ export type NavigationState = {
   conversationId: string | null
 }
 const initial: NavigationState = {
+  homeworkScope: 'current', courseCatalogFilter: 'all', courseEnrollmentId: null,
   materialId: null, handbookPageId: null, handbookAnchor: null,
   scheduleEventId: null, scheduleDate: null, scheduleView: null, scheduleKind: 'all', scheduleCourse: 'all', scheduleFormat: 'all', scheduleRoom: 'all', scheduleTeacher: 'all',
   homeworkFilter: 'all', homeworkCourse: 'all',
@@ -47,6 +55,11 @@ window.addEventListener('popstate', () => {
 })
 export function navigate(patch: Partial<NavigationState>, replace = false) {
   const next = { ...current, ...patch }
+  if ('courseId' in patch && !('courseEnrollmentId' in patch)) next.courseEnrollmentId = null
+  if (!('homeworkScope' in patch) && ('homeworkFilter' in patch || 'homeworkCourse' in patch)) next.homeworkScope = 'current'
+  // Legacy destinations from search, notifications and AI replace prior predicates.
+  if (!('homeworkConditions' in patch) && ('homeworkFilter' in patch || 'homeworkCourse' in patch)) next.homeworkConditions = undefined
+  if (!('scheduleConditions' in patch) && ['scheduleCourse', 'scheduleFormat', 'scheduleRoom', 'scheduleTeacher'].some(key => key in patch)) next.scheduleConditions = undefined
   if (JSON.stringify(next) === JSON.stringify(current)) return
   const url = new URL(window.location.href)
   if (next.section === 'Хэндбук') {

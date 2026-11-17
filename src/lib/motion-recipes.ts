@@ -49,3 +49,15 @@ export function notificationParameters(intensity: MotionIntensity) {
   return { ...notificationRecipe, reduced, amplitude: reduced ? 0 : intensity === 'expressive' ? 1.12 : 1,
     css: { '--notification-ring-duration': `${reduced ? 0 : notificationRecipe.ring.duration}ms`, '--notification-ring-angle': `${reduced ? 0 : notificationRecipe.ring.angle * (intensity === 'expressive' ? 1.12 : 1)}deg`, '--notification-ring-ease': `cubic-bezier(${notificationRecipe.ring.ease.join(',')})` } }
 }
+
+/** Kokonut Status Island's morph and swap; no global duration multiplier. */
+export const statusIslandRecipe = { morph: 450, bounce: .18, swap: 220, distance: 8, swapDistance: 6, blur: 4, peek: 5, ease: [.23, 1, .32, 1], dismissAfter: 4000 } as const
+export function statusIslandParameters(intensity: MotionIntensity) {
+  const minimal = intensity === 'minimal'
+  return { minimal,
+    morph: (minimal ? { duration: 0 } : { type: 'spring', duration: statusIslandRecipe.morph / 1000, bounce: statusIslandRecipe.bounce }) as Transition,
+    swap: { duration: minimal ? 0 : statusIslandRecipe.swap / 1000, ease: [...statusIslandRecipe.ease] } as Transition,
+    distance: minimal ? 0 : statusIslandRecipe.distance, swapDistance: minimal ? 0 : statusIslandRecipe.swapDistance,
+    blur: minimal ? 'blur(0px)' : `blur(${statusIslandRecipe.blur}px)`,
+  }
+}

@@ -1,3 +1,5 @@
+import { actionStatus } from '@/lib/action-status'
+import StatusIsland from '@/components/StatusIsland'
 import { recipe, recipeTransition } from '@/lib/motion-recipes'
 import { LateDaysProvider, useLateDays } from '@/components/LateDaysProvider'
 import LateDaysEntry from '@/components/late-days/LateDaysEntry'
@@ -39,6 +41,7 @@ import { appInfo } from '@/data/app-info'
 import { useTheme } from '@/components/ThemeSwitcher'
 import WeatherWidget from '@/components/WeatherWidget'
 import StudyWidget from '@/components/StudyWidget'
+import SchedulePopover from '@/components/schedule/SchedulePopover'
 import PreferencesDialog from '@/components/PreferencesDialog'
 import ConversationHistory from '@/components/ConversationHistory'
 import ConversationMessages from '@/components/ConversationMessages'
@@ -227,6 +230,7 @@ function StudentInterface({ onResetSession, isResetting }: {
       requestAnimationFrame(() => promptRef.current?.focus())
       return true
     } catch {
+      actionStatus.report({ key: `attachment:${id}`, label: 'Не удалось добавить материал в чат' }, false)
       setAcademicError('Не удалось добавить материал в чат. Повтори попытку.')
       return false
     } finally { importingAcademic.current = false; setAcademicPendingId(null) }
@@ -260,7 +264,7 @@ function StudentInterface({ onResetSession, isResetting }: {
   }
 
   async function removeConversation(id: string) {
-    if (!library.removeConversation(id)) { setMaterialsOpen(true); return }
+    if (!library.removeConversation(id)) { actionStatus.report({ key: `conversation:${id}`, label: 'Не удалось удалить разговор', detail: 'Проверь доступ к хранилищу браузера' }, false); setMaterialsOpen(true); return }
     if (id === currentConversationId.current) {
       stopTyping()
       clearComposer()
@@ -303,7 +307,7 @@ function StudentInterface({ onResetSession, isResetting }: {
       if (activeGeneration || voiceBusy || materialsBusy) return
       const draft = { text: '', command: value }
       const sent = sendMessage(draft, createLateDaysResponse(draft, lateDays.state, homeworkRecords))
-      if (sent) library.completeSend(scopeId, sent.conversationId)
+      if (sent && !library.completeSend(scopeId, sent.conversationId)) actionStatus.report({ key: 'message-send', label: 'Не удалось сохранить связи вложений', detail: 'Запрос отправлен. Проверь вложения в библиотеке.' }, false)
       clearComposer()
       return
     }
@@ -349,7 +353,7 @@ function StudentInterface({ onResetSession, isResetting }: {
     const previousIds = new Set(activeConversation?.messages.filter(item => item.role === 'assistant').at(-1)?.attachments?.map(item => item.materialId) ?? [])
     const contextMaterials = selectedMaterials.length ? selectedMaterials : materials.filter(item => previousIds.has(item.id))
     const sent = sendMessage(draft, createLateDaysResponse(draft, lateDays.state, homeworkRecords) ?? createMaterialContextResponse(draft, contextMaterials) ?? createMockResponse(draft, activeConversation?.messages, { state: lateDays.state, records: homeworkRecords }))
-    if (sent) library.completeSend(scopeId, sent.conversationId)
+    if (sent && !library.completeSend(scopeId, sent.conversationId)) actionStatus.report({ key: 'message-send', label: 'Не удалось сохранить связи вложений', detail: 'Запрос отправлен. Проверь вложения в библиотеке.' }, false)
     clearComposer()
     promptRef.current?.focus()
   }
@@ -445,7 +449,7 @@ function StudentInterface({ onResetSession, isResetting }: {
           <MaterialSyncButton />
           <LateDaysEntry onHistory={() => { selectSection('Late Days'); setMaterialsOpen(false) }} />
           <NotificationsPopover onOpen={openNotification} onHistory={() => { selectSection('Уведомления'); setMaterialsOpen(false) }} />
-          <GhostButton label="Расписание" onClick={() => selectSection('Расписание')}><Icon name="calendar-lined1.svg" /></GhostButton>
+          <SchedulePopover onNavigate={destination => { selectSection(destination); setMaterialsOpen(false) }} />
           <GhostButton label="Библиотека" id="materials-trigger" aria-controls="materials-sidebar" aria-expanded={materialsOpen}
             onClick={() => { setMaterialPicker(false); setMaterialInfoId(null); setMaterialsOpen(open => !open) }}><Icon name="archive-lined.svg" /></GhostButton>
           <GhostButton label="Профиль Ивана" className="profile-action" onClick={() => setPanel('profile')}>
@@ -462,8 +466,8 @@ function StudentInterface({ onResetSession, isResetting }: {
         {section === 'Хэндбук' ? <HandbookWorkspace /> : null}
         {section === 'Расписание' ? <ScheduleWorkspace onNavigate={selectSection} /> : null}
         {section === 'Домашки' ? <HomeworkWorkspace onNavigate={selectSection} /> : null}
-        {section === 'Ведомости' ? <GradesWorkspace key={studyTarget} onOpenCourse={id => selectSection(`Курсы/${id}`)} /> : null}
-        {section === 'Курсы' ? <CoursesWorkspace key={studyTarget} onOpenGrades={id => selectSection(`Ведомости/${id}`)} onAskNavigator={askNavigator} /> : null}
+        {section === 'Ведомости' ? <GradesWorkspace key={studyTarget} onOpenCourse={(id, enrollmentId) => { selectSection(`Курсы/${id}`); if (enrollmentId) navigate({ courseEnrollmentId: enrollmentId, courseTab: enrollmentId.startsWith('archive-') ? 'homework' : 'course' }, true) }} /> : null}
+        {section === 'Курсы' ? <CoursesWorkspace key={studyTarget} onOpenGrades={(id, enrollmentId) => { selectSection(`Ведомости/${id}`); if (enrollmentId) navigate({ statementId: enrollmentId }, true) }} onAskNavigator={askNavigator} /> : null}
         {section === 'Настройки' ? <SettingsScreen theme={theme} onThemeChange={setTheme} themeError={themeError}
           conversations={conversations} materials={materials} busy={materialsBusy} storageError={storageError || materialsError}
           onClearHistory={clearHistory} onClearLibrary={clearLibrary} onClearData={() => onResetSession(library)} /> : null}
@@ -482,7 +486,7 @@ function StudentInterface({ onResetSession, isResetting }: {
                     onOpenChange={open => changeWidgetOpen(widget.id, open)} />
                 : <StudyWidget key={widget.id} kind={widget.id} label={widget.id === 'next-class' ? `Следующая пара: ${formatTime(nextClassTime)}` : widget.title} icon={widget.icon}
                     open={openWidget === widget.id} onOpenChange={open => changeWidgetOpen(widget.id, open)}
-                    onNavigate={() => selectSection(widget.section)} />
+                    onNavigate={selectSection} />
             })}
             <PreferencesDialog triggerLabel="Настроить виджеты" triggerClassName="widget-settings"
               triggerIcon="settings04-lined.svg" title="Виджеты" description="Выбери, что показывать над анимацией."
@@ -637,16 +641,18 @@ export default function App() {
     setIsResetting(true)
     const success = await library.resetSession()
     if (success) {
+      actionStatus.clear()
+      actionStatus.report({ key: 'session-reset', label: 'Локальные данные очищены' })
       refreshHomeworkRecords()
       setSessionVersion(version => version + 1)
-    }
+    } else actionStatus.report({ key: 'session-reset', label: 'Не удалось сбросить сессию', detail: 'Проверь доступ к хранилищу и повтори попытку' }, false)
     resetInProgress.current = false
     setIsResetting(false)
     return success
   }
 
   return <><SettingsProvider key={sessionVersion}><AppMotionProvider><SidebarProvider inert={isResetting} aria-busy={isResetting} className="student-app">
-    <MaterialLibraryProvider><MaterialSyncProvider><LateDaysProvider><NotificationsProvider><StudentInterface onResetSession={resetSession} isResetting={isResetting} /></NotificationsProvider></LateDaysProvider></MaterialSyncProvider></MaterialLibraryProvider>
+    <MaterialLibraryProvider><MaterialSyncProvider><LateDaysProvider><NotificationsProvider><StudentInterface onResetSession={resetSession} isResetting={isResetting} /><StatusIsland /></NotificationsProvider></LateDaysProvider></MaterialSyncProvider></MaterialLibraryProvider>
   </SidebarProvider></AppMotionProvider></SettingsProvider>
     {isResetting ? <div role="status" className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 text-sm">
       Сбрасываем сессию…

@@ -51,3 +51,5 @@
 .student-sidebar .conversation-history-row:has([data-active="true"]) .conversation-menu-trigger:hover { background: hsl(var(--sidebar-border)); }
 .group[data-collapsible="icon"] .student-sidebar [data-sidebar="menu-button"] { min-height: 32px; }
 html[data-density="compact"] .student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]):not(.logo-button) { min-height: 32px; padding-block: 6px; }
+
+[data-density="compact"] .student-sidebar [data-sidebar="menu-button"] { min-height: 32px; height: 32px; }

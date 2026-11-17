@@ -35,20 +35,28 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
   const lastAssistant = [...conversation.messages].reverse().find(message => message.role === 'assistant')?.id
 
   useLayoutEffect(() => {
-    const viewport = scrollRef.current
+    const viewport = scrollRef.current?.closest<HTMLElement>('.workspace-chat')
+    if (!viewport) return
+    const onScroll = () => { followBottom.current = viewport.scrollHeight - viewport.clientHeight - viewport.scrollTop < 64 }
+    viewport.addEventListener('scroll', onScroll, { passive: true })
+    return () => viewport.removeEventListener('scroll', onScroll)
+  }, [conversation.id])
+
+  useLayoutEffect(() => {
+    const viewport = scrollRef.current?.closest<HTMLElement>('.workspace-chat')
     // Follow streamed text, but keep the reading position when a large UI block appears.
     if (viewport && followBottom.current && generation) viewport.scrollTop = viewport.scrollHeight
   }, [conversation.id, conversation.messages.length, generation?.visibleCharacters, !!generation])
 
   useLayoutEffect(() => {
     followBottom.current = true
-    const viewport = scrollRef.current
+    const viewport = scrollRef.current?.closest<HTMLElement>('.workspace-chat')
     if (viewport) viewport.scrollTop = viewport.scrollHeight
   }, [conversation.id, conversation.messages.length])
 
   return <div ref={scrollRef} className="conversation-messages" role="log" aria-label="Переписка"
     aria-live={generation ? 'off' : 'polite'} aria-relevant="additions" tabIndex={0}
-    onScroll={event => { const el = event.currentTarget; followBottom.current = el.scrollHeight - el.clientHeight - el.scrollTop < 64 }}>
+>
     <header className="conversation-page-heading">
       <Button variant="ghost" size="sm" className="mb-4 -ml-2" onClick={onNavigatorHome}><ArrowLeft aria-hidden="true" />В Навигатор</Button>
       <h1 id="conversation-title">{conversation.title}</h1>
