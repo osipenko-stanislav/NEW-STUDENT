@@ -9,7 +9,7 @@ import { BookOpenCheck } from 'lucide-react'
 import { academicTasks, enrollments } from '@/data/academic-data'
 import { courses } from '@/data/course-catalog'
 import { useHomeworkRecords } from '@/hooks/use-homework'
-import { homeworkStatus } from '@/lib/homework-storage'
+import { isHomeworkSkipped, homeworkStatus } from '@/lib/homework-storage'
 import { isHomework, taskStatusLabels, taskStatusVariants } from '@/lib/academic-presentation'
 import { homeworkFilterStatus } from '@/lib/homework-filters'
 import { formatGrade } from '@/lib/grade-calculation'
@@ -33,7 +33,7 @@ export default function HomeworkWorkspace({ onNavigate }: { onNavigate: (destina
   const records = useHomeworkRecords()
   const { deadline } = useLateDays()
   const visible = tasks.filter(task => !!enrollmentById.get(task.enrollmentId)?.archived === (scope === 'archive')).map(task => ({ ...task, dueAt: deadline(task), status: homeworkStatus(task, records[task.id]) }))
-    .filter(task => matchesFilters({ status: homeworkFilterStatus(task.status), course: [task.courseId, `subject:${task.courseId === 'python-basic' ? 'python' : courses.find(item => item.id === task.courseId)?.area}`] }, conditions))
+    .filter(task => matchesFilters({ status: isHomeworkSkipped(task, records[task.id]) ? 'skipped' : homeworkFilterStatus(task.status), course: [task.courseId, `subject:${task.courseId === 'python-basic' ? 'python' : courses.find(item => item.id === task.courseId)?.area}`] }, conditions))
     .sort((a, b) => Number(homeworkFilterStatus(a.status) === 'submitted') - Number(homeworkFilterStatus(b.status) === 'submitted') || a.dueAt.localeCompare(b.dueAt) || a.title.localeCompare(b.title, 'ru'))
   function reset() { navigate({ homeworkScope: scope, homeworkFilter: 'all', homeworkCourse: 'all', homeworkConditions: [] }, true) }
   return <section className="page-container study-page all-homework-page" data-layout="data" aria-label="Домашки">

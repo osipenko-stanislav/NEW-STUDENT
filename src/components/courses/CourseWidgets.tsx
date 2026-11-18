@@ -2,7 +2,7 @@ import { DeadlineTransfer } from '@/components/late-days/TaskDeadline'
 import { GradeValue } from '@/components/ui/grade-value'
 import { AnimatedNumber } from '@/components/ui/animated-number'
 import { useLateDays } from '@/components/LateDaysProvider'
-import { BookOpen, CalendarClock, ChevronRight, List, GraduationCap, MessageCircle, CircleHelp } from 'lucide-react'
+import { BookOpen, ChevronRight, List, GraduationCap, MessageCircle, CircleHelp } from 'lucide-react'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -34,7 +34,7 @@ export default function CourseWidgets({ onDialog, onProgram, programOpen, toc, a
           <CardFooter asChild><button type="button" className="course-widget-footer" onClick={onOpenGrades}>Смотреть ведомость<ChevronRight aria-hidden="true" /></button></CardFooter>
         </Card>
         <Card size="sm" className="course-widget-card course-deadline-widget">
-          <CardHeader><h2>Ближайший дедлайн<CalendarClock aria-hidden="true" /></h2></CardHeader>
+          <CardHeader><h2>Ближайший дедлайн</h2></CardHeader>
           <CardContent><button type="button" className="course-deadline-summary" onClick={() => onDialog('assignment')}><span>{deadline.title}</span><time dateTime={effectiveDeadline(deadline.id) || deadline.dueAt}>{formatDateTime(effectiveDeadline(deadline.id) || deadline.dueAt, true)} МСК</time><Badge variant="neutral">{deadline.status}</Badge><span className="course-deadline-open">Открыть задание<ChevronRight aria-hidden="true" /></span></button><DeadlineTransfer taskId={deadline.id} /></CardContent>
         </Card>
       </>}

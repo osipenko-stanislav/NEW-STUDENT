@@ -22,7 +22,7 @@
 .message-command { max-width: 100%; padding: 2px 6px; border-radius: 6px; font-size: calc(12px * var(--text-scale, 1)); overflow-wrap: anywhere; }
 .message-command:has(+ .message-text) { margin-bottom: 6px; }
 .composer { display: flex; position: relative; min-height: 108px; flex-direction: column; border: 1px solid hsl(var(--border)); background: hsl(var(--background)); transition: border-color calc(150ms * var(--motion-scale)) var(--ease-enter); border-radius: 24px; box-shadow: var(--shadow-surface); }
-.composer:focus-within { border-color: hsl(var(--ring)); box-shadow: var(--shadow-surface), 0 0 0 2px hsl(var(--ring) / .12); }
+.composer:focus-within { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / .12); }
 .composer-editor { display: flex; min-height: 64px; flex-wrap: wrap; align-items: flex-start; gap: 8px; cursor: text; padding: 16px 20px 0; }
 .prompt-command { display: inline-flex; max-width: 100%; min-height: 24px; flex-shrink: 0; gap: 4px; padding: 1px 4px 1px 8px; border-radius: 6px; font-size: calc(12px * var(--text-scale, 1)); font-weight: 500; line-height: calc(20px * var(--text-scale, 1)); }
 .prompt-command-label { min-width: 0; overflow-wrap: anywhere; }
@@ -164,3 +164,47 @@
 .gen-deadline { display: flex; align-items: center; gap: 8px; }
 .gen-deadline-open { flex: 1; min-width: 0; text-align: left; }
 .gen-assignment-deadline { display: inline-flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 4px 8px; }
+
+/* A single next action, followed by compact alternatives in the same response. */
+.gen-continue-context { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
+.gen-continue-reason { max-width: 70ch; margin-block: 16px 20px; line-height: 1.5; }
+.gen-continue-alternatives { margin-top: 24px; padding-top: 20px; border-top: 1px solid hsl(var(--border)); }
+.gen-continue-alternatives > p { color: hsl(var(--muted-foreground)); font-size: calc(13px * var(--text-scale, 1)); }
+.gen-continue-alternatives ul { display: grid; gap: 16px; margin-top: 12px; }
+.gen-continue-alternatives li { display: grid; justify-items: start; gap: 4px; min-width: 0; }
+.gen-continue-alternatives [data-slot="button"] { padding: 0; height: auto; min-height: 32px; white-space: normal; text-align: left; justify-content: flex-start; }
+.gen-continue-alternatives .deadline-label { font-size: calc(12px * var(--text-scale, 1)); }
+
+/* Weekly workload stays inside the existing schedule answer and day tabs. */
+.gen-week-summary { margin-block: 4px 20px; line-height: 1.5; }
+.gen-week-load-mark { display: block; height: 3px; width: 12px; border-radius: 8px; background: hsl(var(--muted-foreground)); }
+.gen-day-tab[data-load="medium"] .gen-week-load-mark { width: 22px; background: var(--color-blue-text); }
+.gen-day-tab[data-load="high"] .gen-week-load-mark { width: 32px; background: var(--color-amber-text); }
+.gen-week-note, .gen-week-method { color: hsl(var(--muted-foreground)); font-size: calc(13px * var(--text-scale, 1)); line-height: 1.5; }
+.gen-week-legend { margin-top: 12px; }
+.gen-week-plan { display: grid; gap: 16px; }
+.gen-week-day-load { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: calc(13px * var(--text-scale, 1)); }
+.gen-week-day-load strong { color: var(--color-amber-text); font-weight: 500; }
+.gen-week-section { display: grid; gap: 12px; padding-top: 24px; }
+.gen-week-section h4 { font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; }
+.gen-week-blocks, .gen-week-recommendations { display: grid; gap: 24px; }
+.gen-week-blocks > li, .gen-week-recommendations > li { display: grid; gap: 10px; min-width: 0; }
+.gen-week-block-title { display: flex; align-items: center; gap: 12px; }
+.gen-week-block-title > [data-slot="button"]:last-child { margin-left: auto; flex-shrink: 0; }
+.gen-week-blocks li[data-done="true"] .gen-week-block-title > [data-variant="link"] { text-decoration: line-through; color: hsl(var(--muted-foreground)); }
+.gen-week-block-controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; max-width: 360px; }
+.gen-week-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.gen-week-section [data-variant="link"] { justify-content: flex-start; white-space: normal; text-align: left; height: auto; padding: 0; }
+.gen-week-recommendations > li > [data-slot="button"] { justify-self: start; }
+.gen-week-recommendations .deadline-label { font-size: calc(13px * var(--text-scale, 1)); }
+.gen-week-recommendation { display: grid; gap: 12px; }
+.gen-week-recommendation > button { justify-self: start; }
+.gen-week-method { margin-top: 12px; }
+.gen-week-method summary { cursor: pointer; }
+.gen-week-method p { margin-top: 12px; }
+.gen-day-tab[data-load] > span:nth-child(2) { font-size: calc(16px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); }
+.gen-week-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.gen-week-legend > span { display: inline-flex; align-items: center; gap: 8px; }
+.gen-week-key { display: inline-block; width: 12px; height: 3px; border-radius: 8px; background: hsl(var(--muted-foreground)); }
+.gen-week-key[data-load="medium"] { width: 22px; background: var(--color-blue-text); }
+.gen-week-key[data-load="high"] { width: 32px; background: var(--color-amber-text); }

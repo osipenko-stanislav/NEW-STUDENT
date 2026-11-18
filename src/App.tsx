@@ -61,6 +61,7 @@ const asset = (name: string) => `${import.meta.env.BASE_URL}assets/figma/${name}
 const HandbookWorkspace = lazy(() => import('@/components/handbook/HandbookWorkspace'))
 const HomeworkWorkspace = lazy(() => import('@/components/homework/HomeworkWorkspace'))
 const ScheduleWorkspace = lazy(() => import('@/components/schedule/ScheduleWorkspace'))
+const GradeForecast = lazy(() => import('@/components/grades/GradeForecast').then(module => ({ default: module.GradeForecast })))
 const GradebookWorkspace = lazy(() => import('@/components/grades/GradebookWorkspace'))
 const GradesWorkspace = lazy(() => import('@/components/grades/GradesWorkspace'))
 const CoursesWorkspace = lazy(() => import('@/components/courses/CoursesWorkspace'))
@@ -73,7 +74,7 @@ const navigatorOrbs: readonly OrbLayer[] = [
   { offset: [0.07, 0.03], scale: 0.78, opacity: 0.64, phase: 2.1 },
   { offset: [0.015, -0.04], scale: 0.9, opacity: 0.74, phase: 4.2 },
 ]
-const suggestions = ['Расписание сегодня', 'Моя неделя', 'Домашки', 'Материалы', '🔥 Я в огне']
+const suggestions = ['Продолжить учёбу', 'Расписание сегодня', 'Моя неделя', 'Домашки', 'Материалы', '🔥 Я в огне']
 const nextClassTime = upcomingClassSlots[0].startsAt
 const deadlineCount = homeworkDeadlines.length
 const widgets = [
@@ -86,7 +87,7 @@ const widgetOptions = widgets.map(widget => ({ value: widget.id, label: widget.l
 const suggestionOptions = suggestions.map(suggestion => ({ value: suggestion, label: suggestion }))
 const panels = {
   bookmarks: { title: 'Закладки', description: 'Здесь появятся сохранённые материалы.' },
-  profile: { title: 'Иван', description: 'Студент Центрального университета' },
+  profile: { title: 'Антон', description: 'Студент Центрального университета' },
 }
 type Panel = keyof typeof panels
 
@@ -304,6 +305,12 @@ function StudentInterface({ onResetSession, isResetting }: {
   }
 
   function useSuggestion(value: string) {
+    if (value === 'Продолжить учёбу') {
+      if (activeGeneration || voiceBusy || materialsBusy) return
+      const draft = { text: '', command: value }
+      sendMessage(draft, createMockResponse(draft, activeConversation?.messages, { state: lateDays.state, records: homeworkRecords }))
+      return
+    }
     if (value === '🔥 Я в огне') {
       if (activeGeneration || voiceBusy || materialsBusy) return
       const draft = { text: '', command: value }
@@ -453,20 +460,21 @@ function StudentInterface({ onResetSession, isResetting }: {
           <SchedulePopover onNavigate={destination => { selectSection(destination); setMaterialsOpen(false) }} />
           <GhostButton label="Библиотека" id="materials-trigger" aria-controls="materials-sidebar" aria-expanded={materialsOpen}
             onClick={() => { setMaterialPicker(false); setMaterialInfoId(null); setMaterialsOpen(open => !open) }}><Icon name="archive-lined.svg" /></GhostButton>
-          <GhostButton label="Профиль Ивана" className="profile-action" onClick={() => setPanel('profile')}>
+          <GhostButton label="Профиль Антона" className="profile-action" onClick={() => setPanel('profile')}>
             <img src={asset('avatar-image.png')} alt="" className="size-7 rounded-full object-cover" />
             <img src={asset('type-status-size-default.svg')} alt="" className="profile-status" />
           </GhostButton>
         </div>
       </header>
       <div className={`workspace-layout ${materialsOpen ? 'has-materials' : ''}`}>
-      <div className={`workspace ${isConversation ? 'workspace-chat' : ''} ${section === 'Настройки' ? 'workspace-settings' : ''} ${section === 'Курсы' ? 'workspace-courses' : ''} ${section === 'Ведомости' ? 'workspace-grades' : ''} ${section === 'Хэндбук' ? 'workspace-handbook' : ''}`} aria-label={section}><MotionPage motionKey={section}><Suspense fallback={<div className="route-loading" role="status">Загружаем раздел…</div>}>
+      <div className={`workspace ${isConversation ? 'workspace-chat' : ''} ${section === 'Настройки' ? 'workspace-settings' : ''} ${section === 'Курсы' ? 'workspace-courses' : ''} ${section === 'Ведомости' ? 'workspace-grades' : ''} ${section === 'Хэндбук' || section === 'Прогноз' ? 'workspace-handbook' : ''}`} aria-label={section}><MotionPage motionKey={section}><Suspense fallback={<div className="route-loading" role="status">Загружаем раздел…</div>}>
         {section === 'Motion Lab' && MotionLab ? <MotionLab theme={theme} onThemeChange={setTheme} /> : null}
         {section === 'Late Days' ? <LateDaysWorkspace /> : null}
         {section === 'Уведомления' ? <NotificationsWorkspace onOpen={openNotification} /> : null}
         {section === 'Хэндбук' ? <HandbookWorkspace /> : null}
         {section === 'Расписание' ? <ScheduleWorkspace onNavigate={selectSection} /> : null}
         {section === 'Домашки' ? <HomeworkWorkspace onNavigate={selectSection} /> : null}
+        {section === 'Прогноз' ? <GradeForecast key={studyTarget} /> : null}
         {section === 'Зачетка' ? <GradebookWorkspace /> : null}
         {section === 'Ведомости' ? <GradesWorkspace key={studyTarget} onOpenCourse={(id, enrollmentId) => { selectSection(`Курсы/${id}`); if (enrollmentId) navigate({ courseEnrollmentId: enrollmentId, courseTab: enrollmentId.startsWith('archive-') ? 'homework' : 'course' }, true) }} /> : null}
         {section === 'Курсы' ? <CoursesWorkspace key={studyTarget} onOpenGrades={(id, enrollmentId) => { selectSection(`Ведомости/${id}`); if (enrollmentId) navigate({ statementId: enrollmentId }, true) }} onAskNavigator={askNavigator} /> : null}
@@ -478,7 +486,7 @@ function StudentInterface({ onResetSession, isResetting }: {
           <AnimatePresence initial={false} mode="popLayout">{activeConversation ? <m.div key="conversation" className="navigator-state navigator-state-conversation"
             initial={spatialMotion ? { opacity: 0, y: 8 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
             <ConversationMessages key={activeConversation.id} onNavigatorHome={() => selectSection('Навигатор')} conversation={activeConversation} materials={materials} generation={activeGeneration}
-            onNavigate={selectSection} onFollowUp={value => { setPromptCommand(null); setPrompt(value); requestAnimationFrame(() => promptRef.current?.focus()) }}
+            onNavigate={selectSection} onRequest={useSuggestion} onFollowUp={value => { setPromptCommand(null); setPrompt(value); requestAnimationFrame(() => promptRef.current?.focus()) }}
             onOpenMaterial={id => { setMaterialPicker(false); setMaterialInfoId(id); setMaterialsOpen(true) }} /></m.div> : <m.div key="empty" className="navigator-state navigator-state-empty"
               initial={spatialMotion ? { opacity: 0, y: -6 } : { opacity: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
           <div className="navigator-widgets" role="group" aria-label="Виджеты">
@@ -521,7 +529,7 @@ function StudentInterface({ onResetSession, isResetting }: {
                 fallback={<img src={asset('navigator-visual.png')} alt="" className="orb-fallback" width="500" height="270" />}
               />
             </div>
-            <h1 data-typography="accent-title" id="navigator-title">Привет, Иван! С чего начнем?</h1>
+            <h1 data-typography="accent-title" id="navigator-title">Привет, Антон! С чего начнем?</h1>
           </div>
           </m.div>}</AnimatePresence>
           <div className="assistant-input">

@@ -1,3 +1,4 @@
+import HomeworkPersonalControl from '@/components/courses/HomeworkPersonalControl'
 import { AnimatedNumber } from '@/components/ui/animated-number'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Hourglass, ArrowRight } from 'lucide-react'
@@ -38,7 +39,7 @@ export default function LateDaysWorkspace() {
       const task = academicTasks.find(item => item.id === operation.taskId)!
       return <li key={operation.id}><button className="late-days-operation" onClick={() => navigate({ section: 'Курсы', courseId: task.courseId, taskId: task.id, lessonId: null, materialId: null, courseTab: 'homework' })}>
         <Hourglass aria-hidden="true" /><span className="late-days-operation-copy"><strong>{task.title}</strong><span>{getCourse(task.courseId).title}</span><span>Исходный: {formatDateTime(operation.originalDeadline, true)}</span><span className="late-days-operation-dates"><time dateTime={operation.beforeDeadline}>{formatDateTime(operation.beforeDeadline, true)}</time><ArrowRight aria-hidden="true" /><time dateTime={operation.newDeadline}>{formatDateTime(operation.newDeadline, true)}</time></span><time dateTime={operation.at}>{formatDateTime(operation.at, true)} · {operation.type === 'debit' ? 'Списание' : operation.type === 'refund' ? 'Возврат' : 'Корректировка'}</time></span><span className="late-days-operation-amount">{operation.type === 'refund' || operation.days < 0 ? '+' : '−'}{Math.abs(operation.days)} дн.</span>
-      </button></li>
+      </button><HomeworkPersonalControl taskId={task.id} /></li>
     })}</ul> : <EmptyState icon={Hourglass} title="Операций пока нет" description="Здесь появится история переносов." />}</section>
     <details className="late-days-rules"><summary>Как работают Late Days</summary><p>1 Late Day — 1 календарный день отсрочки. Время сдачи сохраняется. Перенос доступен для несданных домашних работ текущего семестра до истечения дедлайна. После запуска таймера срок менять нельзя. Подтверждённые переносы нельзя отменить самостоятельно.</p></details>
     {semester.current ? <Button variant="outline" onClick={() => navigate({ section: 'Домашки' })}>Открыть домашки</Button> : null}

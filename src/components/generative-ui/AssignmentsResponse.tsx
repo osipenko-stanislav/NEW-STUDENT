@@ -1,3 +1,5 @@
+import { resolveHomeworkAssignment } from '@/lib/study-projections'
+import ContinueStudyResponse from './ContinueStudyResponse'
 import { DeadlineTransfer } from '@/components/late-days/TaskDeadline'
 import { useLateDays } from '@/components/LateDaysProvider'
 import HomeworkModeBadge from '@/components/courses/HomeworkModeBadge'
@@ -19,8 +21,9 @@ export default function AssignmentsResponse({ part, onNavigate }: { part: Assign
   const [conditions, setConditions] = useState<FilterCondition[]>(() => assignmentStatusConditions(part.filter))
   const records = useHomeworkRecords()
   const { deadline } = useLateDays()
-  const items = part.items.map(item => ({ ...item, dueAt: deadline(item.id) || item.dueAt, status: records[item.id]?.submittedAt ? 'submitted' as const : records[item.id]?.savedAt || records[item.id]?.startedAt ? 'in-progress' as const : item.status })).filter(item => (part.subject === 'all' || item.subject === part.subject)
-    && matchesFilters({ status: item.status }, conditions))
+  const items = part.items.map(item => resolveHomeworkAssignment(item, records, deadline(item.id) || item.dueAt)).filter(item => (part.subject === 'all' || item.subject === part.subject)
+    && matchesFilters({ status: item.personalSkipped ? 'skipped' : item.status }, conditions))
+  if (part.presentation === 'continue-study') return <ContinueStudyResponse onNavigate={onNavigate} />
   return <section className="gen-ui" aria-label="Список домашних заданий">
     <div className="gen-header"><h3 className="gen-heading"><SemanticIcon icon={BookOpenCheck} tone="violet" />Домашки</h3><p>Все сроки по Москве</p></div>
     <div className="gen-select-row"><AssignmentStatusFilter conditions={conditions} onChange={setConditions} />

@@ -1,5 +1,8 @@
+import { resolveHomeworkAssignment } from './study-projections.ts'
+import { matchesHomeworkFilter } from './homework-filters.ts'
+import { continueStudyActions } from './continue-study.ts'
 import { taskDeadline } from './late-days.ts'
-import { homeworkStatus, type HomeworkRecord } from './homework-storage.ts'
+import { type HomeworkRecord } from './homework-storage.ts'
 import { academicTasks } from '../data/academic-data.ts'
 import { type LateDaysState, seedLateDays } from '../data/late-days.ts'
 import { createLateDaysResponse } from './late-days-assistant.ts'
@@ -10,20 +13,22 @@ import type { AssignmentsPart, CourseFilter, DemoAssignment, MockContext, Schedu
 import type { ChatMessage, ConversationDraft, MessageAttachment, MessagePart } from '../types/conversation.ts'
 
 export type MockResponse = { content: MessagePart[]; attachments?: MessageAttachment[]; mockContext?: MockContext; suggestions: string[] }
-type Intent = 'today' | 'tomorrow' | 'week' | 'assignments' | 'materials' | 'deadlines' | 'nearest' | 'active' | 'submitted' | 'math' | 'python' | 'mathMaterials' | 'pythonMaterials' | 'pdf'
+type Intent = 'continue-study' | 'today' | 'tomorrow' | 'week' | 'assignments' | 'materials' | 'deadlines' | 'nearest' | 'active' | 'submitted' | 'skipped' | 'math' | 'python' | 'mathMaterials' | 'pythonMaterials' | 'pdf'
 function normalizeMockQuery(value: string): string {
   return value.toLocaleLowerCase('ru').replaceAll('ё', 'е').replace(/[.,!?…/]+/g, '').replace(/\s+/g, ' ').trim()
 }
 // An explicit phrase table, not an attempt to interpret arbitrary language.
 const phrases: Record<Intent, string[]> = {
+  'continue-study': ['продолжить учебу', 'хочу продолжить учебу'],
   today: ['расписание сегодня', 'что у меня сегодня', 'покажи расписание на сегодня', 'сегодня'],
   tomorrow: ['а что у меня завтра', 'что у меня завтра', 'а завтра', 'завтра', 'на завтра', 'покажи расписание на завтра'],
   week: ['моя неделя', 'покажи мою неделю', 'расписание на неделю'],
-  assignments: ['домашки', 'мои домашки', 'покажи домашки'],
+  assignments: ['домашки', 'мои домашки', 'покажи домашки', 'все задания', 'покажи все задания', 'все задания включая пропущенные', 'покажи все задания включая пропущенные', 'все домашки включая пропущенные', 'покажи все домашки включая пропущенные', 'покажи все домашки', 'все домашние задания', 'покажи все домашние задания', 'покажи все домашние задания включая пропущенные'],
   materials: ['материалы', 'найди материалы', 'покажи материалы'],
   deadlines: ['покажи только домашки', 'только домашки', 'покажи дедлайны'],
   nearest: ['какая ближайшая сдача', 'ближайшая сдача', 'ближайший дедлайн'],
   active: ['покажи несданные', 'только несданные', 'несданные'],
+  skipped: ['пропущенные', 'покажи пропущенные', 'пропущенные мной', 'покажи пропущенные задания', 'покажи пропущенные домашки'],
   submitted: ['покажи сданные', 'только сданные', 'сданные'],
   math: ['по математике', 'только математика'],
   mathMaterials: ['найди материалы по математике', 'материалы по математике'],
@@ -32,7 +37,7 @@ const phrases: Record<Intent, string[]> = {
   pdf: ['покажи только pdf', 'только pdf'],
 }
 const intents = new Map(Object.entries(phrases).flatMap(([intent, values]) => values.map(value => [value, intent as Intent] as const)))
-const commandIntents: Record<string, Intent> = { 'расписание сегодня': 'today', 'моя неделя': 'week', 'домашки': 'assignments', 'материалы': 'materials' }
+const commandIntents: Record<string, Intent> = { 'продолжить учебу': 'continue-study', 'расписание сегодня': 'today', 'моя неделя': 'week', 'домашки': 'assignments', 'материалы': 'materials' }
 const contextFor = (scenario: MockContext['scenario'], day = demoToday, subject: CourseFilter = 'all'): MockContext => ({ scenario, day, subject })
 
 function scheduleResponse(currentAssignments: DemoAssignment[], mode: 'day' | 'week', day: string, view: SchedulePart['view'] = 'all', subject: CourseFilter = 'all'): MockResponse {
@@ -42,7 +47,7 @@ function scheduleResponse(currentAssignments: DemoAssignment[], mode: 'day' | 'w
   const selectedClasses = classes.filter(item => mode === 'week' || item.date === day)
   const selectedAssignments = assignments.filter(item => mode === 'week' || item.dueAt.startsWith(day))
   const text = mode === 'week'
-    ? `На неделе занятий: ${selectedClasses.length}, дедлайнов: ${selectedAssignments.length}. Занятия и задания собраны по дням.`
+    ? 'Вот твоя неделя. Выбери день, чтобы посмотреть занятия, дедлайны и личную подготовку.'
     : `${date.label}. Занятий: ${selectedClasses.length}. ${selectedClasses.map(item => `${item.course} — ${item.startsAt}`).join('; ')}. Дедлайнов: ${selectedAssignments.length}.`
   return { content: [{ type: 'text', text }, { type: 'schedule', version: 1, mode, days: demoDays, selectedDay: day, view, classes, assignments }],
     mockContext: contextFor(mode === 'week' ? 'week' : 'schedule', day, subject),
@@ -51,9 +56,9 @@ function scheduleResponse(currentAssignments: DemoAssignment[], mode: 'day' | 'w
 }
 function assignmentsResponse(currentAssignments: DemoAssignment[], filter: AssignmentsPart['filter'] = 'all', subject: CourseFilter = 'all', nearest = false, day?: string, courseId?: string): MockResponse {
   let items = currentAssignments.filter(item => (!courseId || item.courseId === courseId) && (subject === 'all' || item.subject === subject) && (!day || item.dueAt.startsWith(day)))
-  if (nearest) items = items.filter(item => item.status !== 'submitted').slice(0, 1)
+  if (nearest) items = items.filter(item => !item.personalSkipped && item.status !== 'submitted').slice(0, 1)
   const closest = items[0]
-  const visible = items.filter(item => filter === 'all' || (filter === 'active' ? item.status !== 'submitted' : item.status === filter))
+  const visible = items.filter(item => matchesHomeworkFilter(item.status, filter, item.personalSkipped))
   const text = nearest
     ? closest ? `Ближайшая несданная работа — «${closest.title}». Срок — ${closest.dueLabel} МСК. В карточке можно раскрыть условие задания.` : 'Несданных работ с такими условиями нет.'
     : !visible.length ? 'Заданий с выбранными условиями нет.' : `Заданий: ${visible.length}. Открой задание, чтобы посмотреть условие и отправить решение.`
@@ -92,8 +97,7 @@ export function createMockResponse(draft: ConversationDraft, messages: ChatMessa
   const currentAssignments = lateContext ? demoAssignments.map(item => {
     const task = academicTasks.find(task => task.id === item.id)!
     const dueAt = taskDeadline(lateContext.state, task)
-    const status = homeworkStatus(task, lateContext.records[task.id])
-    return { ...item, dueAt, status: status === 'accepted' || status === 'rejected' ? 'submitted' as const : status, dueLabel: new Intl.DateTimeFormat('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' }).format(new Date(dueAt)) }
+    return { ...resolveHomeworkAssignment(item, lateContext.records, dueAt), dueLabel: new Intl.DateTimeFormat('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' }).format(new Date(dueAt)) }
   }).sort((a, b) => a.dueAt.localeCompare(b.dueAt) || a.id.localeCompare(b.id)) : demoAssignments
   const schedule = (mode: 'day' | 'week', day: string, view: SchedulePart['view'] = 'all', subject: CourseFilter = 'all') => scheduleResponse(currentAssignments, mode, day, view, subject)
   const assignments = (filter: AssignmentsPart['filter'] = 'all', subject: CourseFilter = 'all', nearest = false, day?: string, courseId?: string) => assignmentsResponse(currentAssignments, filter, subject, nearest, day, courseId)
@@ -109,6 +113,12 @@ export function createMockResponse(draft: ConversationDraft, messages: ChatMessa
     return materials('all', false, course.id)
   }
   switch (intent) {
+    case 'continue-study': {
+      const actions = continueStudyActions(academicTasks, lateContext?.records ?? {}, lateContext?.state ?? seedLateDays())
+      return { content: [{ type: 'text', text: actions.length ? 'Предлагаю начать с несданной работы. Вот что сейчас требует внимания.' : 'Сейчас нет заданий, которые можно продолжить. Можно выбрать курс и открыть его материалы.' },
+        { type: 'assignments', version: 1, presentation: 'continue-study', items: actions.flatMap(action => demoAssignments.find(item => item.id === action.task.id) ?? []), filter: 'active', subject: 'all' }],
+        suggestions: [] }
+    }
     case 'today': return schedule('day', demoToday)
     case 'week': return schedule('week', demoToday)
     case 'assignments': return assignments()
@@ -119,6 +129,7 @@ export function createMockResponse(draft: ConversationDraft, messages: ChatMessa
     case 'deadlines': return context?.scenario === 'week' ? schedule('week', context.day, 'deadlines', context.subject) : assignments('active')
     case 'nearest': return assignments('active', context?.scenario === 'assignments' ? context.subject : 'all', true, undefined, context?.courseId)
     case 'active': return assignments('active', context?.scenario === 'assignments' ? context.subject : 'all', false, undefined, context?.courseId)
+    case 'skipped': return assignments('skipped')
     case 'submitted': return assignments('submitted', context?.scenario === 'assignments' ? context.subject : 'all', false, undefined, context?.courseId)
     case 'mathMaterials': return materials('math')
     case 'pythonMaterials': return materials('python')

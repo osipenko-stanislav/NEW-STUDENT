@@ -9,7 +9,7 @@ import { academicClasses, academicTasks } from '@/data/academic-data'
 import { courses } from '@/data/course-catalog'
 import { useNavigation, navigate } from '@/hooks/use-navigation'
 import { useHomeworkRecords } from '@/hooks/use-homework'
-import { homeworkStatus } from '@/lib/homework-storage'
+import { isHomeworkSkipped, homeworkStatus } from '@/lib/homework-storage'
 import { isHomework } from '@/lib/academic-presentation'
 import { homeworkFilterStatus } from '@/lib/homework-filters'
 import { addDays, weekDays, moscowDate, minutesAt, classTone, scheduleRangeLabel, layoutCalendarEntries, type ScheduleView } from '@/lib/schedule'
@@ -52,7 +52,7 @@ export default function ScheduleWorkspace({ onNavigate }: { onNavigate: (destina
   const conditions = state.scheduleConditions ?? [...singleFilter('course', state.scheduleCourse), ...singleFilter('format', state.scheduleFormat), ...singleFilter('room', state.scheduleRoom), ...singleFilter('teacher', state.scheduleTeacher)]
   const sourceEvents: Event[] = [
     ...(state.scheduleKind !== 'deadlines' ? academicClasses.map(item => ({ id: item.id, date: item.date, startsAt: item.startsAt, endsAt: item.endsAt, title: item.course, meta: `${item.format} · ${item.room}`, tone: classTone(item.format), slot: item, courseId: item.courseId })) : []),
-    ...(state.scheduleKind !== 'classes' ? deadlineTasks.map(task => ({ ...task, dueAt: deadline(task) })).filter(task => homeworkFilterStatus(homeworkStatus(task, records[task.id])) !== 'submitted').map(task => ({ id: `deadline-${task.id}`, date: task.dueAt.slice(0, 10), startsAt: task.dueAt.slice(11, 16), endsAt: `${String(Math.min(24, Math.floor((minutesAt(task.dueAt.slice(11, 16)) + 45) / 60))).padStart(2, '0')}:${String(Math.min(1440, minutesAt(task.dueAt.slice(11, 16)) + 45) % 60).padStart(2, '0')}`, title: task.title, meta: courseNames.get(task.courseId)!, tone: 'red', taskId: task.id, courseId: task.courseId })) : []),
+    ...(state.scheduleKind !== 'classes' ? deadlineTasks.map(task => ({ ...task, dueAt: deadline(task) })).filter(task => homeworkFilterStatus(homeworkStatus(task, records[task.id])) !== 'submitted').map(task => ({ id: `deadline-${task.id}`, date: task.dueAt.slice(0, 10), startsAt: task.dueAt.slice(11, 16), endsAt: `${String(Math.min(24, Math.floor((minutesAt(task.dueAt.slice(11, 16)) + 45) / 60))).padStart(2, '0')}:${String(Math.min(1440, minutesAt(task.dueAt.slice(11, 16)) + 45) % 60).padStart(2, '0')}`, title: task.title, meta: courseNames.get(task.courseId)! + (isHomeworkSkipped(task, records[task.id]) ? ' · Пропущено мной' : ''), tone: 'red', taskId: task.id, courseId: task.courseId })) : []),
   ]
   const events = sourceEvents.filter(event => dates.includes(event.date) && matchesFilters({ course: event.courseId, format: event.slot?.format, room: event.slot?.room, teacher: event.slot?.teacher }, conditions)).sort((a, b) => a.date.localeCompare(b.date) || a.startsAt.localeCompare(b.startsAt) || a.title.localeCompare(b.title, 'ru'))
   const gridEvents = events.filter(event => !event.taskId)

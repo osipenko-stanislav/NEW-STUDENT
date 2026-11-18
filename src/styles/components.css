@@ -8,15 +8,15 @@
 :where([data-slot="button"]) { border-radius: var(--radius-control); }
 :where([data-slot="button"]:is([data-size="icon"], .ghost-icon, .widget-settings)), :where([data-slot="dialog-close"], [data-slot="sheet-close"]) { border-radius: 999px; }
 :where([data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"])) {
-  box-shadow: var(--shadow-control);
+  box-shadow: none;
 }
-:where([data-slot="button"][data-variant="default"]) { box-shadow: 0 2px 5px hsl(var(--shadow-color) / .1); }
+:where([data-slot="button"][data-variant="default"]) { box-shadow: none; }
 :where([data-slot="button"][data-variant="ghost"]) { box-shadow: none; }
 [data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"] {
   border-radius: var(--radius-control);
 }
 [data-slot="input"], [data-slot="select-trigger"] {
-  box-shadow: inset 0 1px 2px hsl(var(--shadow-color) / .025);
+  box-shadow: none;
 }
 [data-slot="input"]:focus-visible, [data-slot="select-trigger"]:focus-visible {
   outline: 2px solid hsl(var(--ring) / .45);

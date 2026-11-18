@@ -7,10 +7,10 @@
 .course-program-content { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 12px 16px; }
 .course-program-panel .course-block summary { align-items: flex-start; min-height: 0; padding: 12px 8px; }
 .course-program-panel .course-entity-list { padding: 0 0 12px 8px; }
-.course-program-panel .course-entity-list button { grid-template-columns: auto minmax(0, 1fr) max-content; padding: 10px 8px; gap: 8px; }
-.course-program-panel .course-entity-list button > .course-homework-mode-badge { grid-column: 2 / 4; grid-row: 2; justify-self: start; }
-.course-program-panel .course-entity-list button > :last-child { grid-column: 3; grid-row: 1; }
-.course-program-panel .course-entity-list button[aria-current="page"] { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
+.course-program-panel .course-entity-list > li > button { grid-template-columns: auto minmax(0, 1fr) max-content; padding: 10px 8px; gap: 8px; }
+.course-program-panel .course-entity-list > li > button > .course-homework-mode-badge { grid-column: 2 / 4; grid-row: 2; justify-self: start; }
+.course-program-panel .course-entity-list > li > button > :last-child { grid-column: 3; grid-row: 1; }
+.course-program-panel .course-entity-list > li > button[aria-current="page"] { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
 .workspace-courses { overflow: hidden; }
 .course-surface { height: 100%; min-height: 0; overflow: auto; overscroll-behavior: contain; background: hsl(var(--background)); container: course-surface / inline-size; }
 .course-surface button, .course-surface a { -webkit-tap-highlight-color: transparent; }
@@ -25,10 +25,10 @@
 .course-catalog-caption { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 24px 0 16px; font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
 .course-grid { margin-top: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 228px), 1fr)); gap: 16px; }
 .course-tile-motion { min-width: 0; }
-.course-tile { position: relative; min-width: 0; min-height: 0; height: 100%; transition: border-color var(--motion-fast) var(--ease-enter), box-shadow var(--motion-fast) var(--ease-enter), translate var(--motion-fast) var(--ease-enter); border-radius: var(--radius-surface); box-shadow: var(--shadow-control); }
-@media (hover: hover) { .course-tile:hover { border-color: hsl(var(--ring) / .4); translate: 0 -2px; box-shadow: 0 8px 22px hsl(var(--shadow-color) / .07); } }
-html[data-motion-level="minimal"] .course-tile:hover { translate: none; box-shadow: var(--shadow-control); }
-html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box-shadow: 0 12px 28px hsl(var(--shadow-color) / .1); }
+.course-tile { position: relative; min-width: 0; min-height: 0; height: 100%; transition: border-color var(--motion-fast) var(--ease-enter), box-shadow var(--motion-fast) var(--ease-enter), translate var(--motion-fast) var(--ease-enter); border-radius: var(--radius-surface); box-shadow: none; }
+@media (hover: hover) { .course-tile:hover { border-color: hsl(var(--ring) / .4); translate: 0 -2px; box-shadow: none; } }
+html[data-motion-level="minimal"] .course-tile:hover { translate: none; box-shadow: none; }
+html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box-shadow: none; }
 .course-tile-open { display: flex; width: 100%; min-height: 112px; height: 100%; flex-direction: column; align-items: flex-start; gap: 12px; padding: var(--surface-padding);  border-radius: inherit; text-align: left;   }
 .course-tile-open:focus-visible { outline-offset: 0 !important; }
 .course-tile-area { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; max-width: calc(100% - 96px); font-size: calc(11px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
@@ -76,14 +76,14 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
 .course-chevron { width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--muted-foreground)); transition: transform calc(150ms * var(--motion-scale)) var(--ease-enter); }
 .course-block[open] > summary .course-chevron, .course-recording-class[open] > summary .course-chevron { transform: rotate(180deg); }
 .course-entity-list { padding: 4px 0 12px 32px; }
-.course-entity-list button { display: grid; width: 100%; grid-template-columns: auto minmax(0, 1fr) max-content max-content; align-items: center; gap: 12px; padding: 10px 12px; text-align: left; transition: background-color calc(150ms * var(--motion-scale)) var(--ease-enter); border-radius: 10px; }
-.course-entity-list button:hover { background: hsl(var(--muted) / .65); }
-.course-entity-list button > span:nth-child(2) { grid-column: 2; min-width: 0; font-size: calc(13px * var(--text-scale, 1)); line-height: 22px; overflow-wrap: anywhere; }
-.course-entity-list button > .semantic-icon { grid-column: 1; }
-.course-entity-list button > .course-homework-mode-badge { grid-column: 3; justify-self: end; }
-.course-entity-list button > :last-child { grid-column: 4; justify-self: center; }
-.course-entity-list button > .course-entity-status { display: flex; color: var(--color-green-text); }
-.course-entity-list button > .course-entity-status svg { width: 16px; height: 16px; }
+.course-entity-list > li > button { display: grid; width: 100%; grid-template-columns: auto minmax(0, 1fr) max-content max-content; align-items: center; gap: 12px; padding: 10px 12px; text-align: left; transition: background-color calc(150ms * var(--motion-scale)) var(--ease-enter); border-radius: 10px; }
+.course-entity-list > li > button:hover { background: hsl(var(--muted) / .65); }
+.course-entity-list > li > button > span:nth-child(2) { grid-column: 2; min-width: 0; font-size: calc(13px * var(--text-scale, 1)); line-height: 22px; overflow-wrap: anywhere; }
+.course-entity-list > li > button > .semantic-icon { grid-column: 1; }
+.course-entity-list > li > button > .course-homework-mode-badge { grid-column: 3; justify-self: end; }
+.course-entity-list > li > button > :last-child { grid-column: 4; justify-self: center; }
+.course-entity-list > li > button > .course-entity-status { display: flex; color: var(--color-green-text); }
+.course-entity-list > li > button > .course-entity-status svg { width: 16px; height: 16px; }
 .course-entity-list .course-entity-arrow { width: 14px; height: 14px; flex-shrink: 0; align-self: center; color: hsl(var(--muted-foreground)); }
 .course-block-unpublished { display: flex; align-items: flex-start; gap: 12px; padding: 20px 24px 24px 56px; }
 .course-block-unpublished > svg { width: 18px; height: 18px; color: hsl(var(--muted-foreground)); flex-shrink: 0; }
@@ -277,10 +277,10 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
   .course-block summary { padding: 12px; gap: 10px; }
   .course-block summary > span:not(.semantic-icon) { font-size: calc(13px * var(--text-scale, 1)); line-height: 20px; }
   .course-entity-list { padding-left: 12px; }
-  .course-entity-list button { grid-template-columns: auto minmax(0, 1fr) max-content; padding: 12px; gap: 10px; }
-  .course-entity-list button > span:nth-child(2) { font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; }
-  .course-entity-list button > .course-homework-mode-badge { grid-column: 2 / 4; grid-row: 2; justify-self: start; }
-  .course-entity-list button > :last-child { grid-column: 3; grid-row: 1; }
+  .course-entity-list > li > button { grid-template-columns: auto minmax(0, 1fr) max-content; padding: 12px; gap: 10px; }
+  .course-entity-list > li > button > span:nth-child(2) { font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; }
+  .course-entity-list > li > button > .course-homework-mode-badge { grid-column: 2 / 4; grid-row: 2; justify-self: start; }
+  .course-entity-list > li > button > :last-child { grid-column: 3; grid-row: 1; }
   .course-block-unpublished { padding: 16px; }
   .course-widgets { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .course-reader { padding-block: 8px 24px; }
@@ -404,3 +404,7 @@ html[data-motion-level="expressive"] .course-tile:hover { translate: 0 -4px; box
 .homework-grade-metric dd { color: hsl(var(--foreground)); }
 .homework-results-island { padding: 16px; border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface); background: hsl(var(--card)); box-shadow: var(--shadow-surface); }
 .homework-results-island .homework-grade-metric { padding: 0 0 16px; margin-bottom: 16px; border: 0; border-bottom: 1px solid hsl(var(--border)); border-radius: 0; background: transparent; box-shadow: none; }
+
+.course-entity-with-actions { display: flex; align-items: center; gap: 4px; }
+.course-entity-with-actions > button { min-width: 0; flex: 1; }
+.course-entity-with-actions > .task-deadline-actions { flex-wrap: nowrap; flex-shrink: 0; }

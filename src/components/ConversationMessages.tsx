@@ -11,18 +11,19 @@ import type { Conversation, MessagePart } from '@/types/conversation'
 import { m } from 'motion/react'
 import { useAppMotion } from '@/components/MotionProvider'
 
-function MessageContent({ part, onNavigate, visibleCharacters, animate }: { part: MessagePart; onNavigate: (section: string) => void; visibleCharacters?: number; animate: boolean }) {
+function MessageContent({ part, onNavigate, onRequest, visibleCharacters, animate }: { part: MessagePart; onNavigate: (section: string) => void; visibleCharacters?: number; animate: boolean; onRequest?: (query: string) => void }) {
   return part.type === 'text' ? <p className="message-text">{visibleCharacters === undefined ? part.text : part.text.slice(0, visibleCharacters)}</p>
-    : visibleCharacters === undefined ? <GenerativeContent part={part} onNavigate={onNavigate} animate={animate} /> : null
+    : visibleCharacters === undefined ? <GenerativeContent part={part} onNavigate={onNavigate} onRequest={onRequest} animate={animate} /> : null
 }
 
-export default function ConversationMessages({ conversation, materials, onOpenMaterial, generation, onNavigate, onFollowUp, onNavigatorHome }: {
+export default function ConversationMessages({ conversation, materials, onOpenMaterial, generation, onNavigate, onFollowUp, onRequest, onNavigatorHome }: {
   conversation: Conversation
   materials: ConversationMaterial[]
   onOpenMaterial: (id: string) => void
   generation?: GenerationState
   onNavigate: (section: string) => void
   onNavigatorHome: () => void
+  onRequest?: (query: string) => void
   onFollowUp: (text: string) => void
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -88,7 +89,7 @@ export default function ConversationMessages({ conversation, materials, onOpenMa
         {generation?.messageId === message.id && generation.phase === 'thinking' ? <div className="gen-thinking" role="status">
           <span className="gen-thinking-dots" aria-hidden="true"><i /><i /><i /></span>Готовлю ответ…
         </div> : <>
-          {message.content.map((part, index) => <MessageContent key={index} part={part} onNavigate={onNavigate} animate={!initialMessageIds.has(message.id)}
+          {message.content.map((part, index) => <MessageContent key={index} part={part} onNavigate={onNavigate} onRequest={onRequest} animate={!initialMessageIds.has(message.id)}
             visibleCharacters={generation?.messageId === message.id ? generation.visibleCharacters : undefined} />)}
           {generation?.messageId === message.id ? <span className="sr-only" role="status">Ассистент печатает</span> : null}
         </>}

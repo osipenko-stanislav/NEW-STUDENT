@@ -59,3 +59,5 @@
 ## Status Island
 
 Общий feedback операций студента: running/progress/success/error/expanded/hidden. Контракт `statusIslandParameters` в motion-recipes.ts: spring450/bounce.18, swap220/ease[.23,1,.32,1], y8/blur4, swap±6, peek5/scale.94/.88. Minimal/reduced без пространственного движения, blur и вращения. Появление не забирает фокус; hover/click/tap/Enter/Space раскрывают очередь, Escape возвращает фокус, ошибки закрываются отдельно, running не удаляется. Успех4s с паузой при чтении и модальном окне, защита ревизией от устаревшего таймера. Подробности: [status-island.md](status-island.md).
+
+| Personal homework plan: пропуск/возврат | planned/skipped/restore/error | CircleSlash state swap через StateIcon/iconSwap; цвет и нейтральный фон после успешной записи; повторный клик обратим | Button + Tooltip + StateIcon + actionStatus | Реализовано | Один/повторный клик, другой интерфейс, reload; minimal/reduced без пространственного движения |

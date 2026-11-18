@@ -1,5 +1,5 @@
 /* Floating support entry and the compact helper preview. */
-.support-helper-trigger[data-slot="button"] { position: fixed; right: max(24px, env(safe-area-inset-right)); bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 40; width: 48px; height: 48px; border-radius: 50%; background: hsl(var(--background)); box-shadow: var(--shadow-surface); }
+.support-helper-trigger[data-slot="button"] { position: fixed; right: max(24px, env(safe-area-inset-right)); bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 40; width: 48px; height: 48px; border-radius: 50%; background: hsl(var(--background)); box-shadow: var(--shadow-control); }
 .support-helper-trigger[data-slot="button"]:hover { background: hsl(var(--accent)); }
 .support-helper-trigger[data-slot="button"] > svg { width: 22px; height: 22px; }
 [data-slot="popover-content"].support-helper { width: min(var(--drawer-width), calc(100dvw - 32px)); max-height: var(--radix-popover-content-available-height); overflow: auto; padding: 0; }

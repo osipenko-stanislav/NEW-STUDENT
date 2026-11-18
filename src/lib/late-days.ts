@@ -1,6 +1,6 @@
 import { academicTasks, enrollments, type AcademicTask } from '../data/academic-data.ts'
 import { currentLateDaysSemester, lateDaysPolicy, lateDaysSemesters, seedLateDays, shiftDeadline, type LateDaysSemester, type LateDaysState, type LateDaysOperation } from '../data/late-days.ts'
-import { homeworkStatus, type HomeworkRecord } from './homework-storage.ts'
+import { isHomeworkSkipped, homeworkStatus, type HomeworkRecord } from './homework-storage.ts'
 import { isHomework } from './academic-presentation.ts'
 export const lateDaysStorageKey = 'student-late-days:v1'
 export type LateDaysPlanItem = { taskId: string; days: number; expectedDeadline: string }
@@ -25,6 +25,7 @@ export function lateDaysReason(task: AcademicTask, state: LateDaysState, records
   if (!isHomework(task)) return 'Late Days доступны только для домашних работ.'
   const status = homeworkStatus(task, records[task.id])
   if (status === 'submitted' || status === 'accepted') return 'Сданное задание нельзя переносить.'
+  if (isHomeworkSkipped(task, records[task.id])) return 'Пропущено мной. Верни задание в план, чтобы предложить перенос.'
   if (!lateDaysPolicy.allowStartedTimedTasks && task.timeLimitMinutes && records[task.id]?.startedAt) return 'Таймер уже запущен. Дедлайн нельзя изменить.'
   if (!lateDaysPolicy.allowOverdue && Date.parse(taskDeadline(state, task)) < now) return 'Срок изменения дедлайна уже прошёл.'
   if (taskDeadline(state, task).slice(0, 10) >= semester.endsAt) return 'Дедлайн достиг конца семестра. Продление недоступно.'

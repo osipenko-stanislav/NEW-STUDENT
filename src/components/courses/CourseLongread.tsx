@@ -1,3 +1,4 @@
+import { DeadlineTransfer } from '@/components/late-days/TaskDeadline'
 import { AsyncButton } from '@/components/ui/feedback-button'
 import AcademicMaterialLink from '@/components/AcademicMaterialLink'
 import { useMaterialSync } from '@/components/MaterialSyncProvider'
@@ -78,7 +79,7 @@ export default function CourseLongread({ lesson, activeSection, onAnchor, onLess
           <ul className="course-lesson-materials">{learningMaterials.map(material => <li key={material.id}><AcademicMaterialLink material={material}  aria-label={`Открыть материал: ${material.title}`}><FileIcon name={material.title} size="compact" /><span><strong>{material.title}</strong><small>{material.sizeLabel}</small></span></AcademicMaterialLink><AsyncButton type="button" variant="ghost" size="icon" aria-label={`Экспортировать материал: ${material.title}`}  label="Экспортировать" loadingLabel="Экспортируем…" successLabel="Готово" errorLabel="Повторить" icon={<ArrowDownToLine aria-hidden="true" />} action={() => exportMaterial(material.id)} /></li>)}</ul>
         </section>
         <section><h2 data-typography="accent-title" id="lesson-video" tabIndex={-1}>Видеозапись с лекции</h2><div className="course-embedded-video"><div><VideoOff aria-hidden="true" /><p>Видеофайл пока не добавлен</p><Button type="button" variant="outline" onClick={onVideo}><Play aria-hidden="true" />Информация о записи</Button></div></div></section>
-        <section><h2 data-typography="accent-title" id="lesson-assignment" tabIndex={-1}>Задание</h2><div className="course-assignment-card"><div><Badge variant="neutral">{courseAssignment.status}</Badge><h3>{courseAssignment.title}</h3><p>До {courseAssignment.points} баллов · домашнее задание</p><Button type="button" variant="outline" onClick={onAssignment}>Открыть задание</Button></div></div></section>
+        <section><h2 data-typography="accent-title" id="lesson-assignment" tabIndex={-1}>Задание</h2><div className="course-assignment-card"><div><Badge variant="neutral">{courseAssignment.status}</Badge><h3>{courseAssignment.title}</h3><p>До {courseAssignment.points} баллов · домашнее задание</p><Button type="button" variant="outline" onClick={onAssignment}>Открыть задание</Button><DeadlineTransfer taskId={courseAssignment.id} /></div></div></section>
         <section><h2 data-typography="accent-title" id="lesson-summary" tabIndex={-1}>Итог</h2><p>Работа с ML-моделью — это цикл проверки гипотез. Качество зависит от данных, выбранного метода и корректной организации эксперимента.</p><p>Переходи к практике, сравни результаты и сохрани наблюдения: они помогут объяснить, почему модель работает именно так.</p></section>
       </div>
     </article>

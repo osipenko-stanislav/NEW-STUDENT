@@ -1,3 +1,4 @@
+import { HomeworkPersonalStatus } from '@/components/courses/HomeworkPersonalControl'
 import { AnimatePresence, m } from 'motion/react'
 import { useAppMotion } from '@/components/MotionProvider'
 import { microTransition } from '@/lib/motion-tokens'
@@ -225,7 +226,7 @@ export default function GlobalSearch({ onNavigate, onAskNavigator, disabled = fa
                             src={`${import.meta.env.BASE_URL}assets/figma/${item.icon}`} alt="" aria-hidden="true" className="design-icon" /></span>}
                   <span className="global-search-result-copy">
                     <span className="global-search-result-title">{item.title}</span>
-                    <span className="global-search-path">{item.path}</span>
+                    <span className="global-search-path">{item.path}</span>{item.taskId ? <HomeworkPersonalStatus taskId={item.taskId} /> : null}
                   </span>
                   <CornerDownLeft aria-hidden="true" className="global-search-enter" />
                 </button>)}

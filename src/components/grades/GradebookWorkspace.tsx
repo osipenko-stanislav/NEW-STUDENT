@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { EmptyState } from '@/components/ui/empty-state'
 import { GradeValue } from '@/components/ui/grade-value'
 
+import { navigate } from '@/hooks/use-navigation'
 import { gradebookSessions } from '@/data/gradebook'
 import { actionStatus } from '@/lib/action-status'
 import '@/grades.css'
@@ -25,7 +26,7 @@ export default function GradebookWorkspace() {
     actionStatus.report({ key: 'gradebook-download', label: 'Загрузка зачетки началась', detail: 'Все сессии' })
   }
   return <section className="page-container gradebook-page" data-layout="data" aria-label="Зачетка">
-    {sessions.length ? <div className="gradebook-actions"><Button type="button" variant="outline" onClick={onDownload}><Download aria-hidden="true" />Скачать зачетку</Button></div> : null}
+    <div className="gradebook-actions"><Button type="button" variant="outline" onClick={() => navigate({ section: 'Прогноз', studyTarget: undefined })}>Открыть прогноз</Button>{sessions.length ? <Button type="button" variant="outline" onClick={onDownload}><Download aria-hidden="true" />Скачать зачетку</Button> : null}</div>
     {!sessions.length ? <EmptyState icon={Snowflake} title="Оценок пока нет" description="Они появятся после первой сессии." /> : sessions.map(session => {
       const title = `${session.season === 'winter' ? 'Зимняя' : 'Летняя'} сессия, ${session.year}`
       const SeasonIcon = session.season === 'winter' ? Snowflake : Sun

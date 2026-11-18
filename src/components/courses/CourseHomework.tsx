@@ -1,3 +1,4 @@
+import { HomeworkPersonalStatus } from './HomeworkPersonalControl'
 import HomeworkDiscussion from './HomeworkDiscussion'
 import { actionStatus } from '@/lib/action-status'
 import { AnimatePresence, m } from 'motion/react'
@@ -121,7 +122,7 @@ export default function CourseHomework({ task }: { task: AcademicTask }) {
   return <div className="page-container homework-page" data-layout="reading" data-with-rail>
     <header className="homework-heading">
       <PageBackButton />
-      <div className="flex flex-wrap items-center gap-2 mb-3">{archived ? <Badge variant="secondary">Архивное задание</Badge> : null}<Badge className="homework-status-badge" variant={expired && !finished ? 'danger' : taskStatusVariants[status]}><AnimatedStatus state={expired && !finished ? 'expired' : status} label={expired && !finished ? 'Время вышло' : taskStatusLabels[status]} choices={[...Object.values(taskStatusLabels), 'Время вышло']} /></Badge><HomeworkModeBadge minutes={task.timeLimitMinutes} /></div>
+      <div className="flex flex-wrap items-center gap-2 mb-3">{archived ? <Badge variant="secondary">Архивное задание</Badge> : null}<Badge className="homework-status-badge" variant={expired && !finished ? 'danger' : taskStatusVariants[status]}><AnimatedStatus state={expired && !finished ? 'expired' : status} label={expired && !finished ? 'Время вышло' : taskStatusLabels[status]} choices={[...Object.values(taskStatusLabels), 'Время вышло']} /></Badge><HomeworkModeBadge minutes={task.timeLimitMinutes} /><HomeworkPersonalStatus taskId={task.id} /></div>
       <h1 ref={heading} tabIndex={-1} className="text-2xl font-semibold leading-tight outline-none">{task.title}</h1>
       <Button variant="link" className="h-auto p-0 mt-2 text-muted-foreground whitespace-normal text-left" onClick={program}>{course.title}</Button>
     </header>

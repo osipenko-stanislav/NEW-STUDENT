@@ -13,6 +13,7 @@ const sessionKeys = [
   'student-homework:v1',
   'student-notifications:v1',
   'student-late-days:v1',
+  'student-week-plan:v1',
 ] as const
 
 export async function resetSessionStorage(): Promise<void> {

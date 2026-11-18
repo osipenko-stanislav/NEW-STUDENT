@@ -1,12 +1,13 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { academicTasks } from '@/data/academic-data'
-import { emptyHomework, homeworkStorageKey, parseHomeworkRecords, type HomeworkRecord } from '@/lib/homework-storage'
+import { canSkipHomework, emptyHomework, homeworkStorageKey, parseHomeworkRecords, type HomeworkRecord } from '@/lib/homework-storage'
 let records: Record<string, HomeworkRecord> | undefined
+let lastRaw: string | null | undefined
 const listeners = new Set<() => void>()
 function snapshot() {
-  if (!records) {
-    try { records = parseHomeworkRecords(localStorage.getItem(homeworkStorageKey)) } catch { records = {} }
-  }
+  let raw: string | null = null
+  try { raw = localStorage.getItem(homeworkStorageKey) } catch { return records ?? (records = {}) }
+  if (!records || raw !== lastRaw) { records = parseHomeworkRecords(raw); lastRaw = raw }
   return records
 }
 function subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener) } }
@@ -19,8 +20,10 @@ window.addEventListener('storage', event => {
 })
 export function updateHomework(id: string, update: (record: HomeworkRecord) => HomeworkRecord) {
   const previous = snapshot()
-  const next = { ...previous, [id]: update(previous[id] ?? emptyHomework()) }
+  const updated = update(previous[id] ?? emptyHomework())
+  const next = { ...previous, [id]: updated.submittedAt ? { ...updated, skipped: undefined } : updated }
   try { localStorage.setItem(homeworkStorageKey, JSON.stringify(next)) } catch { return false }
+  lastRaw = JSON.stringify(next)
   records = next
   listeners.forEach(listener => listener())
   return true
@@ -41,4 +44,12 @@ export function useHomeworkTimers() {
     }, Math.min(2147483647, Math.max(0, next - Date.now())))
     return () => clearTimeout(timer)
   }, [records])
+}
+
+export function setHomeworkSkipped(id: string, skipped: boolean) {
+  const task = academicTasks.find(task => task.id === id)
+  const record = snapshot()[id]
+  if (!task || (skipped && !canSkipHomework(task, record))) return false
+  if (!!record?.skipped === skipped) return true
+  return updateHomework(id, current => ({ ...current, skipped: skipped || undefined }))
 }

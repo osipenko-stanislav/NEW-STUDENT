@@ -19,7 +19,7 @@
 .ghost-icon:active { background: hsl(var(--muted)); }
 .header-search { position: relative; display: flex; width: 100%; min-width: 0; flex-shrink: 0; align-items: center; }
 .search-container { position: relative; min-width: 0; flex: 1; }
-.search-field { display: flex; height: var(--control-height); align-items: center; gap: 8px; padding: 0 10px; border: 1px solid hsl(var(--border)); cursor: text; border-radius: 999px; padding-inline: 14px; box-shadow: var(--shadow-control); }
+.search-field { display: flex; height: var(--control-height); align-items: center; gap: 8px; padding: 0 10px; border: 1px solid hsl(var(--border)); cursor: text; border-radius: 999px; padding-inline: 14px; box-shadow: none; }
 .search-field:focus-within { border-color: hsl(var(--ring)); }
 .search-field kbd { display: flex; height: 20px; min-width: 39px; flex-shrink: 0; align-items: center; justify-content: center; background: hsl(var(--muted)); font: inherit; font-size: calc(12px * var(--text-scale, 1)); line-height: calc(16px * var(--text-scale, 1)); border-radius: 6px; color: hsl(var(--foreground)); }
 .search-field.search-trigger { width: 100%; justify-content: flex-start; font-weight: 400; cursor: pointer; }
@@ -63,6 +63,6 @@
 .workspace-layout > .workspace { min-width: 0; }
 .header-actions .ghost-icon { border-radius: 999px; }
 @media (hover: hover) and (pointer: fine) {
- .header-actions .ghost-icon:hover { box-shadow: var(--shadow-control); } }
+ .header-actions .ghost-icon:hover { box-shadow: none; } }
 @media (max-width: 767px) {
  .student-header { height: 64px; padding-inline: 12px; } }

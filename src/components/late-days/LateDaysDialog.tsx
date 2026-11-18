@@ -1,3 +1,4 @@
+import HomeworkPersonalControl from '@/components/courses/HomeworkPersonalControl'
 import { AnimatedNumber } from '@/components/ui/animated-number'
 import { NumberStepper } from '@/components/ui/number-stepper'
 import { useMicroFeedback } from '@/hooks/use-micro-feedback'
@@ -35,6 +36,7 @@ export default function LateDaysDialog({ taskId, onClose }: { taskId: string; on
   }
   return <Dialog open onOpenChange={open => { if (!open) onClose() }}><DialogContent className="late-days-dialog" aria-describedby="late-days-transfer-description">
     <DialogHeader><DialogTitle>{done ? 'Дедлайн перенесён' : 'Перенести дедлайн'}</DialogTitle><DialogDescription id="late-days-transfer-description">{task.title} · {getCourse(task.courseId).title}</DialogDescription></DialogHeader>
+    <HomeworkPersonalControl taskId={task.id} />
     {done ? <div className="late-days-success" role="status"><p>Новый дедлайн: <strong>{formatDateTime(deadline(task))} МСК</strong></p><p>Потратили {days} Late Days. Осталось {balance.remaining}.</p><Button onClick={onClose}>Готово</Button></div> : <>
       <dl className="late-days-transfer-facts"><div><dt>Исходный дедлайн</dt><dd>{formatDateTime(task.dueAt)} МСК</dd></div><div><dt>Текущий дедлайн</dt><dd>{formatDateTime(before)} МСК</dd></div><div><dt>Доступно Late Days</dt><dd>{balance.remaining}</dd></div></dl>
       <p className="late-days-muted">1 Late Day = 1 календарный день. Время сдачи сохраняется.</p>
