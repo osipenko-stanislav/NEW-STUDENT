@@ -53,29 +53,19 @@ button:not(:disabled):active,
   animation: content-reveal var(--motion-base) var(--ease-enter) both;
 }
 
-details[open] > :not(summary) {
-  animation: details-reveal var(--motion-base) var(--ease-enter) both;
-}
-
+/* One interruptible height transition; children do not replay an entrance. */
 @supports (interpolate-size: allow-keywords) {
   :root { interpolate-size: allow-keywords; }
-  .course-block::details-content,
-  .course-recording-class::details-content,
-  .gen-class-details::details-content,
-  .gen-assignment-details::details-content,
-  .handbook-inline-outline::details-content {
+  :is(.course-block, .course-recording-class, .gen-class-details, .gen-assignment-details, .handbook-inline-outline, .grades-topic, .course-mobile-toc, .late-days-excluded, .late-days-rules, .handbook-details)::details-content {
     height: 0;
     overflow: clip;
     opacity: 0;
-    transition: height var(--motion-disclosure) var(--ease-disclosure), opacity var(--motion-disclosure-exit) var(--ease-disclosure), content-visibility var(--motion-disclosure) allow-discrete;
+    transition: height var(--motion-disclosure-exit) var(--ease-disclosure), opacity var(--motion-disclosure-exit) var(--ease-disclosure), content-visibility var(--motion-disclosure-exit) allow-discrete;
   }
-  .course-block[open]::details-content,
-  .course-recording-class[open]::details-content,
-  .gen-class-details[open]::details-content,
-  .gen-assignment-details[open]::details-content,
-  .handbook-inline-outline[open]::details-content {
+  :is(.course-block, .course-recording-class, .gen-class-details, .gen-assignment-details, .handbook-inline-outline, .grades-topic, .course-mobile-toc, .late-days-excluded, .late-days-rules, .handbook-details)[open]::details-content {
     height: auto;
     opacity: 1;
+    transition-duration: var(--motion-disclosure);
   }
 }
 
@@ -137,11 +127,6 @@ html[data-motion-level="expressive"] .motion-route-enter { animation-duration: v
 @keyframes route-fade {
   from { opacity: .86; }
   to { opacity: 1; }
-}
-
-@keyframes details-reveal {
-  from { opacity: 0; transform: translateY(-3px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -252,7 +237,8 @@ html[data-motion-level="minimal"] .late-days-dialog [role="alert"] { animation: 
 /* Per-object recipes: a distinct time/ease contract for each interaction family. */
 .checkbox-mark path { transition-duration: var(--motion-check); transition-timing-function: var(--ease-check); }
 .radio-indicator { transition-duration: var(--motion-radio); transition-timing-function: var(--ease-radio); }
-.animated-disclosure { transition: grid-template-rows var(--motion-disclosure) var(--ease-disclosure); }
+.animated-disclosure { transition: grid-template-rows var(--motion-disclosure-exit) var(--ease-disclosure); }
+.animated-disclosure[data-open="true"] { transition-duration: var(--motion-disclosure); }
 .handbook-tree-chevron { transform-origin: center; transition: transform var(--motion-disclosure-exit) var(--ease-disclosure); }
 .handbook-tree-toggle[aria-expanded="true"] .handbook-tree-chevron { transform: rotate(90deg); }
 :is(.course-block, .course-recording-class, .gen-class-details, .gen-assignment-details, .course-mobile-toc, .grades-topic) > summary :is(.course-chevron, .gen-chevron, .lucide-chevron-down) { transition: transform var(--motion-disclosure-exit) var(--ease-disclosure); transform-origin: center; }
@@ -276,13 +262,17 @@ html[data-motion-level="minimal"] .late-days-dialog [role="alert"] { animation: 
   .course-entity-list button:hover > .course-entity-arrow, .handbook-child-pages a:hover > .lucide-chevron-right { transform: translateX(var(--micro-distance)); }
 }
 button > :is(.lucide-arrow-left, .lucide-download, .lucide-arrow-down-to-line, .lucide-external-link), .course-entity-arrow, .handbook-child-pages .lucide-chevron-right { transition: transform var(--motion-action) var(--ease-action); }
-@supports (interpolate-size: allow-keywords) {
-  :is(.grades-topic, .course-mobile-toc, .late-days-excluded, .late-days-rules, .handbook-details)::details-content { height: 0; overflow: clip; transition: height var(--motion-disclosure) var(--ease-disclosure), content-visibility var(--motion-disclosure) allow-discrete; }
-  :is(.grades-topic, .course-mobile-toc, .late-days-excluded, .late-days-rules, .handbook-details)[open]::details-content { height: auto; }
-}
 html[data-motion-level="minimal"] :is(.animated-disclosure, .handbook-tree-chevron) { transition: none !important; }
 html[data-motion-level="minimal"] :is(.action-spinner, .voice-demo-spinner, .file-preview-message .animate-spin) { animation: none !important; }
 html[data-motion-level="minimal"] :is([data-slot="tooltip-content"], [data-slot="dropdown-menu-content"])[data-state] { animation-name: route-fade !important; }
 
 .notification-trigger:not(:disabled):active { scale: .97; translate: none; transition-duration: var(--motion-bellPress); transition-timing-function: var(--ease-bellPress); }
 html[data-motion-level="minimal"] .notification-trigger:not(:disabled):active { scale: 1; }
+
+html[data-motion-level="minimal"] details::details-content {
+  transition: none !important;
+}
+
+html[data-motion-level="minimal"] details > summary :is(.course-chevron, .gen-chevron, .lucide-chevron-down) {
+  transition: none !important;
+}

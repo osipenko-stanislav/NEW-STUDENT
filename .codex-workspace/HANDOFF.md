@@ -1,13 +1,11 @@
 # NEW STUDENT — checkpoint 2026-11-18
 
-Статус: студент переименован в Антона, аватар обновлён; предыдущие задачи сохранены. Пользователь разрешил публикацию всех накопленных обновлений в GitHub; подготовлены commit и push main.
-
-Последняя правка CourseWidgets.tsx: убрана иконка CalendarClock из заголовка ближайшего дедлайна. Перед публикацией build/check:ui/diff прошли; 142 теста прошли ранее.
+Motion work complete locally, no commit. Disclosure220/180ms; StateIcon .96/no rotation, pin preserved. Follow-up fixed reduced chevron CSS override; frame tests1440/375 and 15 rapid status swaps passed. build/check:ui passed;142 tests passed before CSS-only fix. Evidence/limits: docs/motion-component-inventory.md. Known issue: mobile Handbook Escape loses trigger focus (outside motion scope). Previous published HEAD94f0a21.
 
 ## Студент Антон и фото — завершено
 - App.tsx: приветствие, профиль и aria-label. homework-storage.ts: автор новых комментариев. HomeworkDiscussion.tsx: авторы и цитаты старых сохранённых записей «Иван» отображаются как «Антон», без изменения текста комментариев.
 - public/assets/figma/avatar-image.png заменён фото пользователя: квадрат400×400 из640×640 (x120,y60), итог256×256. Общий asset шапки/обсуждений, без CSS-изменений. Сотрудники Хэндбука с именем Иван не переименовывались.
-- Chrome: profile/greeting, legacy authors/quotes/new comment/avatar, темы1440/375; /tmp/anton-*.png. 142 теста, build/check:ui и diff прошли. Публикация разрешена текущим запросом.
+- Chrome: profile/greeting, legacy authors/quotes/new comment/avatar, темы1440/375; /tmp/anton-*.png. 142 теста, build/check:ui и diff прошли. Опубликовано в 94f0a21.
 
 ## Персональный пропуск ДЗ — завершено
 - Запрос во вложении: сквозное «Не буду выполнять»/«Пропущено мной»/«Вернуть в план», личный признак, не академический статус. Пользователь уточнил UI: отдельная векторная кнопка CircleSlash (круг с диагональю) рядом с переносом; прямой обратимый toggle, без меню. Нейтральный фон выбранного состояния, aria-pressed, Tooltip, StateIcon; без новых островов.
@@ -17,7 +15,7 @@
 - Продолжить учёбу, ближайшая сдача, active, Моя неделя/нагрузка/подготовка и Я в огне учитывают пропуск. Блоки подготовки сохраняются, возвращаются после undo. Пропущенные исключены из rescue-плана/подтверждения; lateDaysReason просит вернуть в план. Дедлайн остаётся академическим событием. Ноль не выставляется, прогнозные ожидания не меняются.
 - Chrome: сквозной skip/restore/reload/filter, week/fire/continue/all, official data неизменны; темы1440/375, keyboard/double/cross-tab/quota/submit/chat. Снимки /tmp/skip-*.png, scripts /tmp/skip-{browser,extra,surfaces}.cjs. 142 теста/build/check:ui/diff прошли.
 
-- Новые файлы: components/courses/HomeworkPersonalControl.tsx, tests/homework-personal.test.ts. Остальное — точечные подключения в существующих UI/хранилище/filters/projections/mock-assistant/week-plan/late-days, CSS courses/late-days и motion inventory. AGENTS.before-init/AGENTS/DESIGN/настройки не менялись. Локальное сохранение, без backend; синтетические forecast-ID не учебные объекты и пропускать их нельзя.
+- Новые файлы: components/courses/HomeworkPersonalControl.tsx, tests/homework-personal.test.ts. Остальное — точечные подключения в существующих UI/хранилище/filters/projections/mock-assistant/week-plan/late-days, CSS courses/late-days и motion inventory. AGENTS/DESIGN/настройки не менялись. Локальное сохранение, без backend; синтетические forecast-ID не учебные объекты и пропускать их нельзя.
 
 ## Тени Cupertino — завершено
 - Только CSS: surface=none, убраны статичные/обычные control/nav/hover/bevel тени; overlay и selected segments смягчены, чёрный shadow-color в обеих темах. Focus/composer ring и press fire сохранены, без изменения фонов/границ/радиусов/композиции.
@@ -39,5 +37,5 @@
 
 ## Правила и публикация
 - Сохранять Cupertino, De-island, don't flatten, общие widths/tokens; макеты задают структуру, не заменяют стиль. Не заявлять browser-run без фактической проверки. Impeccable и cu-proofread применялись к UI/текстам.
-- AGENTS.md, DESIGN.md, общая конфигурация и зависимости не менялись. Исходный untracked .codex-workspace/AGENTS.before-init сохранён. Исходный HEAD перед задачами 8255f3535f35d57f8fcd59fa3446b8853f7bc5cd. Публикация разрешена пользователем 18 ноября 2026.
+- AGENTS.md, DESIGN.md, общая конфигурация и зависимости не менялись. Очистка: dist и tsconfig.tsbuildinfo удалены (~4,9 МБ), AGENTS.before-init перенесён в ~/.Trash/NEW-STUDENT-cleanup-20261118-184440/. check:ui/diff и localhost HTTP200 прошли; исходники не менялись. Исходный HEAD перед задачами 8255f3535f35d57f8fcd59fa3446b8853f7bc5cd. Публикация разрешена пользователем 18 ноября 2026.
 - GitHub https://github.com/osipenko-stanislav/NEW-STUDENT; Pages https://osipenko-stanislav.github.io/NEW-STUDENT/. Push main запускает публикацию.

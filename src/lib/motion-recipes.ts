@@ -9,7 +9,7 @@ export const motionRecipes = {
   iconSwap: { duration: 160, exit: 120, distance: 3, ease: [.22, 1, .36, 1] },
   check: { duration: 180, exit: 120, distance: 0, ease: [.16, 1, .3, 1] },
   tabs: { duration: 180, exit: 120, distance: 0, ease: [.4, 0, .2, 1] },
-  disclosure: { duration: 220, exit: 180, distance: 0, ease: [.25, .1, .25, 1] },
+  disclosure: { duration: 220, exit: 180, distance: 0, ease: [.22, 1, .36, 1] },
   pin: { duration: 180, exit: 120, distance: 0, ease: [.34, 1.25, .64, 1] },
   status: { duration: 180, exit: 120, distance: 2, ease: [.22, 1, .36, 1] },
   counter: { duration: 220, exit: 140, distance: 2, ease: [.22, 1, .36, 1] },

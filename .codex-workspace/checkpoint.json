@@ -1,15 +1,16 @@
 {
   "evidence": {
     "files": {
-      "public/assets/figma/avatar-image.png": "dd609753332fe75d8da146b6faf9e12f3c0407081578625223d298a38faa37bd",
-      "src/App.tsx": "86a9d1ce4e9c531ded957af54236c6a163962feb86db8288797a410ffd719115",
-      "src/components/courses/CourseWidgets.tsx": "c6aab5e4a91b14fe6373429f105e23345daff09a6359deb4f9a32e6cd25e936c",
-      "src/components/courses/HomeworkDiscussion.tsx": "43250a1c2b21dd9ce67c0400d7bd1418a80c603f79f6701398ac86605cde3f7a",
-      "src/lib/homework-storage.ts": "60fa220bd9632ad54a36f40329639c1001ae6bf70f9f4299ef2fae2aa697836b"
+      "docs/motion-component-inventory.md": "47bb4665dbdff3d06d49b3b74233c802b621414fba5e63fa4a3a49b6d9520c84",
+      "docs/motion-recipes.md": "9ec2ba2da46cb6a66a36125809eeb55735771397e13d24e1471b7aeb0b0c145d",
+      "src/components/MotionLab.tsx": "ad0b473c62e0749f457e38f2a15bb0dd3462305125005200acc327a5b55970ee",
+      "src/components/ui/state-icon.tsx": "d9bd4c1fcb41135207445bde95143a8c0c4fa17d0ccf77ac7f8e460b0bdc971e",
+      "src/lib/motion-recipes.ts": "f04c702b08a3e67f135b555dec038c5384be074a9e6f9f1394555acea5b64802",
+      "src/styles/motion.css": "98dbff34e417d875783356734a799bb1feee2656cfc7f933d3476a7129c93bdc"
     },
-    "head": "8255f3535f35d57f8fcd59fa3446b8853f7bc5cd",
-    "status": " M .codex-workspace/HANDOFF.md\n M .codex-workspace/checkpoint.json\n M docs/motion-component-inventory.md\n M public/assets/figma/avatar-image.png\n M src/App.tsx\n M src/components/ConversationMessages.tsx\n M src/components/GlobalSearch.tsx\n M src/components/courses/CourseGradeSummary.tsx\n M src/components/courses/CourseHomework.tsx\n M src/components/courses/CourseHomeworks.tsx\n M src/components/courses/CourseLongread.tsx\n M src/components/courses/CourseProgram.tsx\n M src/components/courses/CourseWidgets.tsx\n M src/components/courses/HomeworkDiscussion.tsx\n M src/components/generative-ui/AssignmentsResponse.tsx\n M src/components/generative-ui/GenerativeContent.tsx\n M src/components/generative-ui/ScheduleResponse.tsx\n M src/components/grades/GradebookWorkspace.tsx\n M src/components/grades/GradesWorkspace.tsx\n M src/components/homework/HomeworkWorkspace.tsx\n M src/components/late-days/LateDaysDialog.tsx\n M src/components/late-days/LateDaysWorkspace.tsx\n M src/components/late-days/RescuePlanner.tsx\n M src/components/late-days/TaskDeadline.tsx\n M src/components/schedule/ScheduleWorkspace.tsx\n M src/courses.css\n M src/data/navigation.ts\n M src/grades.css\n M src/hooks/use-homework.ts\n M src/late-days.css\n M src/lib/assistant-validation.ts\n M src/lib/homework-filters.ts\n M src/lib/homework-storage.ts\n M src/lib/late-days.ts\n M src/lib/mock-assistant.ts\n M src/lib/session-reset.ts\n M src/lib/study-projections.ts\n M src/styles/chat.css\n M src/styles/components.css\n M src/styles/navigation.css\n M src/styles/shell.css\n M src/styles/support.css\n M src/styles/tokens.css\n M src/types/assistant.ts\n?? .codex-workspace/AGENTS.before-init\n?? src/components/courses/HomeworkPersonalControl.tsx\n?? src/components/generative-ui/ContinueStudyResponse.tsx\n?? src/components/generative-ui/WeekStudyPlan.tsx\n?? src/components/grades/ForecastChart.tsx\n?? src/components/grades/GradeForecast.tsx\n?? src/data/forecast-scenarios.ts\n?? src/hooks/use-week-plan.ts\n?? src/lib/continue-study.ts\n?? src/lib/grade-forecast.ts\n?? src/lib/week-plan.ts\n?? tests/continue-study.test.ts\n?? tests/grade-forecast.test.ts\n?? tests/homework-personal.test.ts\n?? tests/week-plan.test.ts"
+    "head": "94f0a21ea9eaaccd042d821edb2eea194aeb441c",
+    "status": " M .codex-workspace/HANDOFF.md\n M .codex-workspace/checkpoint.json\n M docs/motion-component-inventory.md\n M docs/motion-recipes.md\n M src/components/MotionLab.tsx\n M src/components/ui/state-icon.tsx\n M src/lib/motion-recipes.ts\n M src/styles/motion.css"
   },
-  "handoff_sha256": "d4d59c46af2b68eecb592863a46097a83c221d5f87210c9e5128a737b507aa9a",
+  "handoff_sha256": "408ee3c68d2514d4b0de5169a75e3e48eb636643b7ef946e1d42d41cbe523b4d",
   "version": 1
 }
