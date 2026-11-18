@@ -1,0 +1,304 @@
+{
+  "url": "http://127.0.0.1:5174/",
+  "header": "Расписание",
+  "h1": [],
+  "active": [
+    "Расписание"
+  ],
+  "buttons": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Центральный университет — сбросить сессию",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Навигатор",
+      "label": "Навигатор",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "История",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои цели",
+      "label": "Мои цели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Обучение",
+      "label": "Обучение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Late Days",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Учебный план",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ведомости",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Зачетка",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Прогноз",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Запись на пары",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Посещаемость",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Выбор курсов",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Карьера",
+      "label": "Карьера",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Расписание",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Хэндбук",
+      "label": "Хэндбук",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "События",
+      "label": "События",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Сервисы",
+      "label": "Сервисы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Настройки",
+      "label": "Настройки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть меню",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Поиск\n⌘ + K",
+      "label": "Поиск по LMS",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Закладки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы актуальны",
+      "label": "Материалы актуальны. Обновить материалы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "15\n1\n5",
+      "label": "Late Days: 15",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "7\n7\nНепрочитанных: 7",
+      "label": "Уведомления",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Библиотека",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Профиль Антона",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Предыдущий период",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Сегодня",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Следующий период",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "16 ноября – 22 ноября",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Неделя",
+      "label": "Вид расписания",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Все",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Занятия",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Дедлайны",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Фильтры",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "пн\n16",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "вт\n17",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "ср\n18",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "чт\n19",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "пт\n20",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "сб\n21",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "вс\n22",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "11:20–12:50\nМашинное обучение (Machine Learning)\nЛекция · Онлайн\nРоман Васильев",
+      "label": "Машинное обучение (Machine Learning), Лекция · Онлайн, 11:20–12:50",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "15:50–17:20\nМашинное обучение (Machine Learning)\nСеминар · Онлайн\nНадежда Калмыкова",
+      "label": "Машинное обучение (Machine Learning), Семинар · Онлайн, 15:50–17:20",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Поддержка",
+      "href": null
+    }
+  ]
+}

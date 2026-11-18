@@ -1,0 +1,416 @@
+{
+  "url": "http://127.0.0.1:5174/?handbook=69981d7a-7e34-4d9b-9b61-c7218a85bf34",
+  "header": "Хэндбук",
+  "h1": [
+    {
+      "text": "Школа технологий",
+      "rect": {
+        "x": 592,
+        "y": 88,
+        "width": 239.3125,
+        "height": 37.5,
+        "top": 88,
+        "right": 831.3125,
+        "bottom": 125.5,
+        "left": 592
+      }
+    }
+  ],
+  "active": [
+    "Хэндбук",
+    "Школа технологий",
+    "Школа технологий"
+  ],
+  "buttons": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Центральный университет — сбросить сессию",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Навигатор",
+      "label": "Навигатор",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "История",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои цели",
+      "label": "Мои цели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Обучение",
+      "label": "Обучение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Late Days",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Учебный план",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ведомости",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Зачетка",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Прогноз",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Запись на пары",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Посещаемость",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Выбор курсов",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Карьера",
+      "label": "Карьера",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Расписание",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Хэндбук",
+      "label": "Хэндбук",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "События",
+      "label": "События",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Сервисы",
+      "label": "Сервисы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Настройки",
+      "label": "Настройки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть меню",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Поиск\n⌘ + K",
+      "label": "Поиск по LMS",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Закладки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы актуальны",
+      "label": "Материалы актуальны. Обновить материалы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "15\n1\n5",
+      "label": "Late Days: 15",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "7\n7\nНепрочитанных: 7",
+      "label": "Уведомления",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Библиотека",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Профиль Антона",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Главная",
+      "label": null,
+      "href": "/?handbook=db3f475e-b70a-4423-abc0-b030db55c80b"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Документы и учеты»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Документы и учеты",
+      "label": null,
+      "href": "/?handbook=7983a429-b0a6-441c-a898-e2bcb95c3b1a"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Правила обучения»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Правила обучения",
+      "label": null,
+      "href": "/?handbook=084bf922-90d0-450c-9e7f-6db3bf81dc4d"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть раздел «Учеба»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Учеба",
+      "label": null,
+      "href": "/?handbook=7087f5f7-3f28-46b8-8b03-58fb070cf54e"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть раздел «Школа технологий»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Школа технологий",
+      "label": null,
+      "href": "/?handbook=69981d7a-7e34-4d9b-9b61-c7218a85bf34"
+    },
+    {
+      "tag": "A",
+      "text": "График обучения и контрольные",
+      "label": null,
+      "href": "/?handbook=5345c471-4b0c-4dbe-87b1-dd9dab3ab846"
+    },
+    {
+      "tag": "A",
+      "text": "Пререквизиты",
+      "label": null,
+      "href": "/?handbook=f34e3a57-854b-409a-97a2-4ea20472a4ac"
+    },
+    {
+      "tag": "A",
+      "text": "Уровни курсов",
+      "label": null,
+      "href": "/?handbook=8894d19b-8ca9-4048-ac3f-014e4b191bab"
+    },
+    {
+      "tag": "A",
+      "text": "Майноры",
+      "label": null,
+      "href": "/?handbook=56af68fd-f74e-4acd-96c5-8175802997be"
+    },
+    {
+      "tag": "A",
+      "text": "Выбор курсов",
+      "label": null,
+      "href": "/?handbook=d72897c8-3981-4383-ad7f-4857a892fad4"
+    },
+    {
+      "tag": "A",
+      "text": "Отбор на программу двух дипломов",
+      "label": null,
+      "href": "/?handbook=d243c829-0a9f-4ec9-824a-1704df93ef17"
+    },
+    {
+      "tag": "A",
+      "text": "Иностранные языки",
+      "label": null,
+      "href": "/?handbook=b90148a3-f7f9-42b8-b87f-7ec64a9b0370"
+    },
+    {
+      "tag": "A",
+      "text": "Fast Track to Major",
+      "label": null,
+      "href": "/?handbook=482cce55-4ccc-410d-9577-77fb8f6e2c33"
+    },
+    {
+      "tag": "A",
+      "text": "STEM-трек",
+      "label": null,
+      "href": "/?handbook=b9c4c795-6911-42b9-8df9-b1136a15a0c8"
+    },
+    {
+      "tag": "A",
+      "text": "Исследовательский трек",
+      "label": null,
+      "href": "/?handbook=8182ae02-122f-4f80-84f7-9e9614991411"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Программа бакалавриата»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Программа бакалавриата",
+      "label": null,
+      "href": "/?handbook=d455d7d6-de8a-44b8-a77d-88d13827edf9"
+    },
+    {
+      "tag": "A",
+      "text": "Инструменты для учебы",
+      "label": null,
+      "href": "/?handbook=00e03c38-f9a5-4929-aabb-b246d55e069e"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Кампус и проживание»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Кампус и проживание",
+      "label": null,
+      "href": "/?handbook=54e949a2-55b4-4a33-aa87-4cb4fe2696f2"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Поддержка»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Поддержка",
+      "label": null,
+      "href": "/?handbook=ca9fc0f8-3814-4640-aa0d-e250cdf7f20b"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Студенческая жизнь»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Студенческая жизнь",
+      "label": null,
+      "href": "/?handbook=54f11907-e7fc-4953-b9bb-de55ad92744a"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Карьера»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Карьера",
+      "label": null,
+      "href": "/?handbook=de667115-fa7e-430a-a8fa-6dc699acb113"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Финансы»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Финансы",
+      "label": null,
+      "href": "/?handbook=89f83291-d680-4f9a-892c-0e4a69eededf"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Онлайн-сервисы»",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Онлайн-сервисы",
+      "label": null,
+      "href": "/?handbook=c0cfc2c2-24a3-4263-98f2-4df90c40f8bc"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Развернуть раздел «Здоровье»",
+      "href": null
+    }
+  ]
+}

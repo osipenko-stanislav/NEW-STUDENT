@@ -1,0 +1,414 @@
+{
+  "url": "http://127.0.0.1:5174/",
+  "header": "Курсы",
+  "h1": [
+    {
+      "text": "Машинное обучение (Machine Learning)",
+      "rect": {
+        "x": 280,
+        "y": 128,
+        "width": 462.953125,
+        "height": 36.390625,
+        "top": 128,
+        "right": 742.953125,
+        "bottom": 164.390625,
+        "left": 280
+      }
+    }
+  ],
+  "active": [
+    "Курсы"
+  ],
+  "buttons": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Центральный университет — сбросить сессию",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Навигатор",
+      "label": "Навигатор",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "История",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои цели",
+      "label": "Мои цели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Обучение",
+      "label": "Обучение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Late Days",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Учебный план",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ведомости",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Зачетка",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Прогноз",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Запись на пары",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Посещаемость",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Выбор курсов",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Карьера",
+      "label": "Карьера",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Расписание",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Хэндбук",
+      "label": "Хэндбук",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "События",
+      "label": "События",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Сервисы",
+      "label": "Сервисы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Настройки",
+      "label": "Настройки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть меню",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Поиск\n⌘ + K",
+      "label": "Поиск по LMS",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Закладки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы актуальны",
+      "label": "Материалы актуальны. Обновить материалы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "15\n1\n5",
+      "label": "Late Days: 15",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "7\n7\nНепрочитанных: 7",
+      "label": "Уведомления",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Библиотека",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Профиль Антона",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Курс",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Видеозаписи",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ведомость по курсу",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Фильтры",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 1. Метрики и оценка качества",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 1. Метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 2. Контроль качества и выбор модели",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 2. Контроль качества и выбор модели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 3. Линейные модели",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 3. Линейные модели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 4. Метрики и оценка качества",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 4. Метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 5. Контроль качества и выбор модели",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 5. Контроль качества и выбор модели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 6. Линейные модели",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 6. Линейные модели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 7. Метрики и оценка качества",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 7. Метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 8. Контроль качества и выбор модели",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 8. Контроль качества и выбор модели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашние задания 9. Линейные модели",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашние задания 9. Линейные модели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашнее задание: метрики и оценка качества",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашнее задание: метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Не буду выполнять: Домашнее задание: метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "О курсе\nСиллабус",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Смотреть ведомость",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашнее задание: метрики и оценка качества\n12 нояб., 23:59 МСК\nНе начато\nОткрыть задание",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашнее задание: метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Не буду выполнять: Домашнее задание: метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Общение\nЧат курса",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Написать в Маяк\nПомощь в учёбе",
+      "label": null,
+      "href": null
+    }
+  ]
+}

@@ -45,7 +45,22 @@ function handbookFromUrl() {
   const id = new URL(window.location.href).searchParams.get('handbook')
   return id ? { section: 'Хэндбук', handbookPageId: id, handbookAnchor: decodeURIComponent(window.location.hash.slice(1)) || null } : {}
 }
-let current: NavigationState = { ...initial, ...window.history.state?.[key], ...handbookFromUrl() }
+function navigationFromUrl(): Partial<NavigationState> {
+  const params = new URL(window.location.href).searchParams
+  const section = params.get('section')
+  const courseId = params.get('course')
+  const taskId = params.get('task')
+  const lessonId = params.get('lesson')
+  const statementId = params.get('statement')
+  const courseTab = params.get('tab')
+  return {
+    ...(section ? { section } : {}), ...(courseId ? { courseId, studyTarget: courseId } : {}),
+    ...(taskId ? { taskId } : {}), ...(lessonId ? { lessonId } : {}),
+    ...(statementId ? { statementId, studyTarget: statementId } : {}),
+    ...(courseTab ? { courseTab } : {}),
+  }
+}
+let current: NavigationState = { ...initial, ...window.history.state?.[key], ...navigationFromUrl(), ...handbookFromUrl() }
 window.history.replaceState({ ...window.history.state, [key]: current }, '')
 const listeners = new Set<() => void>()
 function emit() { listeners.forEach(listener => listener()) }
@@ -62,6 +77,15 @@ export function navigate(patch: Partial<NavigationState>, replace = false) {
   if (!('scheduleConditions' in patch) && ['scheduleCourse', 'scheduleFormat', 'scheduleRoom', 'scheduleTeacher'].some(key => key in patch)) next.scheduleConditions = undefined
   if (JSON.stringify(next) === JSON.stringify(current)) return
   const url = new URL(window.location.href)
+  if (next.section !== 'Хэндбук') {
+    for (const name of ['section', 'course', 'task', 'lesson', 'statement', 'tab']) url.searchParams.delete(name)
+    if (next.section) url.searchParams.set('section', next.section)
+    if (next.courseId) url.searchParams.set('course', next.courseId)
+    if (next.taskId) url.searchParams.set('task', next.taskId)
+    if (next.lessonId) url.searchParams.set('lesson', next.lessonId)
+    if (next.statementId) url.searchParams.set('statement', next.statementId)
+    if (next.courseId && next.courseTab !== 'course') url.searchParams.set('tab', next.courseTab)
+  }
   if (next.section === 'Хэндбук') {
     url.searchParams.set('handbook', next.handbookPageId ?? 'db3f475e-b70a-4423-abc0-b030db55c80b')
     url.hash = next.handbookAnchor ?? ''

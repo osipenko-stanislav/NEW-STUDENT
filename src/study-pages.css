@@ -76,7 +76,7 @@
 .schedule-agenda-day h2 > span { font-size: 13px; color: hsl(var(--muted-foreground)); font-weight: 400; }
 .schedule-agenda-day li { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; margin-top: 12px; font-size: 13px; }
 .schedule-agenda-day li > time { padding-top: 8px; font-variant-numeric: tabular-nums; }
-.schedule-agenda-event { text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px; border-radius: 10px; }
+.schedule-agenda-event { text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px; min-height: 44px; border-radius: 10px; }
 .schedule-agenda-event:hover { background: hsl(var(--accent)); }
 .schedule-agenda-event > span:not([data-slot]) { color: hsl(var(--muted-foreground)); }
 .schedule-filter-sheet, .schedule-details { overflow: auto; }
@@ -146,7 +146,7 @@
 .schedule-week-strip > [aria-pressed="true"] { background: hsl(var(--background)); box-shadow: var(--shadow-control); }
 .schedule-agenda-actions { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .schedule-agenda-actions > .schedule-agenda-event { flex: 1; min-width: 0; }
-.schedule-event-open { display: flex; flex: 1; min-height: 0; flex-direction: column; gap: 4px; overflow: hidden; text-align: left; }
+.schedule-event-open { display: flex; flex: 1; min-height: 44px; flex-direction: column; gap: 4px; overflow: hidden; text-align: left; }
 .schedule-event-open > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
 .schedule-class-event:has(.task-deadline-actions) { padding-right: 38px; }
 .schedule-class-event > .task-deadline-actions { position: absolute; right: 2px; top: 2px; }

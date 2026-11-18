@@ -1,0 +1,300 @@
+{
+  "url": "http://127.0.0.1:5174/",
+  "header": "Навигатор",
+  "h1": [
+    {
+      "text": "Привет, Антон! С чего начнем?",
+      "rect": {
+        "x": 634.8125,
+        "y": 454,
+        "width": 426.375,
+        "height": 32,
+        "top": 454,
+        "right": 1061.1875,
+        "bottom": 486,
+        "left": 634.8125
+      }
+    }
+  ],
+  "active": [
+    "Навигатор"
+  ],
+  "buttons": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Центральный университет — сбросить сессию",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Навигатор",
+      "label": "Навигатор",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "История",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои цели",
+      "label": "Мои цели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Обучение",
+      "label": "Обучение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Late Days",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Учебный план",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ведомости",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Зачетка",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Прогноз",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Запись на пары",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Посещаемость",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Выбор курсов",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Карьера",
+      "label": "Карьера",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Расписание",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Хэндбук",
+      "label": "Хэндбук",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "События",
+      "label": "События",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Сервисы",
+      "label": "Сервисы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Настройки",
+      "label": "Настройки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть меню",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Поиск\n⌘ + K",
+      "label": "Поиск по LMS",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Закладки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы актуальны",
+      "label": "Материалы актуальны. Обновить материалы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "15\n1\n5",
+      "label": "Late Days: 15",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "7\n7\nНепрочитанных: 7",
+      "label": "Уведомления",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Библиотека",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Профиль Антона",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "+7°",
+      "label": "Погода: +7°",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Следующая пара: 09:00",
+      "label": "Следующая пара: 09:00",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "16 дедлайна до пятницы",
+      "label": "16 дедлайна до пятницы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Настроить виджеты",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Прикрепить файл",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Голосовой ввод",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Отправить запрос",
+      "href": null
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "Прикрепить файл к запросу",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Продолжить учёбу",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Расписание сегодня",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Моя неделя",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "🔥 Я в огне",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Настроить подсказки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Поддержка",
+      "href": null
+    }
+  ]
+}

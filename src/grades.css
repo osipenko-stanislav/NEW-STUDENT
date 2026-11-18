@@ -27,7 +27,7 @@
 .grades-table-shell th svg { width: 14px; height: 14px; }
 .grades-catalog-table th:first-child { width: 60%; }
 .grades-catalog-table td:not(:first-child) { white-space: nowrap; }
-.grades-title-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 28px; text-align: left; font-weight: 500; border-radius: 8px; }
+.grades-title-link { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 28px; text-align: left; font-weight: 500; border-radius: 8px; }
 .grades-title-link:hover { text-decoration: underline; text-underline-offset: 4px; }
 .grades-title-link svg { width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
 .grades-task-table { table-layout: fixed; min-width: 860px; }

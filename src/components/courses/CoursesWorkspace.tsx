@@ -41,7 +41,13 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   useLayoutEffect(() => {
     if (selectedTask?.courseId === courseId && selectedTask && courseEnrollmentId !== selectedTask.enrollmentId) navigate({ courseEnrollmentId: selectedTask.enrollmentId }, true)
   }, [selectedTask, courseId, courseEnrollmentId])
-  useLayoutEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = 0 }, [routeKey])
+  const scrollPositions = useRef(new Map<string, number>())
+  useLayoutEffect(() => {
+    const key = routeKey
+    const saved = scrollPositions.current.get(key) ?? 0
+    if (scrollRef.current) scrollRef.current.scrollTop = saved
+    return () => { if (scrollRef.current) scrollPositions.current.set(key, scrollRef.current.scrollTop) }
+  }, [routeKey])
   useLayoutEffect(() => { scrollRef.current?.querySelector<HTMLElement>('[data-course-route-heading]')?.focus({ preventScroll: true }) }, [courseId, lessonId])
   function openCourse(id: string, enrollmentId?: string) { setProgramOpen(false); navigate({ courseId: id, courseEnrollmentId: enrollmentId ?? null, lessonId: null, taskId: null, courseTab: enrollmentId ? 'homework' : 'course' }); setOpenBlocks([]) }
   function catalog() { setProgramOpen(false); navigate({ courseId: null, lessonId: null }) }
@@ -61,7 +67,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   }
   if (selectedTask && selectedTask.courseId === courseId) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><CourseHomework key={selectedTask.id} task={selectedTask} /><AcademicMaterialDialog id={materialId} onClose={() => navigate({ materialId: null }, true)} /></div></div>
   if (course && enrollment?.archived) return <div className="course-workspace"><div ref={scrollRef} className="course-surface"><section className="page-container course-archive-page" data-layout="workspace">
-    <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button></nav>
+    <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><a href="?section=Курсы" onClick={event => { event.preventDefault(); catalog() }}>Курсы</a></nav>
       <h1 data-typography="accent-title" tabIndex={-1} data-course-route-heading className="text-3xl">{course.title}</h1><p className="course-heading-subtitle">{enrollment.semester} семестр · Архивный курс</p>
     </header>
     <Tabs value={tab === 'grades' ? 'grades' : 'homework'} onValueChange={setTab}><TabsList aria-label="Разделы архивного курса"><TabsTrigger value="homework">Домашки</TabsTrigger><TabsTrigger value="grades">Ведомость по курсу</TabsTrigger></TabsList>
@@ -72,8 +78,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
   return <div className="course-workspace"><div ref={scrollRef} className="course-surface" aria-label="Учебная область">
     {!course ? <CourseCatalog onOpen={openCourse} /> : <div key={routeKey} data-layout={lesson ? "reading" : "workspace"} data-with-rail className={`page-container course-page course-layout motion-route-enter ${lesson ? 'course-lesson-layout' : ''}`}>
       <Tabs value={tab} onValueChange={setTab} className="course-main-column">
-        <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><button type="button" onClick={catalog}>Мои курсы</button>{lesson ? <ChevronRight aria-hidden="true" /> : null}
-          {lesson ? <><button type="button" onClick={program}>{course.title}</button><ChevronRight aria-hidden="true" /><button type="button" onClick={() => openBlock(originBlockId)}>Блок {blocks.findIndex(block => block.id === originBlockId) + 1}</button></> : null}</nav>
+        <header className="course-heading-island"><nav className="course-breadcrumbs" aria-label="Хлебные крошки курса"><a href="?section=Курсы" onClick={event => { event.preventDefault(); catalog() }}>Курсы</a>{lesson ? <><ChevronRight aria-hidden="true" /><a href={`?section=Курсы&course=${encodeURIComponent(course.id)}`} onClick={event => { event.preventDefault(); program() }}>{course.title}</a></> : null}</nav>
           <div className="course-title-row"><h1 data-typography="accent-title" tabIndex={-1} data-course-route-heading>{lesson ? lesson.title : course.title}</h1>{!lesson ? <CourseLevels course={course} /> : null}</div>
           {lesson ? <p className="course-heading-subtitle">{originBlock?.title}</p> : <p className="course-heading-subtitle">{areaLabels[course.area]} · {courseFilters.find(item => item.id === course.category)!.label}</p>}
           {!lesson ? <TabsList aria-label="Разделы курса" className="course-tab-list"><TabsTrigger value="course">Курс</TabsTrigger><TabsTrigger value="homework">Домашки</TabsTrigger><TabsTrigger value="recordings">Видеозаписи</TabsTrigger><TabsTrigger value="materials">Материалы</TabsTrigger><TabsTrigger value="grades">Ведомость по курсу</TabsTrigger></TabsList> : null}
@@ -87,7 +92,7 @@ export default function CoursesWorkspace({ onAskNavigator, onOpenGrades }: { onA
           }} /> : <>
             <TabsContent value="course" className="m-0"><section className="course-blocks" aria-label="Программа курса">
               <div className="course-section-heading"><h2>Программа курса</h2></div>
-              <CourseProgram blocks={blocks} openBlocks={openBlocks} onToggle={id => setOpenBlocks(current => current.includes(id) ? current.filter(item => item !== id) : [...current, id])} onSelect={selectEntity} />
+              <CourseProgram courseId={course.id} blocks={blocks} openBlocks={openBlocks} onToggle={id => setOpenBlocks(current => current.includes(id) ? current.filter(item => item !== id) : [...current, id])} onSelect={selectEntity} />
             </section></TabsContent><TabsContent value="recordings" className="m-0">{course.id === featuredCourseId ? <CourseRecordings onOpen={setRecording} /> : <section className="course-section"><h2 className="text-base font-semibold">Видеозаписи</h2><p className="mt-2 text-sm text-muted-foreground">Записи занятий пока не опубликованы.</p></section>}</TabsContent>
           </>}
 

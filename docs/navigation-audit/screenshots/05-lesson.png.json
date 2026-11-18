@@ -1,0 +1,348 @@
+{
+  "url": "http://127.0.0.1:5174/",
+  "header": "Курсы",
+  "h1": [
+    {
+      "text": "Метрики и функционалы потерь в задачах регрессии и классификации",
+      "rect": {
+        "x": 308,
+        "y": 136,
+        "width": 768,
+        "height": 72.78125,
+        "top": 136,
+        "right": 1076,
+        "bottom": 208.78125,
+        "left": 308
+      }
+    }
+  ],
+  "active": [
+    "Курсы"
+  ],
+  "buttons": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Центральный университет — сбросить сессию",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Навигатор",
+      "label": "Навигатор",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "История",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои цели",
+      "label": "Мои цели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Обучение",
+      "label": "Обучение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Late Days",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Учебный план",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ведомости",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Зачетка",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Прогноз",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Запись на пары",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Посещаемость",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Выбор курсов",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Карьера",
+      "label": "Карьера",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Расписание",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Хэндбук",
+      "label": "Хэндбук",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "События",
+      "label": "События",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Сервисы",
+      "label": "Сервисы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Настройки",
+      "label": "Настройки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть меню",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Поиск\n⌘ + K",
+      "label": "Поиск по LMS",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Закладки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы актуальны",
+      "label": "Материалы актуальны. Обновить материалы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "15\n1\n5",
+      "label": "Late Days: 15",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "7\n7\nНепрочитанных: 7",
+      "label": "Уведомления",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Библиотека",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Профиль Антона",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Машинное обучение (Machine Learning)",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Блок 1",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "документации scikit-learn",
+      "label": null,
+      "href": "https://scikit-learn.org/stable/modules/model_evaluation.html"
+    },
+    {
+      "tag": "A",
+      "text": "Конспект: метрики и функции потерь.pdf\n46 КБ",
+      "label": "Открыть материал: Конспект: метрики и функции потерь.pdf",
+      "href": "/assets/courses/metrics-notes.pdf"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Экспортировать материал: Конспект: метрики и функции потерь.pdf",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Памятка: проверка качества модели.md\n895 Б",
+      "label": "Открыть материал: Памятка: проверка качества модели.md",
+      "href": "/assets/courses/validation-guide.md"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Экспортировать материал: Памятка: проверка качества модели.md",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Информация о записи",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Открыть задание",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Перенести дедлайн: Домашнее задание: метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Не буду выполнять: Домашнее задание: метрики и оценка качества",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Предыдущий урок",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Следующий урок",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Программа курса",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "Содержание лекции",
+      "label": null,
+      "href": "#lesson-overview"
+    },
+    {
+      "tag": "A",
+      "text": "Ключевые идеи",
+      "label": null,
+      "href": "#lesson-loss"
+    },
+    {
+      "tag": "A",
+      "text": "Практика",
+      "label": null,
+      "href": "#lesson-practice"
+    },
+    {
+      "tag": "A",
+      "text": "Дополнительные материалы",
+      "label": null,
+      "href": "#lesson-materials"
+    },
+    {
+      "tag": "A",
+      "text": "Видеозапись с лекции",
+      "label": null,
+      "href": "#lesson-video"
+    },
+    {
+      "tag": "A",
+      "text": "Задание",
+      "label": null,
+      "href": "#lesson-assignment"
+    },
+    {
+      "tag": "A",
+      "text": "Итог",
+      "label": null,
+      "href": "#lesson-summary"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Общение\nЧат курса",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Поддержка",
+      "href": null
+    }
+  ]
+}

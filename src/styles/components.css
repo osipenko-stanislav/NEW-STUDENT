@@ -221,3 +221,7 @@
 .deadline-preview-row { display: flex; align-items: center; }
 .deadline-preview-row > .preview-popover-row { flex: 1; min-width: 0; }
 .deadline-preview-row > .task-deadline-actions { flex-shrink: 0; margin-right: var(--surface-padding); }
+
+.schedule-week-strip.segmented-control { display: flex; width: fit-content; max-width: 100%; gap: 2px; padding: 4px; border-radius: 12px; background: hsl(var(--muted)); overflow-x: auto; }
+.schedule-week-strip.segmented-control > [data-slot="button"] { min-height: 44px; padding: 6px 12px; border: 0; border-radius: 8px; background: transparent; box-shadow: none; }
+.schedule-week-strip.segmented-control > [data-slot="button"][aria-pressed="true"] { background: hsl(var(--background)); box-shadow: var(--shadow-control); }

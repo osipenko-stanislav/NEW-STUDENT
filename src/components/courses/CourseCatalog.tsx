@@ -53,6 +53,7 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string, enrollm
     setDrop({ id, after: event.clientX > bounds.x + bounds.width / 2 })
   }
   return <section className="page-container course-catalog" data-layout="workspace" aria-label="Мои курсы" tabIndex={-1} data-course-route-heading>
+    <h1 className="sr-only">Мои курсы</h1>
     <div className="course-catalog-header"><div className="course-catalog-toolbar">
       <SegmentedControl className="course-filter-list" aria-label="Категории курсов">{courseFilters.map(item => <Button key={item.id} type="button" variant={filter === item.id ? 'default' : 'outline'}
         aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</Button>)}<Button type="button" variant={archived ? 'default' : 'outline'} aria-pressed={archived} onClick={() => setFilter('archive')}>Архивные</Button></SegmentedControl>
@@ -68,10 +69,10 @@ export default function CourseCatalog({ onOpen }: { onOpen: (id: string, enrollm
         onDragStart={event => { if ((event.target as HTMLElement).closest('.course-tile-menu')) { event.preventDefault(); return } suppressClick.current = true; setDragged(course.id); event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', course.id) }}
         onDragOver={event => dragOver(event, course.id)} onDragEnd={finishDrag}
         onDrop={event => { event.preventDefault(); if (dragged && drop?.id === course.id) commit(moveCourse(snapshot.order, dragged, course.id, drop.after)); finishDrag() }}>
-        <button type="button" className="course-tile-open" onClick={() => { if (!suppressClick.current) onOpen(course.id, course.enrollment?.id) }} aria-label={`Открыть курс: ${course.title}`}>
+        <a href={`?section=Курсы&course=${encodeURIComponent(course.id)}`} className="course-tile-open" onClick={event => { if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); if (!suppressClick.current) onOpen(course.id, course.enrollment?.id) }} aria-label={`Открыть курс: ${course.title}`}>
           <span className="course-tile-area"><span className="course-area-icon">{course.area === 'development' ? <Code2 aria-hidden="true" /> : course.area === 'math' ? <Calculator aria-hidden="true" /> : <GraduationCap aria-hidden="true" />}</span>{areaLabels[course.area]}{course.enrollment?.semester ? ` · ${course.enrollment.semester} семестр` : ''}</span>
           <span className="course-tile-title">{course.title}</span>
-        </button>
+        </a>
         {!archived ? <div className="course-tile-top-actions"><CourseLevels course={course} /><DropdownMenu><DropdownMenuTrigger asChild>
           <Button type="button" variant="ghost" size="icon" className="course-tile-menu" aria-label={`Порядок курса: ${course.title}`}><MoreHorizontal aria-hidden="true" /></Button>
         </DropdownMenuTrigger><DropdownMenuContent align="end" collisionPadding={12}>

@@ -44,7 +44,7 @@ export default function LateDaysDialog({ taskId, onClose }: { taskId: string; on
       <div className="late-days-quick" aria-label="Быстрый перенос">{[1, 2, 3].map(amount => <Button key={amount} variant="outline" size="sm" aria-pressed={days === amount} onClick={() => { setValue(String(amount)); setError('') }}>+{amount} {amount === 1 ? 'день' : 'дня'}</Button>)}</div>
       <div className="late-days-preview" aria-live="polite"><p>Новый дедлайн: <strong ref={preview}>{formatDateTime(next)} МСК</strong></p><p>Будет потрачено: {valid ? <AnimatedNumber value={days} minDigits={2} /> : '—'}. Останется: {valid && days <= balance.remaining ? <AnimatedNumber value={balance.remaining - days} minDigits={2} /> : '—'}.</p></div>
       {(error || reason || !valid || days > balance.remaining) ? <p className="text-sm text-destructive" role="alert">{error || reason || (!valid ? 'Выбери дату позже текущего дедлайна или укажи целое количество дней.' : 'Не хватает Late Days. Уменьши перенос.')}</p> : null}
-      <DialogFooter><Button variant="outline" onClick={onClose}>Отмена</Button><Button disabled={!valid || days > balance.remaining || !!reason} onClick={() => {
+      <DialogFooter><Button variant="outline" onClick={onClose}>Отмена</Button><Button variant="default" disabled={!valid || days > balance.remaining || !!reason} onClick={() => {
         const result = apply([{ taskId, days, expectedDeadline: before }], batchId)
         if (result.ok) setDone(true); else setError(result.error ?? 'Не удалось перенести дедлайн.')
       }}>Перенести дедлайн</Button></DialogFooter>

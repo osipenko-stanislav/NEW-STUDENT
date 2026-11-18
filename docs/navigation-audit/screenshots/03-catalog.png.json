@@ -1,0 +1,400 @@
+{
+  "url": "http://127.0.0.1:5174/",
+  "header": "Курсы",
+  "h1": [],
+  "active": [
+    "Курсы"
+  ],
+  "buttons": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Центральный университет — сбросить сессию",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Навигатор",
+      "label": "Навигатор",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "История",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Мои цели",
+      "label": "Мои цели",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Обучение",
+      "label": "Обучение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Курсы",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Late Days",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Учебный план",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ведомости",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Зачетка",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Прогноз",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Домашки",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Запись на пары",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Посещаемость",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Выбор курсов",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Карьера",
+      "label": "Карьера",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Расписание",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Хэндбук",
+      "label": "Хэндбук",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "События",
+      "label": "События",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Сервисы",
+      "label": "Сервисы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Настройки",
+      "label": "Настройки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Свернуть меню",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Поиск\n⌘ + K",
+      "label": "Поиск по LMS",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Закладки",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Материалы актуальны",
+      "label": "Материалы актуальны. Обновить материалы",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "15\n1\n5",
+      "label": "Late Days: 15",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "7\n7\nНепрочитанных: 7",
+      "label": "Уведомления",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Расписание",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Библиотека",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Профиль Антона",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Все",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Обязательные",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Факультативные",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Вольнослушатель",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Внутренние",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Архивные",
+      "label": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nМашинное обучение (Machine Learning)",
+      "label": "Открыть курс: Машинное обучение (Machine Learning)",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Машинное обучение (Machine Learning)",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nАлгоритмы и структуры данных",
+      "label": "Открыть курс: Алгоритмы и структуры данных",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Алгоритмы и структуры данных",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nАрхитектура компьютера и операционные системы I",
+      "label": "Открыть курс: Архитектура компьютера и операционные системы I",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Архитектура компьютера и операционные системы I",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Математика\nТеория вероятностей",
+      "label": "Открыть курс: Теория вероятностей",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Теория вероятностей",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Математика\nДискретная математика",
+      "label": "Открыть курс: Дискретная математика",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Дискретная математика",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nБазы данных",
+      "label": "Открыть курс: Базы данных",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Базы данных",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nКомпьютерное зрение",
+      "label": "Открыть курс: Компьютерное зрение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Компьютерное зрение",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nОбработка естественного языка (NLP)",
+      "label": "Открыть курс: Обработка естественного языка (NLP)",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Обработка естественного языка (NLP)",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Математика\nМатематический анализ",
+      "label": "Открыть курс: Математический анализ",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Математический анализ",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nЯзык программирования Python. Базовый",
+      "label": "Открыть курс: Язык программирования Python. Базовый",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Язык программирования Python. Базовый",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nИнженерия данных",
+      "label": "Открыть курс: Инженерия данных",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Инженерия данных",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Математика\nМетоды непрерывной оптимизации",
+      "label": "Открыть курс: Методы непрерывной оптимизации",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Методы непрерывной оптимизации",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Разработка\nЯзык программирования С++ 1",
+      "label": "Открыть курс: Язык программирования С++ 1",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Язык программирования С++ 1",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Математика\nВведение в статистику",
+      "label": "Открыть курс: Введение в статистику",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Порядок курса: Введение в статистику",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Общие\nЦелеполагание, планирование и самоорганизация",
+      "label": "Открыть курс: Целеполагание, планирование и самоорганизация",
+      "href": null
+    }
+  ]
+}
