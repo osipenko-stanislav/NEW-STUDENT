@@ -22,7 +22,18 @@
 .message-command { max-width: 100%; padding: 2px 6px; border-radius: 6px; font-size: calc(12px * var(--text-scale, 1)); overflow-wrap: anywhere; }
 .message-command:has(+ .message-text) { margin-bottom: 6px; }
 .composer { display: flex; position: relative; min-height: 108px; flex-direction: column; border: 1px solid hsl(var(--border)); background: hsl(var(--background)); transition: border-color calc(150ms * var(--motion-scale)) var(--ease-enter); border-radius: 24px; box-shadow: var(--shadow-surface); }
+.dark .composer {
+  border-color: transparent;
+  background: linear-gradient(hsl(var(--background)), hsl(var(--background))) padding-box,
+    linear-gradient(155deg, rgb(255 255 255 / .085), rgb(255 255 255 / .055) 45%, rgb(255 255 255 / .035)) border-box;
+}
 .composer:focus-within { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / .12); }
+/* The attachment menu is portalled outside the Navigator subtree. */
+html.dark:has(.composer [aria-label="Прикрепить файл"][data-state="open"]) [data-slot="dropdown-menu-content"] {
+  border-color: transparent;
+  background: linear-gradient(hsl(var(--popover)), hsl(var(--popover))) padding-box,
+    linear-gradient(145deg, rgb(255 255 255 / .14), rgb(255 255 255 / .09) 45%, rgb(255 255 255 / .055)) border-box;
+}
 .composer-editor { display: flex; min-height: 64px; flex-wrap: wrap; align-items: flex-start; gap: 8px; cursor: text; padding: 16px 20px 0; }
 .prompt-command { display: inline-flex; max-width: 100%; min-height: 24px; flex-shrink: 0; gap: 4px; padding: 1px 4px 1px 8px; border-radius: 6px; font-size: calc(12px * var(--text-scale, 1)); font-weight: 500; line-height: calc(20px * var(--text-scale, 1)); }
 .prompt-command-label { min-width: 0; overflow-wrap: anywhere; }

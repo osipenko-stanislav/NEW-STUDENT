@@ -28,7 +28,7 @@ export default function CourseWidgets({ onDialog, onProgram, programOpen, toc, a
       : <>
         <Card size="sm" className="course-widget-card course-progress">
           <CardHeader><h2>Прогресс по курсу</h2></CardHeader>
-          <CardContent><p className="course-grade-total"><GradeValue value={result.raw} /> <span>из 10</span></p><div className="course-progress-track" role="meter" aria-label="Накоплено баллов" aria-valuemin={0} aria-valuemax={10} aria-valuenow={result.raw}><span className="course-progress-earned" style={{ width: `${Math.min(100, result.raw * 10)}%` }} /></div>
+          <CardContent><p className="course-grade-total"><GradeValue value={result.raw} /> <span className="course-grade-caption">из 10</span></p><div className="course-progress-track" role="meter" aria-label="Накоплено баллов" aria-valuemin={0} aria-valuemax={10} aria-valuenow={result.raw}><span className="course-progress-earned" style={{ width: `${Math.min(100, result.raw * 10)}%` }} /></div>
             <dl className="course-progress-legend"><div><dt><i data-tone="green" />Накоплено</dt><dd><GradeValue value={result.raw} /></dd></div><div><dt>После округления</dt><dd><AnimatedNumber value={result.rounded} /></dd></div></dl>
           </CardContent>
           <CardFooter asChild><button type="button" className="course-widget-footer" onClick={onOpenGrades}>Смотреть ведомость<ChevronRight aria-hidden="true" /></button></CardFooter>
