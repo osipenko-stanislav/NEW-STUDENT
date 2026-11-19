@@ -1,6 +1,6 @@
 
 /* navigation: shared design system. */
-[data-sidebar="sidebar"] [data-sidebar="menu-button"], [data-sidebar="sidebar"] [data-sidebar="menu-sub-button"] { min-height: 36px; }
+[data-sidebar="sidebar"] [data-sidebar="menu-button"], [data-sidebar="sidebar"] [data-sidebar="menu-sub-button"] { min-height: 28px; }
 .student-sidebar { background: hsl(var(--sidebar-background)); border: 0; }
 .navigation-chevron { transition: transform calc(160ms * var(--motion-scale)) var(--ease-enter); }
 .navigation-chevron.is-expanded { transform: rotate(90deg); }
@@ -22,22 +22,34 @@
   .conversation-history-row:hover .conversation-menu-trigger, .conversation-history-row:focus-within .conversation-menu-trigger { opacity: 1; } }
 .student-sidebar [data-sidebar="menu"] { gap: 2px; }
 .student-sidebar [data-sidebar="menu-button"]:not(.logo-button) {
-  min-height: 40px;
+  min-height: 28px;
   height: auto;
-  padding: 10px 12px;
-  border-radius: 10px;
-  gap: 10px; }
+  padding: 4px 10px;
+  border-radius: 8px;
+  gap: 10px;
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui); }
 .student-sidebar [data-sidebar="menu-sub-button"] {
-  min-height: 40px;
+  min-height: 28px;
   height: auto;
-  padding: 10px 12px;
-  border-radius: 10px;
-  gap: 10px; }
+  padding: 4px 10px;
+  border-radius: 8px;
+  gap: 10px;
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui); }
 .student-sidebar [data-sidebar="menu-button"]:not(.logo-button) > .design-icon:first-child { width: 18px; height: 18px; }
 .student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"])[data-active="true"] {
   background: hsl(var(--sidebar-accent));
   color: hsl(var(--sidebar-accent-foreground));
   box-shadow: none; }
+.student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]):not([data-active="true"]):hover {
+  background: hsl(var(--sidebar-accent) / .55);
+  color: hsl(var(--sidebar-accent-foreground));
+}
+.student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]):focus-visible {
+  outline: 2px solid hsl(var(--sidebar-ring) / .7);
+  outline-offset: -2px;
+}
 .student-sidebar [data-active="true"] .design-icon { filter: none; }
 .dark .student-sidebar [data-active="true"] .design-icon { filter: invert(1); }
 .student-sidebar [data-sidebar="menu-sub"] {
@@ -53,3 +65,8 @@
 html[data-density="compact"] .student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]):not(.logo-button) { min-height: 32px; padding-block: 6px; }
 
 [data-density="compact"] .student-sidebar [data-sidebar="menu-button"] { min-height: 32px; height: 32px; }
+
+@media (pointer: coarse) {
+  .student-sidebar [data-sidebar="menu-button"],
+  .student-sidebar [data-sidebar="menu-sub-button"] { min-height: 44px; height: 44px; padding-block: 10px; }
+}

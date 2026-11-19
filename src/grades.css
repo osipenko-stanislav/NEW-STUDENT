@@ -4,7 +4,7 @@
 .grades-surface { height: 100%; overflow: auto; overscroll-behavior: contain; container-type: inline-size; background: hsl(var(--background)); }
 .grades-page { min-width: 0; }
 .grades-heading { margin-bottom: var(--component-gap); }
-.grades-heading h1 { font-size: calc(28px * var(--text-scale, 1)); font-weight: 600; line-height: 1.3; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.grades-heading h1 { font-size: calc(var(--text-page-title) * var(--text-scale, 1)); font-weight: 600; line-height: calc(var(--leading-page-title) * var(--text-scale, 1)); letter-spacing: -.02em; overflow-wrap: anywhere; }
 .grades-heading-list { display: flex; justify-content: flex-start; align-items: center; gap: 24px; }
 .grades-tab { margin-top: var(--component-gap); }
 .grades-toolbar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
@@ -52,7 +52,7 @@
 .grades-surface button:focus-visible, .grades-surface summary:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
 @container (max-width: 700px) {
   .grades-heading-list { flex-direction: column; align-items: stretch; gap: 20px; }
-  .grades-heading h1 { font-size: calc(24px * var(--text-scale, 1)); }
+  .grades-heading h1 { font-size: calc(var(--text-page-title) * var(--text-scale, 1)); line-height: calc(var(--leading-page-title) * var(--text-scale, 1)); }
   .grades-toolbar { gap: 12px; }
   .grades-filter { flex: 1; min-width: min(160px, 100%); }
   .grades-search { flex-basis: 100%; max-width: none; min-width: 0; }

@@ -58,7 +58,7 @@
 .workspace h1[tabindex="-1"]:focus { outline: none; }
 
 .page-back-button { display: flex; width: fit-content; min-height: 36px; margin: 0 0 var(--page-navigation-gap); padding-inline: 8px; color: hsl(var(--muted-foreground)); }
-.page-breadcrumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: var(--page-navigation-gap); font-size: calc(12px * var(--text-scale, 1)); line-height: 20px; color: hsl(var(--muted-foreground)); }
+.page-breadcrumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: var(--page-navigation-gap); font-size: calc(var(--text-meta) * var(--text-scale, 1)); line-height: calc(var(--leading-meta) * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
 .page-breadcrumbs button { min-height: 24px; border-radius: 4px; }
 .page-breadcrumbs button:hover { color: hsl(var(--foreground)); text-decoration: underline; text-underline-offset: 4px; }
 .page-breadcrumbs svg { width: 12px; height: 12px; flex-shrink: 0; }

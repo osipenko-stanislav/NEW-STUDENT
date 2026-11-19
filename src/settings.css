@@ -5,7 +5,7 @@
 .settings-page, .settings-layout { height: 100%; min-height: 0; min-width: 0; }
 .settings-layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); }
 .settings-categories { min-height: 0; overflow-y: auto; border-right: 1px solid hsl(var(--border)); padding: 24px 12px; }
-.settings-categories-heading { padding: 0 12px 20px; font-size: calc(18px * var(--text-scale, 1)); font-weight: 600; }
+.settings-categories-heading { padding: 0 12px 20px; font-size: calc(var(--text-section-title) * var(--text-scale, 1)); line-height: calc(var(--leading-section-title) * var(--text-scale, 1)); font-weight: 600; }
 .settings-categories nav { display: flex; flex-direction: column; gap: 6px; }
 .settings-category { height: auto; min-height: 44px; width: 100%; justify-content: flex-start; align-items: center; gap: 12px; white-space: normal; text-align: left; border-radius: 12px; padding: 12px; }
 .settings-category > svg { margin-top: 2px; width: 18px; height: 18px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
@@ -18,7 +18,7 @@
 .settings-detail-inner { min-width: 0; --layout-max: var(--layout-workspace); }
 .settings-detail-heading { display: flex; align-items: center; gap: 14px; margin-bottom: var(--section-space); }
 .settings-detail-heading > svg { width: 24px; height: 24px; flex-shrink: 0; }
-.settings-detail-heading h1 { font-size: calc(24px * var(--text-scale, 1)); line-height: calc(32px * var(--text-scale, 1)); font-weight: 600; }
+.settings-detail-heading h1 { font-size: calc(var(--text-page-title) * var(--text-scale, 1)); line-height: calc(var(--leading-page-title) * var(--text-scale, 1)); font-weight: 600; }
 .settings-detail-heading p { margin-top: 4px; font-size: calc(14px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); color: hsl(var(--muted-foreground)); }
 .settings-group + .settings-group { margin-top: var(--section-space); }
 .settings-group-heading { margin-bottom: 12px; }

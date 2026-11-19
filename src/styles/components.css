@@ -1,11 +1,7 @@
 /* components: shared design system. */
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
-@supports (corner-shape: superellipse(1.1)) {
-  :is([data-slot="card"], [data-slot="dialog-content"], [data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="select-content"], .composer, .settings-group-card) {
-    corner-shape: superellipse(1.1);
-  }
-}
-:where([data-slot="button"]) { border-radius: var(--radius-control); }
+:where([data-slot="button"]) { border-radius: 9999px; }
+:where([data-slot="button"]:not([data-size="icon"], .ghost-icon)) { height: var(--control-height); min-height: var(--control-height); }
 :where([data-slot="button"]:is([data-size="icon"], .ghost-icon, .widget-settings)), :where([data-slot="dialog-close"], [data-slot="sheet-close"]) { border-radius: 999px; }
 :where([data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"])) {
   box-shadow: none;
@@ -15,6 +11,7 @@
 [data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"] {
   border-radius: var(--radius-control);
 }
+[data-slot="input"], [data-slot="select-trigger"] { height: var(--control-height); }
 [data-slot="input"], [data-slot="select-trigger"] {
   box-shadow: none;
 }
@@ -64,7 +61,7 @@
   gap: 2px;
   padding: 4px;
   border: 0;
-  border-radius: 12px;
+  border-radius: var(--radius-control);
   background: hsl(var(--muted));
   overflow-x: auto;
   scrollbar-width: thin;
@@ -83,15 +80,15 @@
   transition: background-color var(--motion-base) var(--ease-enter), box-shadow var(--motion-base) var(--ease-enter), color var(--motion-fast) var(--ease-enter);
 }
 .segmented-control:is([data-slot="tabs-list"], [data-slot="segmented-control"]) > :is([data-state="active"], [data-state="checked"], [aria-pressed="true"]) {
-  background: hsl(var(--background));
+  background: hsl(var(--accent));
   color: hsl(var(--foreground));
-  box-shadow: var(--shadow-control);
+  box-shadow: none;
 }
 .segmented-control > [role="tab"]::after { display: none; }
 
 @media (pointer: coarse) {
   .segmented-control:is([data-slot="tabs-list"], [data-slot="segmented-control"]) > :is([role="tab"], [role="radio"], [aria-pressed]) { min-height: 44px; }
-  :where([data-slot="button"]:not([data-size="icon"], .ghost-icon)), :where([data-slot="select-trigger"]) { min-height: 44px; }
+  :where([data-slot="button"]:not([data-size="icon"], .ghost-icon)), :where([data-slot="select-trigger"]) { height: 44px; min-height: 44px; }
   :is([data-slot="dropdown-menu-content"], [data-slot="select-content"]) :is([role="menuitem"], [role="option"]) { min-height: 44px; }
 }
 
@@ -104,7 +101,7 @@
 .state-icon-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .state-icon svg { width: 16px; height: 16px; }
 .segmented-control[data-has-indicator] { position: relative; isolation: isolate; }
-[data-slot="selection-indicator"] { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; border-radius: 8px; background: hsl(var(--background)); box-shadow: var(--shadow-control); }
+[data-slot="selection-indicator"] { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; border-radius: 8px; background: hsl(var(--accent)); box-shadow: none; }
 .segmented-control[data-has-indicator="true"] > :is([role="tab"], [role="radio"], [aria-pressed]) { position: relative; z-index: 1; }
 .segmented-control[data-has-indicator="true"] > :is([data-state="active"], [data-state="checked"], [aria-pressed="true"]) { background: transparent; box-shadow: none; }
 .checkbox-control { display: inline-flex; position: relative; flex-shrink: 0; width: 16px; height: 16px; vertical-align: middle; }
@@ -121,7 +118,7 @@
 .radio-indicator { opacity: 0; transform: scale(.6); }
 [data-slot="radio"][data-state="checked"] .radio-indicator { opacity: 1; transform: scale(1); }
 .number-stepper { display: inline-grid; grid-template-columns: 28px minmax(32px, 1fr) 28px; align-items: center; min-width: 112px; width: 100%; border: 1px solid hsl(var(--input)); border-radius: var(--radius-control); }
-.number-stepper > [data-slot="button"] { width: 28px; height: 32px; border-radius: 6px; }
+.number-stepper > [data-slot="button"] { width: 28px; height: 32px; border-radius: 8px; }
 .number-stepper > input { width: 100%; min-width: 0; padding-inline: 0; text-align: center; border: 0; box-shadow: none; appearance: textfield; background: transparent; }
 .number-stepper > input::-webkit-inner-spin-button, .number-stepper > input::-webkit-outer-spin-button { appearance: none; margin: 0; }
 .late-days-plan-controls .number-stepper { width: 112px; }
