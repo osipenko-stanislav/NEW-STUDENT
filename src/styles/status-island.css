@@ -1,4 +1,4 @@
-/* Cupertino surface, Kokonut Status Island motion (see docs/status-island.md). */
+/* Shared surface tokens, Kokonut Status Island motion (see docs/status-island.md). */
 .status-island-host { position: fixed; z-index: 60; display: flex; justify-content: center; pointer-events: none; }
 .status-island-presence { position: relative; isolation: isolate; width: max-content; max-width: calc(100% - 32px); }
 .status-island, .status-island-peek { border-radius: var(--radius-preview); background: hsl(var(--popover)); box-shadow: var(--shadow-popover); }
@@ -23,5 +23,3 @@
 .status-island :is(.status-island-heading, .status-island-list) [data-slot="button"] { width: 28px; height: 28px; flex-shrink: 0; }
 .status-island-pill:focus-visible, .status-island-list:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -3px; border-radius: inherit; }
 @media (pointer: coarse) { .status-island :is(.status-island-heading, .status-island-list) [data-slot="button"] { width: 44px; height: 44px; } }
-
-@supports (corner-shape: superellipse(1.1)) { .status-island, .status-island-peek { corner-shape: superellipse(1.1); } }

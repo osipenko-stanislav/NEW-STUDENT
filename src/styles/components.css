@@ -1,7 +1,8 @@
 /* components: shared design system. */
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
 :where([data-slot="button"]) { border-radius: var(--radius-control); font-size: calc(var(--text-ui) * var(--text-scale, 1)); line-height: calc(var(--leading-ui) * var(--text-scale, 1)); }
-:where([data-slot="button"]:is([data-variant="default"], [data-variant="secondary"], [data-variant="outline"], [data-variant="destructive"])) { border-radius: 9999px; }
+/* DesignKit raw extraction confirms pill geometry for primary/secondary actions. */
+:where([data-slot="button"]:is([data-variant="default"], [data-variant="secondary"])) { border-radius: 9999px; }
 :where([data-slot="button"]:not([data-size="icon"], .ghost-icon)) { height: var(--control-height); min-height: var(--control-height); }
 :where([data-slot="button"]:is([data-size="icon"], .ghost-icon)), :where([data-slot="dialog-close"], [data-slot="sheet-close"]) { border-radius: var(--radius-control); }
 :where([data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"])) {
@@ -189,7 +190,7 @@
 .calendar-inline .calendar-date-field { margin-block: 8px 12px; }
 .calendar-grid-host { position: relative; overflow: clip; }
 
-/* Quick previews keep Cupertino widget corners and share the notifications composition. */
+/* Quick previews share surface tokens and the notifications composition. */
 [data-slot="popover-content"].preview-popover { border-radius: var(--radius-preview); width: min(var(--drawer-width), calc(100vw - 32px)); max-height: min(680px, var(--radix-popover-content-available-height)); display: flex; flex-direction: column; padding: 0; overflow: hidden; }
 .preview-popover-heading { flex-shrink: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; min-height: 52px; align-content: center; padding: var(--surface-header-block) var(--surface-padding); }
 .preview-popover-heading h2 { font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; overflow-wrap: anywhere; }
@@ -233,6 +234,6 @@
 .deadline-preview-row > .preview-popover-row { flex: 1; min-width: 0; }
 .deadline-preview-row > .task-deadline-actions { flex-shrink: 0; margin-right: var(--surface-padding); }
 
-.schedule-week-strip.segmented-control { display: flex; width: fit-content; max-width: 100%; gap: 2px; padding: 4px; border-radius: 12px; background: hsl(var(--muted)); overflow-x: auto; }
+.schedule-week-strip.segmented-control { display: flex; width: fit-content; max-width: 100%; gap: 2px; padding: 4px; border-radius: var(--radius-control); background: hsl(var(--muted)); overflow-x: auto; }
 .schedule-week-strip.segmented-control > [data-slot="button"] { min-height: 44px; padding: 6px 12px; border: 0; border-radius: 8px; background: transparent; box-shadow: none; }
-.schedule-week-strip.segmented-control > [data-slot="button"][aria-pressed="true"] { background: hsl(var(--background)); box-shadow: var(--shadow-control); }
+.schedule-week-strip.segmented-control > [data-slot="button"][aria-pressed="true"] { background: hsl(var(--accent)); box-shadow: none; }

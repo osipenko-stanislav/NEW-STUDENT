@@ -1,6 +1,6 @@
 # NEW STUDENT interface system
 
-The current visual language is the project's Cupertino adaptation, using the existing NEW STUDENT palette, PT Root UI and selective Universita accents. Product behavior and student-facing content are governed by AGENTS.md. This document describes the implemented system and where changes belong.
+The visual reference is Linear.app (2026 redesign), in Linear Dark and Pure Light, retaining the implemented neutral palette, semantic study colors, PT Root UI and selective Universita accents. Prioritize visual fidelity, layout quality, composition and complete interaction states. Keep React, shadcn/ui, Radix and Motion, the single token system and existing style owners; visual changes preserve product, navigation and UX contracts. Product behavior and student-facing content are governed by AGENTS.md. This document describes the implemented system and where changes belong.
 
 ## Ownership
 
@@ -25,7 +25,7 @@ The current visual language is the project's Cupertino adaptation, using the exi
 | Handbook reading composition, loaded with its route | `src/handbook.css` |
 | Developer-only motion catalog, loaded only in DEV | `src/styles/motion-lab.css` |
 
-The former `cupertino.css` override layer has been removed. Its component rules now live in the shared system and its feature-specific rules live alongside the layouts they modify. Do not recreate a final stylesheet that patches all preceding files. Cupertino remains the visual authority; external references may change composition and behavior without replacing its control treatment.
+Shared component rules live in the shared system; feature-specific composition lives alongside the layout it modifies. Do not recreate a final stylesheet that patches all preceding files or a parallel theme namespace. Use the supplied Linear 2026 screenshots and [DesignKit raw extraction](https://github.com/caio-overmind-ventures/designkit/tree/main/extractions/app.linear.app) as visual evidence; verify portable exports against raw values and screenshots. Historical adaptation notes and appearance descriptions in behavior/motion documents are not current visual requirements; this document and the implemented tokens govern appearance.
 
 ## Component contracts
 
@@ -34,12 +34,12 @@ Use `src/components/ui` before adding a component. Primitives own behavior, acce
 ### Surface hierarchy
 
 - **Content surface** — открытое рабочее содержимое: статьи, списки, таблицы, заголовки и текстовые ответы.
-- **Functional island** — самостоятельные виджеты, инструменты, панели, формы и интерактивные Generative UI-компоненты. Они сохраняют предусмотренное Cupertino-оформление, если поверхность помогает их назначению.
+- **Functional island** — самостоятельные виджеты, инструменты, панели, формы и интерактивные Generative UI-компоненты. Они сохраняют самостоятельную поверхность на общих токенах Linear, если она помогает их назначению. De-island, don’t flatten: убирай необоснованную фрагментацию, сохраняя функциональные поверхности.
 - **Overlay surface** — Popover, Dialog, Dropdown, Sheet и контекстные меню.
 
 Граница React-компонента сама по себе не требует визуального контейнера. Не добавляй поверхность вокруг уже самостоятельного острова и не уплощай функциональную поверхность механически: решение принимает композиционная роль объекта.
 
-- **Button/Input/Select/Switch/RadioGroup** retain their semantic variants and accessible names. Customize a control in the primitive or shared stylesheet so every instance receives the change. Button primitives do not supply competing radius/shadow utility defaults: shared Cupertino CSS owns these values, while feature compositions can specify purposeful exceptions. Switch uses a 40×24 px track and 24×16 px capsule thumb, with a 12 px travel; geometry belongs to the shared component rather than settings-only overrides.
+- **Button/Input/Select/Switch/RadioGroup** retain their semantic variants and accessible names. Customize a control in the primitive or shared stylesheet so every instance receives the change. Button primitives do not supply competing radius/shadow utility defaults: shared CSS owns these values, while feature compositions can specify purposeful exceptions. Controls use 32 px desktop height and 8 px corners; touch targets remain at least 44 px where required. Pill geometry is intentional for primary/secondary actions confirmed by raw extraction, not a global Button default. General surfaces/previews use 8 px corners and dialogs 12 px. Neutral selected states do not add raised depth. Preserve necessary overlay shadows and dark-only subtle gradient edges on the course widgets, composer and attachment menu. Switch uses a 40×24 px track and 24×16 px capsule thumb, with a 12 px travel; geometry belongs to the shared component rather than settings-only overrides.
 - **TabsList** and **SegmentedControl** use the same segmented surface. Tabs retain Radix tab navigation. Independent filters use actual buttons with `aria-pressed`; theme choices retain RadioGroup semantics. Long groups scroll in one row. Calendar day grids preserve their distinct composition.
 - **Dialog/Sheet/Popover/DropdownMenu/Tooltip** have stable slots and shared elevation/motion. Their portal content must not depend on being a descendant of `.student-app`.
 - **EmptyState** is shared by course recordings, grades, homework and schedule. Pass the icon, title, description and optional recovery action. Compact inline chat messages stay inline; do not turn them into full empty-state panels.
@@ -88,7 +88,7 @@ The architecture guard is not a replacement for browser accessibility, layout or
 
 ## Плотность рабочих экранов
 
-Компактная композиция по [референсу ecommerce](https://shadcnuikit.com/dashboard/ecommerce) стала стандартным видом. Расположение блоков, сетки, тема и размеры шрифтов сохраняются. Текст уроков и Хэндбука сохраняет прежние ширины, межстрочные интервалы и ритм абзацев.
+Компактная плотность рабочего UI ориентируется на Linear.app 2026. Сохраняются реализованные сетки и композиционные роли: документы, таблицы, настройки, хронология и функциональные виджеты не сводятся к одному карточному шаблону. Текст уроков и Хэндбука сохраняет прежние ширины, межстрочные интервалы и ритм абзацев.
 
 Общие значения находятся в `src/styles/tokens.css`: содержимое поверхности — 16 px, небольшой поверхности — 12 px, вертикальный отступ заголовка — 10/8 px, строки списков и ячейки таблиц — 12 px. Рабочий экран начинается с отступа 24 px. Настройка «Компактный» дополнительно сокращает эти расстояния через те же токены.
 
@@ -155,4 +155,4 @@ Motion Lab открывается по `?motion-lab=1` только в Vite DEV;
 
 ## Статусы действий
 
-Операции и изменения данных студента используют единый Status Island под глобальным header. Навигация и восстановленные данные не создают событий. Состояния кнопок и локальные ошибки сохраняются, общие повторные сообщения об успехе заменяются айлендом. Внешний вид — Cupertino; morph/swap-анимация — по Kokonut с обязательным minimal/reduced вариантом. API, области подключения, таймеры, фокус и источник описаны в [docs/status-island.md](docs/status-island.md).
+Операции и изменения данных студента используют единый Status Island под глобальным header. Навигация и восстановленные данные не создают событий. Состояния кнопок и локальные ошибки сохраняются, общие повторные сообщения об успехе заменяются айлендом. Внешний вид использует общие токены Linear Dark / Pure Light; morph/swap-анимация — по Kokonut с обязательным minimal/reduced вариантом. Прежние описания оформления в документе Status Island исторические; его API и поведенческие контракты сохраняются. API, области подключения, таймеры, фокус и источник описаны в [docs/status-island.md](docs/status-island.md).

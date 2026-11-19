@@ -40,7 +40,6 @@
 .settings-theme-options { display: flex; gap: 4px; padding: 4px; background: hsl(var(--muted)); border-radius: 12px; max-width: 100%; }
 .settings-theme-options .settings-theme-choice { display: flex; align-items: center; justify-content: center; gap: 6px; border: 0; width: auto; height: 32px; padding: 0 10px; border-radius: 8px; font-size: calc(12px * var(--text-scale, 1)); line-height: calc(16px * var(--text-scale, 1)); box-shadow: none; color: hsl(var(--muted-foreground)); }
 .settings-theme-choice > svg { width: 14px; height: 14px; }
-.settings-theme-choice[data-state="checked"] { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 2px hsl(var(--shadow-color) / .08); }
 .settings-key { display: inline-flex; border: 1px solid hsl(var(--border)); padding: 3px 8px; background: hsl(var(--muted) / .5); font-family: inherit; font-size: calc(12px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); white-space: nowrap; border-radius: 8px; }
 .settings-danger-action { color: var(--color-red-text); }
 .settings-danger-action:hover { color: var(--color-red-text); background: var(--color-red-soft); }

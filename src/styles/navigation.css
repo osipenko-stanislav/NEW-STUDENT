@@ -1,7 +1,9 @@
 
 /* navigation: shared design system. */
 [data-sidebar="sidebar"] [data-sidebar="menu-button"], [data-sidebar="sidebar"] [data-sidebar="menu-sub-button"] { min-height: 28px; }
-.student-sidebar { background: hsl(var(--sidebar-background)); border: 0; }
+.student-sidebar { --sidebar-foreground: 240 3% 36%; background: hsl(var(--sidebar-background)); border: 0; color: hsl(var(--sidebar-foreground)); }
+.dark .student-sidebar { --sidebar-foreground: 240 2% 68%; }
+.student-sidebar [data-sidebar="group-label"], .student-sidebar .app-version { color: hsl(var(--muted-foreground)); }
 .navigation-chevron { transition: transform calc(160ms * var(--motion-scale)) var(--ease-enter); }
 .navigation-chevron.is-expanded { transform: rotate(90deg); }
 .navigation-submenu { margin-top: 4px; }
@@ -37,7 +39,10 @@
   gap: 10px;
   font-size: var(--text-ui);
   line-height: var(--leading-ui); }
+.student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]) { color: hsl(var(--sidebar-foreground)); }
 .student-sidebar [data-sidebar="menu-button"]:not(.logo-button) > .design-icon:first-child { width: 18px; height: 18px; }
+.student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]) > .design-icon { opacity: .72; }
+.student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]):is([data-active="true"], :hover, :focus-visible) > .design-icon { opacity: 1; }
 .student-sidebar :is([data-sidebar="menu-button"], [data-sidebar="menu-sub-button"])[data-active="true"] {
   background: hsl(var(--sidebar-accent));
   color: hsl(var(--sidebar-accent-foreground));

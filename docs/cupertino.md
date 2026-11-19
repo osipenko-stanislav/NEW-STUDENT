@@ -1,4 +1,8 @@
-# Cupertino adaptation
+# Cupertino adaptation — historical archive
+
+> Исторический документ: не источник актуальных визуальных требований. Радиусы, тени и selected treatments ниже описывают прежнюю систему и не подлежат восстановлению. Действующая система — Linear.app 2026 (Linear Dark / Pure Light), см. DESIGN.md и layout.md. Технические сведения о слотах, portals, шрифтах и поведении сохранены для истории; актуальные контракты проверяй по действующим владельцам.
+
+## Historical implementation
 
 The interface adapts the geometry, control treatment and elevation of
 [Cupertino for Obsidian](https://github.com/svnaxis/obsidian-cupertino).
