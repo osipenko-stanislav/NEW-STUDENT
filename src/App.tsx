@@ -69,6 +69,7 @@ const NotificationsWorkspace = lazy(() => import('@/components/notifications/Not
 const LateDaysWorkspace = lazy(() => import('@/components/late-days/LateDaysWorkspace'))
 const MotionLab = import.meta.env.DEV ? lazy(() => import('@/components/MotionLab')) : null
 const SettingsScreen = lazy(() => import('@/components/SettingsScreen'))
+const ComponentGallery = import.meta.env.DEV ? lazy(() => import('@/components/ComponentGallery')) : null
 const navigatorOrbs: readonly OrbLayer[] = [
   { offset: [-0.06, 0.02], scale: 1, opacity: 0.66, phase: 0 },
   { offset: [0.07, 0.03], scale: 0.78, opacity: 0.64, phase: 2.1 },
@@ -419,6 +420,7 @@ function StudentInterface({ onResetSession, isResetting }: {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      {import.meta.env.DEV ? <SidebarGroup className="dev-navigation-group"><SidebarGroupLabel>Для разработки</SidebarGroupLabel><SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton aria-label="Компоненты" aria-current={section === 'Компоненты' ? 'page' : undefined} isActive={section === 'Компоненты'} onClick={() => selectSection('Компоненты')}><Icon name="archive-lined.svg" /><span className="flex-1 group-data-[collapsible=icon]:hidden">Компоненты</span></SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroupContent></SidebarGroup> : null}
       <SidebarFooter className="gap-0">
         <nav aria-label="Дополнительно">
           <SidebarMenu>
@@ -478,6 +480,7 @@ function StudentInterface({ onResetSession, isResetting }: {
         {section === 'Зачетка' ? <GradebookWorkspace /> : null}
         {section === 'Ведомости' ? <GradesWorkspace key={studyTarget} onOpenCourse={(id, enrollmentId) => { selectSection(`Курсы/${id}`); if (enrollmentId) navigate({ courseEnrollmentId: enrollmentId, courseTab: enrollmentId.startsWith('archive-') ? 'homework' : 'course' }, true) }} /> : null}
         {section === 'Курсы' ? <CoursesWorkspace key={studyTarget} onOpenGrades={(id, enrollmentId) => { selectSection(`Ведомости/${id}`); if (enrollmentId) navigate({ statementId: enrollmentId }, true) }} onAskNavigator={askNavigator} /> : null}
+        {section === 'Компоненты' && ComponentGallery ? <ComponentGallery /> : null}
         {section === 'Настройки' ? <SettingsScreen theme={theme} onThemeChange={setTheme} themeError={themeError}
           conversations={conversations} materials={materials} busy={materialsBusy} storageError={storageError || materialsError}
           onClearHistory={clearHistory} onClearLibrary={clearLibrary} onClearData={() => onResetSession(library)} /> : null}

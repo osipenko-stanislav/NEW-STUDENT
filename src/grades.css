@@ -183,3 +183,9 @@
   .forecast-table caption { padding: 16px; }
   .forecast-footer { gap: 24px; }
 }
+
+:where(.dark) .grades-table-shell:where(:not(.gradebook-session *)) {
+  border-color: transparent;
+  --surface-fill: linear-gradient(hsl(var(--background)), hsl(var(--background)));
+  background: var(--surface-fill) padding-box, var(--surface-edge) border-box;
+}

@@ -68,7 +68,7 @@
 .handbook-child-pages h2 { font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; margin-bottom: 16px; }
 .handbook-child-pages ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .handbook-child-pages a { display: flex; align-items: center; gap: 10px; height: 100%; padding: 14px; border: 1px solid hsl(var(--border)); font-size: calc(14px * var(--text-scale, 1)); border-radius: 12px; }
-.handbook-child-pages a:hover { background: hsl(var(--accent)); }
+.handbook-child-pages a:hover { background-color: hsl(var(--accent)); }
 .handbook-child-pages svg { width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
 .handbook-child-pages span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .handbook-outline { min-width: 0; position: sticky; top: var(--page-top); }
@@ -116,3 +116,17 @@
 .handbook-inline-outline a:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
 @container handbook-reading (max-width: 1143px) { .handbook-inline-outline { display: block; } }
 :is(.handbook-callout, .handbook-table-scroll, .handbook-file) { border-radius: var(--radius-surface); }
+
+:where(.dark) :is(.handbook-table-scroll, .handbook-file, .handbook-child-pages a) {
+  border-color: transparent;
+  --surface-fill: linear-gradient(hsl(var(--background)), hsl(var(--background)));
+  background: var(--surface-fill) padding-box, var(--surface-edge) border-box;
+}
+
+:where(.dark) :is(.handbook-callout) {
+  border-color: transparent;
+  --surface-fill: linear-gradient(color-mix(in srgb, hsl(var(--muted)) 30%, hsl(var(--background))), color-mix(in srgb, hsl(var(--muted)) 30%, hsl(var(--background))));
+  background: var(--surface-fill) padding-box, var(--surface-edge) border-box;
+}
+
+:where(.dark) .handbook-child-pages a:hover { --surface-fill: linear-gradient(hsl(var(--accent)), hsl(var(--accent))); }

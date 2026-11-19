@@ -9,5 +9,9 @@ import RescuePlanner from './RescuePlanner'
 export default function LateDaysResponse({ part }: { part: LateDaysPart }) {
   const { balance } = useLateDays()
   if (part.mode === 'rescue') return <RescuePlanner planId={part.planId} strategy={part.strategy} embedded />
-  return <section className="gen-ui late-days-response" aria-label="Late Days"><h3>Late Days · {currentLateDaysSemester.name}</h3><p className="late-days-balance"><strong ><AnimatedNumber value={balance.remaining} minDigits={2} /></strong><span>из {balance.limit} дней</span></p><p className="late-days-muted">Использовано: <AnimatedNumber value={balance.used} minDigits={2} /></p><LateDaysChart semester={currentLateDaysSemester} compact /><Button variant="outline" onClick={() => navigate({ section: 'Late Days' })}>История Late Days</Button></section>
+  return <section className="gen-ui late-days-response" aria-label="Late Days">
+    <div className="gen-header"><h3>Late Days</h3><p>{currentLateDaysSemester.name}</p></div>
+    <div className="gen-late-days-analysis"><div className="gen-late-days-resource"><p className="late-days-balance"><strong><AnimatedNumber value={balance.remaining} minDigits={2} /></strong><span>дней осталось<br />из {balance.limit}</span></p><p className="late-days-muted">Использовано: <AnimatedNumber value={balance.used} minDigits={2} /></p></div><LateDaysChart semester={currentLateDaysSemester} compact /></div>
+    <div className="gen-footer"><Button variant="outline" onClick={() => navigate({ section: 'Late Days' })}>История Late Days</Button></div>
+  </section>
 }

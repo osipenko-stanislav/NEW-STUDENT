@@ -17,20 +17,9 @@
 .study-search > input { padding-inline: 36px; }
 .study-search > button { position: absolute; right: 0; top: 0; }
 .homework-list-summary { display: flex; justify-content: space-between; gap: 16px; padding: 0 0 16px; font-size: 13px; color: hsl(var(--muted-foreground)); }
-.homework-table-heading, .homework-all-row { display: grid; grid-template-columns: minmax(0, 1fr) 172px 120px 68px; gap: 12px; align-items: center; padding: var(--list-row-padding) 0; }
-.homework-table-heading { min-height: 40px; padding: 10px 12px; border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface) var(--radius-surface) 0 0; background: hsl(var(--muted) / .5); font-size: 13px; line-height: 20px; font-weight: 500; color: hsl(var(--muted-foreground)); }
-.homework-all-list { border-inline: 1px solid hsl(var(--border)); border-bottom: 1px solid hsl(var(--border)); border-radius: 0 0 var(--radius-surface) var(--radius-surface); overflow: hidden; }
-.homework-all-row { padding-inline: 12px; }
-.homework-all-row + .homework-all-row { border-top: 1px solid hsl(var(--border)); }
-.homework-all-row:hover { background: hsl(var(--muted) / .2); }
-.homework-all-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
-.homework-task-link { padding: 0; height: auto; white-space: normal; text-align: left; justify-content: flex-start; color: hsl(var(--foreground)); font-size: 14px; line-height: 1.5; }
-.homework-task-link svg { width: 14px; height: 14px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
-.homework-course-link { color: hsl(var(--muted-foreground)); height: auto; padding: 0; white-space: normal; text-align: left; font-size: 12px; line-height: 1.5; }
-.homework-all-status { justify-self: start; }
-.homework-all-grade { font-size: 16px; text-align: right; font-variant-numeric: tabular-nums; }
-.homework-all-grade small { font-size: 12px; color: hsl(var(--muted-foreground)); }
-.homework-all-deadline { font-size: 13px; }
+/* The page owns the table surface; HomeworkItem owns every row and column. */
+.homework-table { min-width: 0; border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface); }
+.homework-table > .homework-list-heading { border-radius: var(--radius-surface) var(--radius-surface) 0 0; background: hsl(var(--muted) / .5); }
 .schedule-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 0 12px; }
 .schedule-date-navigation { display: flex; align-items: center; gap: 6px; min-width: 0; flex-wrap: wrap; }
 .schedule-date-picker { text-transform: none; margin-left: 8px; }
@@ -87,7 +76,6 @@
 .schedule-details dt svg { width: 16px; height: 16px; }
 .schedule-details dd { padding-left: 24px; }
 @container workspace (max-width: 1100px) {
-  .homework-table-heading, .homework-all-row { grid-template-columns: minmax(0,1fr) 145px 100px 45px; gap: 12px; }
   .homework-course-filter { width: 210px; }
   .schedule-toolbar { flex-wrap: wrap; }
 }
@@ -99,13 +87,6 @@
   .homework-filters .assignment-status-filter { width: 130px; }
   .homework-filters .assignment-status-filter > button { width: 100%; }
   .homework-list-summary { padding: 0 16px 16px; flex-wrap: wrap; gap: 6px; }
-  .homework-table-heading { display: none; }
-  .homework-all-list { border: 0; border-radius: 0; overflow: visible; }
-  .homework-all-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding: var(--surface-padding) 0; border-top: 1px solid hsl(var(--border)); }
-  .homework-all-copy { grid-column: 1 / -1; }
-  .homework-all-status { grid-column: 1; grid-row: 3; }
-  .homework-all-grade { grid-column: 2; grid-row: 3; }
-  .homework-all-deadline { grid-column: 1 / -1; }
   .schedule-toolbar { padding: 12px; gap: 12px; }
   .schedule-date-navigation { width: 100%; }
   .schedule-date-picker { margin: 6px 0 0; flex-basis: 100%; justify-content: flex-start; padding-inline: 4px; font-size: 14px; }
@@ -151,3 +132,10 @@
 .schedule-class-event:has(.task-deadline-actions) { padding-right: 38px; }
 .schedule-class-event > .task-deadline-actions { position: absolute; right: 2px; top: 2px; }
 .schedule-event-open:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; }
+
+/* Event cards keep their semantic hue while sharing the directional edge. */
+:where(.dark) .schedule-class-event {
+  border-color: transparent;
+  background: linear-gradient(var(--event-bg), var(--event-bg)) padding-box,
+    linear-gradient(145deg, var(--event-color), color-mix(in srgb, var(--event-color) 55%, var(--event-bg)) 45%, color-mix(in srgb, var(--event-color) 25%, var(--event-bg))) border-box;
+}

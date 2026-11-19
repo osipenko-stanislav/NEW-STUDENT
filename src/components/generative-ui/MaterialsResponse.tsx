@@ -15,10 +15,8 @@ export default function MaterialsResponse({ part, onNavigate }: { part: Material
   return <section className="gen-ui" aria-label="Учебные материалы">
     <div className="gen-header"><h3 className="gen-heading"><SemanticIcon icon={Library} tone="violet" />Учебные материалы</h3></div>
     {items.length ? <ul className="gen-material-list gen-material-list-compact" aria-label="Учебные материалы">{items.map(item => <li key={item.id}>
-      <FileIcon name={`${item.title}.${item.fileType}`} />
       <button className="gen-material-open" onClick={() => { onNavigate(`Курсы/${item.courseId}`); navigate({ courseTab: 'materials', materialId: item.id }, true) }}>
-        <span className="gen-row-title">{item.title}</span><span className="gen-row-meta">{item.fileType} · {item.course}</span>
-      </button><ChevronRight aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+        <FileIcon name={`${item.title}.${item.fileType}`} /><span className="gen-material-copy"><span className="gen-row-title">{item.title}</span><span className="gen-row-meta">{item.fileType} · {item.course}</span></span><ChevronRight aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /></button>
     </li>)}</ul> : <p className="gen-empty">Материалы по запросу не найдены.</p>}
     <div className="gen-footer"><Button variant="outline" onClick={() => openGlobalSearch([part.query, part.courseId ? part.items.find(item => item.courseId === part.courseId)?.course : part.subject !== 'all' ? subjectLabels[part.subject] : '', part.fileType !== 'all' ? part.fileType : ''].filter(Boolean).join(' '), 'materials')}>Все материалы</Button></div>
   </section>

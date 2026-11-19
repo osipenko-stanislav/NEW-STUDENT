@@ -50,6 +50,10 @@
   }
   .dark {
     color-scheme: dark;
+    /* Linear Woblo composer: fill RGB 28/28/29, edge 59/60/63 → 40/40/43.
+       Match its tonal deltas against our card palette, without a white overlay. */
+    --surface-fill: linear-gradient(hsl(var(--card)), hsl(var(--card)));
+    --surface-edge: linear-gradient(to bottom, color-mix(in srgb, hsl(var(--card)) 86%, hsl(var(--foreground))), color-mix(in srgb, hsl(var(--card)) 94%, hsl(var(--foreground))));
     --background: 240 7% 5.5%;
     --foreground: 240 0% 100%;
     --card: 240 6% 9%;

@@ -23,3 +23,9 @@
 .status-island :is(.status-island-heading, .status-island-list) [data-slot="button"] { width: 28px; height: 28px; flex-shrink: 0; }
 .status-island-pill:focus-visible, .status-island-list:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -3px; border-radius: inherit; }
 @media (pointer: coarse) { .status-island :is(.status-island-heading, .status-island-list) [data-slot="button"] { width: 44px; height: 44px; } }
+
+:where(.dark) :is(.status-island, .status-island-peek) {
+  border-color: transparent;
+  --surface-fill: linear-gradient(hsl(var(--popover)), hsl(var(--popover)));
+  background: var(--surface-fill) padding-box, var(--surface-edge) border-box;
+}

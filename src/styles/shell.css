@@ -13,9 +13,9 @@
 .student-page { height: 100dvh; container-type: inline-size; background: hsl(var(--background)); }
 /* Keep explicit descendant canvas fills on the same Pure Light surface. */
 html:not(.dark) .student-page { --background: var(--card); }
-/* One canvas boundary for the shell; an inset outline preserves content widths. */
+/* Header and workspace share one foreground surface inside the app background. */
 @media (min-width: 768px) {
-  .student-page { border-radius: var(--radius-surface) 0 0 var(--radius-surface); outline: 1px solid hsl(var(--border) / .75); outline-offset: -1px; }
+  .student-page { margin: 8px 8px 8px 0; height: calc(100dvh - 16px); border-radius: var(--radius-surface); outline: 1px solid hsl(var(--border) / .75); outline-offset: -1px; }
   .dark .student-page { outline-color: hsl(var(--input) / .65); }
 }
 .student-header { display: grid; grid-template-columns: minmax(0, 1fr) 296px minmax(0, 1fr); flex-shrink: 0; align-items: center; gap: 16px; padding: 0 16px; border-bottom: 1px solid hsl(var(--border) / .65); background: inherit; height: 56px; padding-inline: 16px; }

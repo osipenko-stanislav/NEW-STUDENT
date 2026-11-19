@@ -1,18 +1,15 @@
 import { actionStatus } from '@/lib/action-status'
 import StudyDownloadSettings from '@/components/StudyDownloadSettings'
-import { Children, Fragment, useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import {
-  ArrowDownToLine, Brain, CalendarDays, Check, Clock3, Database, FileJson, FolderOpen,
-  Globe, Info, Keyboard, MessageSquare, Monitor, Moon, Palette, RotateCcw, Settings2, ShieldCheck, Sparkles, Sun, Trash2,
-  type LucideIcon,
+  ArrowDownToLine, Brain, Check, FolderOpen,
+  Info, Keyboard, MessageSquare, Monitor, Moon, Palette, Settings2, ShieldCheck, Sun,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import { useDisplayFormats, useSettings } from '@/components/SettingsProvider'
 import { useAppMotion } from '@/components/MotionProvider'
@@ -42,11 +39,10 @@ const confirmations = {
   data: { title: 'Очистить все локальные данные?', description: 'Будут удалены разговоры, файлы, настройки и недавние поисковые переходы NEW STUDENT. Откроется чистый Навигатор. Это действие нельзя отменить.', action: 'Очистить данные' },
 }
 
-function SettingRow({ title, description, icon: Icon, children, disabled = false }: {
-  title: string; description?: string; icon?: LucideIcon; children: ReactNode; disabled?: boolean
+function SettingRow({ title, description, children, disabled = false }: {
+  title: string; description?: string; children: ReactNode; disabled?: boolean
 }) {
   return <div className={`settings-row ${disabled ? 'settings-row-disabled' : ''}`}>
-    {Icon ? <Icon className="settings-row-icon" aria-hidden="true" /> : null}
     <div className="settings-row-copy"><div className="settings-row-title">{title}</div>
       {description ? <p className="settings-row-description">{description}</p> : null}</div>
     <div className="settings-row-control">{children}</div>
@@ -56,9 +52,7 @@ function SettingsGroup({ title, description, children }: { title: string; descri
   const id = useId()
   return <section className="settings-group" aria-labelledby={id}>
     <div className="settings-group-heading"><h3 id={id}>{title}</h3>{description ? <p>{description}</p> : null}</div>
-    <Card className="settings-group-card">{Children.toArray(children).map((child, index) => <Fragment key={index}>
-      {index > 0 ? <Separator /> : null}{child}
-    </Fragment>)}</Card>
+    <div className="settings-group-rows">{children}</div>
   </section>
 }
 function SettingsSelect({ label, value, options, onChange, disabled = false }: {
@@ -97,6 +91,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
   const [quota, setQuota] = useState<number | null>(null)
   const [requesting, setRequesting] = useState(false)
   const cancelRef = useRef<HTMLButtonElement>(null)
+  const confirmationTriggerRef = useRef<HTMLButtonElement | null>(null)
   const paneRef = useRef<HTMLElement>(null)
   const active = categories.find(item => item.id === category)!
   const totalSize = materials.reduce((sum, material) => sum + material.size, 0)
@@ -163,8 +158,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
     <aside className="settings-categories" aria-label="Категории настроек">
       <nav>{categories.map(item => <Button key={item.id} type="button" variant="ghost" className="settings-category"
         aria-current={item.id === category ? 'page' : undefined} onClick={() => changeCategory(item.id)}>
-        <item.icon aria-hidden="true" /><span><span className="settings-category-title">{item.title}</span>
-</span>
+        <item.icon aria-hidden="true" /><span className="settings-category-title">{item.title}</span>
       </Button>)}</nav>
     </aside>
 
@@ -173,21 +167,21 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
         <div className="settings-mobile-category"><label>Категория настроек</label>
           <SettingsSelect label="Категория настроек" value={category} onChange={value => changeCategory(value as Category)} options={categories.map(item => [item.id, item.title])} />
         </div>
-        <header className="settings-detail-heading"><active.icon aria-hidden="true" /><div>
+        <header className="settings-detail-heading"><div>
           <h1 id="settings-category-title">{active.title}</h1>
         </div></header>
         {category === 'general' ? <>
           <SettingsGroup title="Язык интерфейса">
-            <SettingRow title="Язык" description="Язык интерфейса — русский." icon={Globe} disabled>
+            <SettingRow title="Язык" description="Язык интерфейса — русский." disabled>
               <SettingsSelect label="Язык интерфейса" value="ru" disabled options={[["ru", "Русский"]]} />
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Дата и время" description="Формат применяется к расписанию, дедлайнам и данным файлов. Часовой пояс — Москва.">
-            <SettingRow title="Формат времени" description={`Пример: ${formatTime('18:30')}`} icon={Clock3}>
+            <SettingRow title="Формат времени" description={`Пример: ${formatTime('18:30')}`}>
               <SettingsSelect label="Формат времени" value={settings.timeFormat} options={[["24", "24 часа"], ["12", "12 часов"]]}
                 onChange={value => setPreference('timeFormat', value as UserSettings['timeFormat'])} />
             </SettingRow>
-            <SettingRow title="Формат даты" description={`Пример: ${formatDate('2026-11-11')}`} icon={CalendarDays}>
+            <SettingRow title="Формат даты" description={`Пример: ${formatDate('2026-11-11')}`}>
               <SettingsSelect label="Формат даты" value={settings.dateFormat} options={(['long', 'numeric', 'iso'] as const).map(value => [value, displayDate('2026-11-11', { ...settings, dateFormat: value })])}
                 onChange={value => setPreference('dateFormat', value as UserSettings['dateFormat'])} />
             </SettingRow>
@@ -213,7 +207,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Анимация">
-            <SettingRow title="Интенсивность" description={`Фактически: ${{ minimal: 'минимальная', balanced: 'сбалансированная', expressive: 'выразительная' }[effectiveIntensity]}${systemReduced && settings.respectReducedMotion ? ' — действует системное уменьшение движения' : ''}.`} icon={Sparkles}>
+            <SettingRow title="Интенсивность" description={`Фактически: ${{ minimal: 'минимальная', balanced: 'сбалансированная', expressive: 'выразительная' }[effectiveIntensity]}${systemReduced && settings.respectReducedMotion ? ' — действует системное уменьшение движения' : ''}.`}>
               <SettingsSelect label="Интенсивность анимаций" value={settings.motionIntensity} options={[["minimal", "Минимальная"], ["balanced", "Сбалансированная"], ["expressive", "Выразительная"]]}
                 onChange={value => setPreference('motionIntensity', value as UserSettings['motionIntensity'])} />
             </SettingRow>
@@ -256,8 +250,8 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Управление разговорами">
-            <SettingRow title="Локальная история" description={`Разговоров на устройстве: ${conversations.length}. Загруженные файлы хранятся отдельно.`} icon={MessageSquare}>
-              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy || !conversations.length} onClick={() => setConfirmation('history')}>Очистить историю</Button>
+            <SettingRow title="Локальная история" description={`Разговоров на устройстве: ${conversations.length}. Загруженные файлы хранятся отдельно.`}>
+              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy || !conversations.length} onClick={event => { confirmationTriggerRef.current = event.currentTarget; setConfirmation('history') }}>Очистить историю</Button>
             </SettingRow>
           </SettingsGroup>
         </> : null}
@@ -277,7 +271,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
           <StudyDownloadSettings />
           <SettingsGroup title="Локальные материалы">
             <div className="settings-storage-summary"><div><span>Файлы</span><strong>{materials.length}</strong></div><div><span>Занято файлами</span><strong>{formatMaterialSize(totalSize)}</strong></div></div>
-            <SettingRow title="Лимит хранилища сайта" description="Лимит задает браузер. Учебные материалы и личные файлы доступны на этом устройстве." icon={Database}>
+            <SettingRow title="Лимит хранилища сайта" description="Лимит задает браузер. Учебные материалы и личные файлы доступны на этом устройстве.">
               <span className="settings-value">{quota === null ? 'Не определён' : formatMaterialSize(quota)}</span>
             </SettingRow>
             <SettingRow title="Постоянное хранение" description={storageSupported ? 'Можно запросить у браузера защиту данных сайта от автоматического освобождения места. Решение принимает браузер.' : 'В этом браузере запрос постоянного хранения недоступен.'}>
@@ -286,32 +280,32 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Управление файлами">
-            <SettingRow title="Личные файлы" description="Удалить загруженные тобой файлы. Учебные материалы и текст разговоров сохранятся." icon={Trash2}>
-              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy || !materials.some(item => !item.sourceAcademicId)} onClick={() => setConfirmation('library')}>Удалить личные файлы</Button>
+            <SettingRow title="Личные файлы" description="Удалить загруженные тобой файлы. Учебные материалы и текст разговоров сохранятся.">
+              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy || !materials.some(item => !item.sourceAcademicId)} onClick={event => { confirmationTriggerRef.current = event.currentTarget; setConfirmation('library') }}>Удалить личные файлы</Button>
             </SettingRow>
           </SettingsGroup>
         </> : null}
         {category === 'privacy' ? <>
           <SettingsGroup title="Экспорт">
-            <SettingRow title="История разговоров" description="Скачать сообщения и данные ответов в JSON. Содержимое файлов в экспорт не входит." icon={FileJson}>
+            <SettingRow title="История разговоров" description="Скачать сообщения и данные ответов в JSON. Содержимое файлов в экспорт не входит.">
               <Button type="button" variant="outline" disabled={isBusy} onClick={exportHistory}><ArrowDownToLine aria-hidden="true" />Экспортировать</Button>
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Настройки">
-            <SettingRow title="Сбросить предпочтения" description="Вернуть исходную тему, вид интерфейса и настройки ввода. Разговоры и файлы сохранятся." icon={RotateCcw}>
+            <SettingRow title="Сбросить предпочтения" description="Вернуть исходную тему, вид интерфейса и настройки ввода. Разговоры и файлы сохранятся.">
               <Button type="button" variant="outline" disabled={isBusy} onClick={() => {
                 if (resetSettings()) { onThemeChange('system'); setNotice('Настройки сброшены. Разговоры и файлы сохранены.') }
               }}>Сбросить настройки</Button>
             </SettingRow>
           </SettingsGroup>
           <SettingsGroup title="Локальные данные">
-            <SettingRow title="Очистить данные приложения" description="Удалить историю, файлы и предпочтения NEW STUDENT только с этого устройства." icon={Trash2}>
-              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy} onClick={() => setConfirmation('data')}>Очистить данные</Button>
+            <SettingRow title="Очистить данные приложения" description="Удалить историю, файлы и предпочтения NEW STUDENT только с этого устройства.">
+              <Button type="button" variant="outline" className="settings-danger-action" disabled={isBusy} onClick={event => { confirmationTriggerRef.current = event.currentTarget; setConfirmation('data') }}>Очистить данные</Button>
             </SettingRow>
           </SettingsGroup>
         </> : null}
         {category === 'about' ? <>
-          <Card className="settings-about-card"><div><h2>{appInfo.name}</h2><p>Студенческий интерфейс Центрального университета</p></div><Badge variant="outline">{appInfo.version}</Badge></Card>
+          <div className="settings-about-card"><div><h2>{appInfo.name}</h2><p>Студенческий интерфейс Центрального университета</p></div><Badge variant="outline">{appInfo.version}</Badge></div>
           <SettingsGroup title="О приложении">
             <SettingRow title="Навигатор" description="Расписание, домашки и учебные материалы в одном чате.">{null}</SettingRow>
             <SettingRow title="Хранение данных" description="История разговоров, файлы и настройки сохраняются на этом устройстве.">{null}</SettingRow>
@@ -321,7 +315,7 @@ export default function SettingsScreen({ theme, onThemeChange, themeError, conve
       </div>
     </section>
     <Dialog open={confirmation !== null} onOpenChange={open => { if (!open && !working) { setConfirmation(null); setActionError(null) } }}>
-      <DialogContent role="alertdialog" className="conversation-action-dialog" onOpenAutoFocus={event => { event.preventDefault(); cancelRef.current?.focus() }}>
+      <DialogContent role="alertdialog" className="conversation-action-dialog" onOpenAutoFocus={event => { event.preventDefault(); cancelRef.current?.focus() }} onCloseAutoFocus={event => { event.preventDefault(); confirmationTriggerRef.current?.focus() }}>
         {confirmation ? <>
           <DialogHeader className="pr-6 text-left"><DialogTitle>{confirmations[confirmation].title}</DialogTitle>
             <DialogDescription>{confirmations[confirmation].description}</DialogDescription></DialogHeader>

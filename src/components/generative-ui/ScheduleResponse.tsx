@@ -66,7 +66,7 @@ export default function ScheduleResponse({ part, onNavigate, onRequest }: { part
 
   return <section className="gen-ui" aria-label={isWeek ? 'Недельное расписание' : 'Расписание дня'}>
     <div className="gen-header"><h3 className="gen-heading"><SemanticIcon icon={CalendarDays} tone="blue" />{isWeek ? 'Моя неделя' : 'Расписание'}</h3><p>9–15 ноября 2026</p></div>
-    {isWeek ? <p className="gen-week-summary">На неделе занятий: {part.classes.filter(slot => part.days.some(date => date.date === slot.date)).length}. Активных заданий в курсах: {active.length}; со сроком на этой неделе: {loads.reduce((sum, load) => sum + load.deadlines, 0)}.</p> : null}
+    {isWeek ? <dl className="gen-week-summary"><div><dt>Занятий на неделе</dt><dd>{part.classes.filter(slot => part.days.some(date => date.date === slot.date)).length}</dd></div><div><dt>Активных заданий</dt><dd>{active.length}</dd></div><div><dt>Сроков на неделе</dt><dd>{loads.reduce((sum, load) => sum + load.deadlines, 0)}</dd></div></dl> : null}
     {isWeek ? <Tabs value={day} onValueChange={setDay} className="min-w-0">
       <TabsList variant="segmented" className="gen-days" aria-label="Дни недели">
         {part.days.map(item => <TabsTrigger key={item.date} value={item.date} className="gen-day-tab" data-load={loads.find(load => load.day === item.date)?.intensity} aria-label={`${item.short}, ${item.label}. Занятия: ${loads.find(load => load.day === item.date)?.classMinutes} мин; твой план: ${loads.find(load => load.day === item.date)?.personalMinutes} мин; несданных работ: ${loads.find(load => load.day === item.date)?.deadlines}`}>

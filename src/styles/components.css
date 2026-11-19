@@ -25,6 +25,13 @@
 }
 [data-slot="switch-thumb"] { width: 24px; height: 16px; background: white; }
 [data-slot="card"] { --card-padding: var(--surface-padding); --card-header-block: var(--surface-header-block); border: 1px solid hsl(var(--border)); border-radius: var(--radius-surface); background: hsl(var(--card)); box-shadow: var(--shadow-surface); }
+
+/* Neutral surface recipe: opaque fill clips to padding, tonal edge to border.
+   Keep this at the surface owner; controls and borderless content do not opt in. */
+:where(.dark) [data-slot="card"]:where(:not(.settings-group-card, .settings-about-card, .grades-statement-card, .grades-formula-card)) {
+  border-color: transparent;
+  background: var(--surface-fill) padding-box, var(--surface-edge) border-box;
+}
 [data-slot="card"][data-size="sm"] { --card-padding: var(--surface-padding-small); --card-header-block: var(--surface-header-small); }
 [data-slot="card-header"] { display: flex; min-height: 52px; align-items: center; justify-content: space-between; gap: 8px; padding: var(--card-header-block) var(--card-padding); border-bottom: 1px solid hsl(var(--border)); }
 [data-size="sm"] > [data-slot="card-header"] { min-height: 44px; }
@@ -237,3 +244,9 @@
 .schedule-week-strip.segmented-control { display: flex; width: fit-content; max-width: 100%; gap: 2px; padding: 4px; border-radius: var(--radius-control); background: hsl(var(--muted)); overflow-x: auto; }
 .schedule-week-strip.segmented-control > [data-slot="button"] { min-height: 44px; padding: 6px 12px; border: 0; border-radius: 8px; background: transparent; box-shadow: none; }
 .schedule-week-strip.segmented-control > [data-slot="button"][aria-pressed="true"] { background: hsl(var(--accent)); box-shadow: none; }
+
+:where(.dark) :is([data-slot="popover-content"].preview-popover) {
+  border-color: transparent;
+  --surface-fill: linear-gradient(hsl(var(--popover)), hsl(var(--popover)));
+  background: var(--surface-fill) padding-box, var(--surface-edge) border-box;
+}

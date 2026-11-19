@@ -31,8 +31,8 @@
 /* The attachment menu is portalled outside the Navigator subtree. */
 html.dark:has(.composer [aria-label="Прикрепить файл"][data-state="open"]) [data-slot="dropdown-menu-content"] {
   border-color: transparent;
-  background: linear-gradient(hsl(var(--popover)), hsl(var(--popover))) padding-box,
-    linear-gradient(145deg, rgb(255 255 255 / .14), rgb(255 255 255 / .09) 45%, rgb(255 255 255 / .055)) border-box;
+  --surface-fill: linear-gradient(hsl(var(--popover)), hsl(var(--popover)));
+  background: var(--surface-fill) padding-box, var(--surface-edge) border-box;
 }
 .composer-editor { display: flex; min-height: 64px; flex-wrap: wrap; align-items: flex-start; gap: 8px; cursor: text; padding: 16px 20px 0; }
 .prompt-command { display: inline-flex; max-width: 100%; min-height: 24px; flex-shrink: 0; gap: 4px; padding: 1px 4px 1px 8px; border-radius: 6px; font-size: calc(12px * var(--text-scale, 1)); font-weight: 500; line-height: calc(20px * var(--text-scale, 1)); }
@@ -91,10 +91,10 @@ html.dark:has(.composer [aria-label="Прикрепить файл"][data-state=
 .gen-event[data-overdue="true"] .gen-event-time > time { color: var(--color-red-text); }
 .gen-event[data-overdue="true"] .gen-deadline { border-left-color: var(--color-red); }
 .gen-deadline-state { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 8px; }
-.gen-class-details summary, .gen-assignment-details summary { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: var(--list-row-padding) 12px; border-radius: 8px; cursor: pointer; list-style: none; transition: background-color calc(150ms * var(--motion-scale)) var(--ease-enter); }
-.gen-class-details summary::-webkit-details-marker, .gen-assignment-details summary::-webkit-details-marker { display: none; }
-.gen-class-details summary:hover, .gen-assignment-details summary:hover, .gen-deadline:hover { background: hsl(var(--muted) / 0.7); }
-.gen-class-details summary:focus-visible, .gen-assignment-details summary:focus-visible, .gen-deadline:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; border-radius: 8px; }
+.gen-class-details summary { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: var(--list-row-padding) 12px; border-radius: 8px; cursor: pointer; list-style: none; transition: background-color calc(150ms * var(--motion-scale)) var(--ease-enter); }
+.gen-class-details summary::-webkit-details-marker { display: none; }
+.gen-class-details summary:hover, .gen-deadline:hover { background: hsl(var(--muted) / 0.7); }
+.gen-class-details summary:focus-visible, .gen-deadline:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; border-radius: 8px; }
 .gen-row-title { display: block; min-width: 0; font-size: calc(14px * var(--text-scale, 1)); font-weight: 500; line-height: calc(20px * var(--text-scale, 1)); overflow-wrap: anywhere; }
 .gen-row-meta { display: block; margin-top: 4px; color: hsl(var(--muted-foreground)); font-size: calc(12px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); overflow-wrap: anywhere; }
 .gen-chevron { width: 16px; height: 20px; flex-shrink: 0; color: hsl(var(--muted-foreground)); transition: transform calc(150ms * var(--motion-scale)) var(--ease-enter); }
@@ -106,12 +106,6 @@ html.dark:has(.composer [aria-label="Прикрепить файл"][data-state=
 .gen-select-row { display: flex; min-width: 0; min-height: 44px; flex-wrap: nowrap; align-items: center; gap: 8px 12px; padding: 4px 0 12px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; font-size: calc(13px * var(--text-scale, 1)); }
 .gen-select-row > [role="status"] { margin-left: auto; }
 .gen-status-select { width: 160px; max-width: 100%; }
-.gen-assignment-list { border-top: 1px solid hsl(var(--border)); }
-.gen-assignment-list > li + li { border-top: 1px solid hsl(var(--border)); }
-.gen-assignment-details summary { padding: var(--list-row-padding) 8px; }
-.gen-assignment-copy { display: grid; min-width: 0; flex: 1; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px 16px; }
-.gen-assignment-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; font-size: calc(12px * var(--text-scale, 1)); line-height: calc(20px * var(--text-scale, 1)); font-variant-numeric: tabular-nums; }
-.gen-assignment-details .gen-detail { padding: 8px 8px 16px; }
 .gen-status { width: fit-content; padding: 2px 8px; border-radius: 6px; font-size: calc(12px * var(--text-scale, 1)); line-height: calc(18px * var(--text-scale, 1)); white-space: nowrap; }
 .gen-material-filters { display: flex; min-width: 0; min-height: 44px; flex-wrap: nowrap; align-items: center; gap: 8px; padding: 4px 0 12px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
 .gen-material-filters input { height: var(--control-height); border-radius: 8px; font-size: calc(14px * var(--text-scale, 1)); }
@@ -156,12 +150,13 @@ html.dark:has(.composer [aria-label="Прикрепить файл"][data-state=
 @keyframes voice-demo-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .voice-demo-wave span, .voice-demo-spinner { animation: none; } }
 @media (pointer: coarse) { .voice-input-button, .composer-send-actions .send-button { width: 44px; height: 44px; } }
-.gen-material-list-compact > li { grid-template-columns: 36px minmax(0, 1fr) 16px; align-items: center; padding-block: 12px; }
-.gen-material-open { display: flex; min-width: 0; flex-direction: column; gap: 4px; text-align: left; border-radius: var(--radius); overflow-wrap: anywhere; }
+.gen-material-list-compact > li { display: block; padding: 0; border-bottom: 1px solid hsl(var(--border)); }
+.gen-material-open { display: grid; width: 100%; min-width: 0; grid-template-columns: 32px minmax(0, 1fr) 16px; align-items: center; gap: 12px; padding: 14px 8px; text-align: left; border-radius: 6px; overflow-wrap: anywhere; }
 .gen-material-open:hover .gen-row-title { text-decoration: underline; text-underline-offset: 3px; }
+.gen-material-open:hover { background: hsl(var(--muted) / .6); }
 .gen-material-open:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 4px; }
 .segmented-control.gen-days[data-slot="tabs-list"] { display: flex; width: 100%; min-width: 0; flex-wrap: nowrap; overflow-x: auto; }
-.segmented-control.gen-days[data-slot="tabs-list"] > [role="tab"] { flex: 0 0 auto; min-width: 44px; min-height: 56px; padding: 8px 0; }
+.segmented-control.gen-days[data-slot="tabs-list"] > [role="tab"] { flex: 1 0 0; min-width: 44px; min-height: 56px; padding: 8px 0; }
 .segmented-control.gen-days[data-slot="tabs-list"] > [data-state="active"] { background: var(--color-blue-soft); color: var(--color-blue-text); }
 .composer [data-slot="textarea"], .composer [data-slot="textarea"]:focus-visible { border-radius: 0; box-shadow: none; outline: none; }
 .gen-followups [data-slot="button"] { border-radius: 8px; }
@@ -170,42 +165,67 @@ html.dark:has(.composer [aria-label="Прикрепить файл"][data-state=
 [data-density="compact"] .conversation-messages { gap: 24px; }
 .gen-deadline { display: flex; align-items: center; gap: 8px; }
 .gen-deadline-open { flex: 1; min-width: 0; text-align: left; }
-.gen-assignment-deadline { display: inline-flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 4px 8px; }
 
-/* A single next action, followed by compact alternatives in the same response. */
-.gen-continue-context { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
-.gen-continue-reason { max-width: 70ch; margin-block: 16px 20px; line-height: 1.5; }
-.gen-continue-alternatives { margin-top: 24px; padding-top: 20px; border-top: 1px solid hsl(var(--border)); }
-.gen-continue-alternatives > p { color: hsl(var(--muted-foreground)); font-size: calc(13px * var(--text-scale, 1)); }
-.gen-continue-alternatives ul { display: grid; gap: 16px; margin-top: 12px; }
-.gen-continue-alternatives li { display: grid; justify-items: start; gap: 4px; min-width: 0; }
-.gen-continue-alternatives [data-slot="button"] { padding: 0; height: auto; min-height: 32px; white-space: normal; text-align: left; justify-content: flex-start; }
+/* A primary task owns its reason and action; alternatives stay on the response surface. */
+.gen-continue-primary { padding: 20px; border: 1px solid hsl(var(--border)); border-radius: 12px; background: hsl(var(--card)); }
+.dark .gen-continue-primary { border-color: transparent; background: var(--surface-fill) padding-box, var(--surface-edge) border-box; }
+.gen-continue-primary .gen-header { padding-bottom: 16px; }
+.gen-continue-primary .gen-heading { align-items: flex-start; font-size: calc(20px * var(--text-scale, 1)); font-weight: 500; line-height: 28px; }
+.gen-continue-primary .semantic-icon { flex-shrink: 0; }
+.gen-continue-context { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; font-size: calc(12px * var(--text-scale, 1)); }
+.gen-continue-reason { max-width: 70ch; margin-block: 12px 20px; color: hsl(var(--muted-foreground)); font-size: calc(14px * var(--text-scale, 1)); line-height: 1.5; }
+.gen-continue-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.gen-continue-alternatives { margin-top: 24px; }
+.gen-continue-alternatives > p { font-weight: 500; font-size: calc(13px * var(--text-scale, 1)); }
+.gen-continue-alternatives ul { margin-top: 8px; }
+.gen-continue-alternatives li { display: grid; grid-template-columns: minmax(0, 1fr) auto 32px; align-items: center; gap: 8px 16px; min-width: 0; padding-block: 12px; border-bottom: 1px solid hsl(var(--border)); }
+.gen-continue-alternative-copy { min-width: 0; }
+.gen-continue-alternative-copy [data-slot="button"] { padding: 0; height: auto; min-height: 24px; white-space: normal; text-align: left; justify-content: flex-start; }
 .gen-continue-alternatives .deadline-label { font-size: calc(12px * var(--text-scale, 1)); }
+@container (max-width: 479px) {
+  .gen-continue-primary { padding: 16px; }
+  .gen-continue-alternatives li { grid-template-columns: minmax(0, 1fr) 32px; gap: 4px 12px; }
+  .gen-continue-alternative-copy { grid-column: 1; }
+  .gen-continue-alternatives li > .deadline-label { grid-column: 1; }
+  .gen-continue-alternatives li > .homework-personal-control { grid-column: 2; grid-row: 1 / 3; }
+}
 
 /* Weekly workload stays inside the existing schedule answer and day tabs. */
-.gen-week-summary { margin-block: 4px 20px; line-height: 1.5; }
+.gen-week-summary dt, .gen-week-day-load dt { color: hsl(var(--muted-foreground)); font-size: calc(12px * var(--text-scale, 1)); line-height: 18px; }
+.gen-week-summary dd { margin-top: 4px; font-size: calc(20px * var(--text-scale, 1)); line-height: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.gen-week-day-load dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.gen-week-day-load dd { margin-top: 4px; font-size: calc(14px * var(--text-scale, 1)); font-weight: 500; font-variant-numeric: tabular-nums; }
+.gen-week-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-block: 4px 20px; padding-bottom: 16px; border-bottom: 1px solid hsl(var(--border)); }
 .gen-week-load-mark { display: block; height: 3px; width: 12px; border-radius: 8px; background: hsl(var(--muted-foreground)); }
 .gen-day-tab[data-load="medium"] .gen-week-load-mark { width: 22px; background: var(--color-blue-text); }
 .gen-day-tab[data-load="high"] .gen-week-load-mark { width: 32px; background: var(--color-amber-text); }
 .gen-week-note, .gen-week-method { color: hsl(var(--muted-foreground)); font-size: calc(13px * var(--text-scale, 1)); line-height: 1.5; }
-.gen-week-legend { margin-top: 12px; }
+.gen-week-legend { margin-block: 8px; font-size: calc(11px * var(--text-scale, 1)); }
 .gen-week-plan { display: grid; gap: 16px; }
-.gen-week-day-load { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: calc(13px * var(--text-scale, 1)); }
+.gen-week-day-load { display: grid; gap: 8px; padding-block: 12px; border-block: 1px solid hsl(var(--border)); font-size: calc(13px * var(--text-scale, 1)); }
 .gen-week-day-load strong { color: var(--color-amber-text); font-weight: 500; }
-.gen-week-section { display: grid; gap: 12px; padding-top: 24px; }
+.gen-week-section { display: grid; gap: 10px; padding-top: 16px; }
 .gen-week-section h4 { font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; }
-.gen-week-blocks, .gen-week-recommendations { display: grid; gap: 24px; }
-.gen-week-blocks > li, .gen-week-recommendations > li { display: grid; gap: 10px; min-width: 0; }
+.gen-week-blocks, .gen-week-recommendations { display: grid; }
+.gen-week-blocks > li, .gen-week-recommendations > li { display: grid; gap: 8px; min-width: 0; padding-block: 14px; border-bottom: 1px solid hsl(var(--border)); }
 .gen-week-block-title { display: flex; align-items: center; gap: 12px; }
 .gen-week-block-title > [data-slot="button"]:last-child { margin-left: auto; flex-shrink: 0; }
 .gen-week-blocks li[data-done="true"] .gen-week-block-title > [data-variant="link"] { text-decoration: line-through; color: hsl(var(--muted-foreground)); }
-.gen-week-block-controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; max-width: 360px; }
+.gen-week-block-controls { display: grid; min-width: 0; flex: 1; grid-template-columns: minmax(0, 1fr) 100px; gap: 8px; max-width: 360px; }
+.gen-week-block-edit { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-left: 28px; }
+.gen-week-block-title > [data-variant="link"] { flex: 1; min-width: 0; }
+.gen-week-recommendation-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 12px; }
+.gen-week-recommendation-heading > div { min-width: 0; }
 .gen-week-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .gen-week-section [data-variant="link"] { justify-content: flex-start; white-space: normal; text-align: left; height: auto; padding: 0; }
 .gen-week-recommendations > li > [data-slot="button"] { justify-self: start; }
 .gen-week-recommendations .deadline-label { font-size: calc(13px * var(--text-scale, 1)); }
-.gen-week-recommendation { display: grid; gap: 12px; }
-.gen-week-recommendation > button { justify-self: start; }
+.gen-week-recommendation { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px 16px; padding-block: 8px; font-size: calc(13px * var(--text-scale, 1)); line-height: 1.5; }
+.gen-week-pressure { flex: 1; min-width: min(240px, 100%); }
+.gen-week-pressure summary { cursor: pointer; color: var(--color-amber-text); }
+.gen-week-pressure ul { display: grid; gap: 8px; margin-block: 12px; }
+.gen-week-pressure li { display: grid; gap: 4px; }
+.gen-week-pressure li span, .gen-week-pressure p { color: hsl(var(--muted-foreground)); }
 .gen-week-method { margin-top: 12px; }
 .gen-week-method summary { cursor: pointer; }
 .gen-week-method p { margin-top: 12px; }
@@ -218,4 +238,14 @@ html.dark:has(.composer [aria-label="Прикрепить файл"][data-state=
 
 @media (pointer: coarse) {
   .gen-filters button, .gen-material-action { min-height: 44px; }
+}
+
+@container (max-width: 479px) {
+  .gen-week-summary dt { min-height: 36px; }
+  .gen-week-recommendation-heading { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .gen-week-block-edit { padding-left: 0; }
+  .gen-week-block-controls { grid-template-columns: minmax(0, 1fr) 90px; }
+  .gen-week-actions > button { height: auto; min-height: 36px; max-width: 100%; white-space: normal; }
+  .gen-deadline { align-items: flex-start; flex-direction: column; }
+  .gen-deadline > .task-deadline-actions { align-self: flex-end; }
 }
